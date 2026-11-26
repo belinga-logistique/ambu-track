@@ -1,0 +1,17 @@
+{
+  "name": "Ambu Track — Suivi des ambulances",
+  "short_name": "Ambu Track",
+  "description": "Missions, kilométrages, contrôles, anomalies, entretiens et échéances des ambulances — Fortescue Belinga",
+  "lang": "fr",
+  "start_url": "./#/accueil",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f5f8",
+  "theme_color": "#b3122e",
+  "icons": [
+    { "src": "icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
