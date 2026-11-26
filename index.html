@@ -244,6 +244,63 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .progression i{display:block;height:100%;background:var(--ok);transition:width .2s}
 .colle{position:sticky;bottom:calc(var(--bas) + 8px);z-index:5;background:var(--carte);border:1px solid var(--bord);border-radius:var(--r);padding:10px;box-shadow:0 -4px 16px rgba(0,0,0,.08)}
 @media (min-width:900px){.colle{bottom:12px}}
+
+/* ---------- 1.2 : installation, alertes, relevés km, chauffeurs */
+.nav a{position:relative}
+.pastille{margin-left:auto;font-style:normal;background:var(--bad);color:#fff;border-radius:999px;min-width:20px;height:20px;padding:0 6px;display:inline-grid;place-items:center;font:700 .7rem/1 system-ui,sans-serif}
+.ico-bas{position:relative;display:inline-flex}.ico-bas .pastille{position:absolute;top:-6px;right:-12px;min-width:17px;height:17px;font-size:.62rem;padding:0 4px}
+.nav-installer{background:var(--prim-c);color:var(--prim)!important;font-weight:650;margin-top:6px}
+.bandeau-install{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--nuit),var(--nuit-2));color:#fff;border-radius:var(--r);padding:12px 12px 12px 14px;margin-bottom:14px;flex-wrap:wrap}
+.bandeau-install .ico{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.12);display:grid;place-items:center;flex:none}
+.bandeau-install>div{flex:1;min-width:180px;font-size:.88rem}.bandeau-install>div span{opacity:.85}
+.bandeau-install .fermer{background:rgba(255,255,255,.12);color:#fff}
+.etapes-install{padding-left:1.2rem;display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.avatar{display:inline-grid;place-items:center;border-radius:50%;overflow:hidden;background:var(--prim-c);color:var(--prim);font-weight:800;font-family:var(--f-titre);flex:none;vertical-align:middle;border:2px solid var(--carte);box-shadow:0 0 0 1px var(--bord)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.choix-chauffeur{display:flex;gap:10px;align-items:center}.choix-chauffeur select{flex:1}
+.lien-cond{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--texte)}
+.choix-amb{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.choix-amb button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:var(--epais) solid var(--bord);background:var(--carte);color:var(--texte);border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit;text-align:left}
+.choix-amb button b{font:800 1rem/1.1 var(--f-titre)}.choix-amb button span{font-size:.78rem;color:var(--doux);font-variant-numeric:tabular-nums}
+.choix-amb button.on{border-color:var(--prim);background:var(--prim-c);box-shadow:0 0 0 2px var(--prim)}
+.dernier-km{margin:12px 0;padding:12px 14px;border-radius:12px;background:var(--survol);font-size:.9rem}
+.dernier-km b{font:800 1.25rem/1.2 var(--f-titre);font-variant-numeric:tabular-nums}
+.km-zone{display:flex;align-items:center;border:2px solid var(--prim);border-radius:16px;background:var(--carte);padding:4px 16px;margin:6px 0}
+.km-zone input{border:0;outline:0;font:800 2.4rem/1.2 var(--f-titre);font-variant-numeric:tabular-nums;letter-spacing:.04em;padding:8px 0;min-height:0;background:transparent}
+.km-zone input:focus{outline:0}.km-zone span{font:700 1.1rem var(--f-titre);color:var(--doux)}
+.km-zone:focus-within{box-shadow:0 0 0 4px var(--prim-c)}
+.km-delta{min-height:28px;font-weight:650;margin-bottom:10px}.km-delta.ok{color:var(--ok)}.km-delta.bad{color:var(--bad)}.km-delta.warn{color:var(--warn)}
+.puces-choix{display:flex;flex-wrap:wrap;gap:6px}
+.puces-choix button,.puces-cat label{border:var(--epais) solid var(--bord);background:var(--carte);color:var(--texte);border-radius:999px;padding:7px 13px;font:600 .86rem/1 inherit;cursor:pointer}
+.puces-choix button.on{background:var(--nuit);border-color:var(--nuit);color:#fff}
+.puces-cat{display:flex;flex-wrap:wrap;gap:6px}.puces-cat input{position:absolute;opacity:0;pointer-events:none}
+.puces-cat label:has(input:checked){background:var(--prim);border-color:var(--prim);color:var(--sur-prim)}
+.puces-cat label:focus-within{outline:2px solid var(--info);outline-offset:2px}
+.courbe{width:100%;height:120px;display:block}
+.jauge-ent{padding:10px 0;border-top:1px solid var(--bord)}.jauge-ent:first-of-type{border-top:0}
+.jauge-ent .haut{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.9rem}
+.barre-km{height:10px;border-radius:99px;background:var(--mute-f);overflow:hidden;margin:8px 0 4px}
+.barre-km i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+.barre-km.haute i{background:var(--warn)}.barre-km.critique i{background:var(--bad)}
+.km-gros{font:800 1.3rem/1 var(--f-titre);font-variant-numeric:tabular-nums}
+.resume-alertes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.grille-cond{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.carte-cond{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--carte);border:var(--epais) solid var(--bord);border-radius:var(--r);text-decoration:none;color:var(--texte);box-shadow:var(--ombre)}
+.carte-cond .corps{flex:1;min-width:0}.carte-cond .t{font-weight:700}.carte-cond .s{font-size:.82rem;color:var(--doux)}
+.carte-cond .cats{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.cat{display:inline-grid;place-items:center;min-width:30px;height:24px;padding:0 6px;border-radius:6px;background:var(--nuit);color:#fff;font:800 .74rem/1 var(--f-titre)}
+.badge-id{max-width:420px;border-radius:18px;overflow:hidden;background:var(--carte);border:1px solid var(--bord);box-shadow:0 10px 30px rgba(15,30,46,.15);margin:0 auto 14px}
+.badge-id .bandeau{margin:0;border-radius:0;background:linear-gradient(90deg,var(--nuit),var(--nuit-2));color:#fff;display:flex;align-items:center;gap:8px;padding:10px 14px;font:800 .9rem/1 var(--f-titre);letter-spacing:.06em;text-transform:uppercase}
+.badge-id .bandeau b{width:22px;height:22px;border-radius:6px;background:var(--rouge);display:grid;place-items:center}
+.badge-id .contenu{display:flex;gap:16px;padding:16px;align-items:center}
+.badge-id .nom{font:800 1.3rem/1.15 var(--f-titre);text-transform:uppercase;letter-spacing:.02em}
+.badge-id .fonction{color:var(--prim);font-weight:700;margin:2px 0 8px}
+.badge-id dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:.84rem}.badge-id dt{color:var(--doux)}.badge-id dd{margin:0;font-weight:650;font-variant-numeric:tabular-nums}
+.badge-id .pied-id{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 16px;border-top:1px dashed var(--bord);font-size:.78rem;color:var(--doux)}
+@media (max-width:420px){.badge-id .contenu{flex-direction:column;text-align:center}.badge-id dl{text-align:left}}
+.photo-id{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.photo-id .apercu{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--prim-c);display:grid;place-items:center;color:var(--prim);font:800 2rem var(--f-titre);border:3px solid var(--carte);box-shadow:0 0 0 2px var(--bord)}
+.photo-id .apercu img{width:100%;height:100%;object-fit:cover}
 @media print{
   .barre,.nav,.bas,.no-print,#toasts,.maj,.btn,.onglets,.filtres{display:none!important}
   main{padding:0!important;max-width:none}
@@ -274,11 +331,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.1.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.2.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.1.0',
+  VERSION: '1.2.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -330,6 +387,12 @@ const ICONES = {
   photo: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
   lieu: '<path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
   doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+  cloche: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  jauge: '<path d="m12 14 4-4"/><path d="M3.3 19a10 10 0 1 1 17.4 0"/>',
+  equipe: '<circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9"/>',
+  installer: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+  badge: '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><path d="M14 10h5M14 14h4"/>',
+  carburant: '<path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M3 22h12M15 10h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 7h6"/>',
   croix: '<path d="M12 4v16M4 12h16" stroke-width="3"/>', plusmenu: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
 };
 const ic = (n, t = 20) => `<svg viewBox="0 0 24 24" width="${t}" height="${t}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[n] || ''}</svg>`;
@@ -350,11 +413,13 @@ const LIB = {
   alerteMission: { km_arrivee_inferieur: 'Kilométrage d’arrivée inférieur au départ', duree_nulle: 'Durée nulle ou négative', distance_elevee: 'Distance inhabituellement élevée', vitesse_elevee: 'Vitesse moyenne inhabituelle', ecart_carte: 'Écart important avec l’estimation de la carte' },
   typeLoc: { site: 'Site Fortescue', ville: 'Ville', village: 'Village', base: 'Base / camp', hopital: 'Hôpital / centre de santé', point: 'Point de repère', autre: 'Autre' },
   typeRem: { route_manquante: 'Route manquante', route_impraticable: 'Route impraticable', lieu_manquant: 'Lieu manquant', position_fausse: 'Position erronée', autre: 'Autre' },
+  fonctionCond: ['Ambulancier', 'Chauffeur', 'Infirmier', 'Secouriste', 'Médecin', 'Autre'],
+  alerteReleve: { km_inferieur: 'Inférieur au dernier kilométrage connu', saut_important: 'Hausse inhabituelle depuis le dernier relevé' },
   equip: { ok: ['Présent / OK', 'ok'], a_verifier: ['À vérifier', 'warn'], defectueux: ['Défectueux', 'bad'], absent: ['Absent', 'bad'] },
-  table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site' },
+  table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique' },
 };
 const chip = (paire, extra = '') => paire ? `<span class="chip ${paire[1]}">${esc(paire[0])}${extra}</span>` : '';
-const DEFAUT_SEUILS = { distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
+const DEFAUT_SEUILS = { rappel_permis_jours: 60, distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
 
 /* ----------------------------------------------------------------- Stockage local (IndexedDB) */
 const IDB = (() => {
@@ -385,7 +450,7 @@ const kvGet = async (k) => (await IDB.lire('kv', k))?.v;
 
 /* ----------------------------------------------------------------- État */
 const TABLES = ['ambu_sites', 'ambu_profils', 'ambu_ambulances', 'ambu_localites', 'ambu_missions', 'ambu_inspections', 'ambu_signalements',
-  'ambu_entretiens', 'ambu_documents', 'ambu_fichiers', 'ambu_remarques_carte', 'ambu_parametres', 'ambu_conflits'];
+  'ambu_entretiens', 'ambu_documents', 'ambu_fichiers', 'ambu_remarques_carte', 'ambu_parametres', 'ambu_conflits', 'ambu_conducteurs', 'ambu_releves_km'];
 const S = { session: null, profil: null, srv: {}, data: {}, out: [], rev: 0, sync: false, resync: false, dernierPull: null, derniereSync: null,
   erreurSync: null, reconnexion: false, itin: {}, vue: null, enForm: false };
 TABLES.forEach((t) => { S.srv[t] = new Map(); S.data[t] = new Map(); });
@@ -426,12 +491,13 @@ const etatSync = (r) => r?._etat === 'attente' ? '<span class="chip info" title=
 
 /* ----------------------------------------------------------------- Calculs métier */
 function kmCourant(aid) {
-  const a = amb(aid); let km = a?.km_initial || 0, quand = a?.created_at || null;
-  const voir = (v, q) => { if (v !== null && v !== undefined && Number(v) > km) { km = Number(v); quand = q; } };
-  for (const m of parAmb('ambu_missions', aid)) if (m.statut !== 'annulee') { voir(m.km_depart, m.debut); if (!(m.alertes || []).includes('km_arrivee_inferieur')) voir(m.km_arrivee, m.fin); }
-  for (const i of parAmb('ambu_inspections', aid)) voir(i.km, i.date_controle);
-  for (const e of parAmb('ambu_entretiens', aid)) if (e.statut === 'realise') voir(e.km, e.date_op + 'T12:00:00Z');
-  return { km, quand };
+  const a = amb(aid); let km = a?.km_initial || 0, quand = a?.created_at || null, source = 'Kilométrage initial';
+  const voir = (v, q, src) => { if (v !== null && v !== undefined && Number(v) > km) { km = Number(v); quand = q; source = src; } };
+  for (const m of parAmb('ambu_missions', aid)) if (m.statut !== 'annulee') { voir(m.km_depart, m.debut, 'Départ de mission'); if (!(m.alertes || []).includes('km_arrivee_inferieur')) voir(m.km_arrivee, m.fin, 'Arrivée de mission'); }
+  for (const i of parAmb('ambu_inspections', aid)) voir(i.km, i.date_controle, 'Contrôle quotidien');
+  for (const e of parAmb('ambu_entretiens', aid)) if (e.statut === 'realise') voir(e.km, e.date_op + 'T12:00:00Z', 'Entretien');
+  for (const r of parAmb('ambu_releves_km', aid)) if (r.alerte !== 'km_inferieur') voir(r.km, r.date_releve, 'Relevé kilométrique');
+  return { km, quand, source };
 }
 const missionEnCours = (aid) => parAmb('ambu_missions', aid).find((m) => m.statut === 'en_cours');
 /** Règles du cahier §5.3 (identiques au serveur) */
@@ -484,37 +550,93 @@ function prochainEntretien(aid) {
   morceaux.push(resteJ < 0 ? `date dépassée de ${-resteJ} j` : `avant le ${fmtJ(pdate)}`);
   return { niveau, texte: 'Vidange ' + morceaux.join(' · '), km: pkm, date: pdate, resteKm, resteJ };
 }
+/** Entretiens à prévoir par type : prochain kilométrage ou prochaine date (vidange : intervalle par défaut) */
+function entretiensDus(aid) {
+  const s = seuils(); const k = kmCourant(aid).km; const parType = {}; const res = [];
+  for (const e of parAmb('ambu_entretiens', aid)) if (e.statut === 'realise') { const c = parType[e.type]; if (!c || (e.date_op || '') > (c.date_op || '') || ((e.date_op || '') === (c.date_op || '') && (e.km || 0) > (c.km || 0))) parType[e.type] = e; }
+  for (const [type, e] of Object.entries(parType)) {
+    let pkm = e.prochain_km || null, pdate = e.prochain_date || null;
+    if (type === 'vidange') { pkm = pkm || (e.km != null ? e.km + s.vidange_km : null); pdate = pdate || ajoutJours(e.date_op, s.vidange_jours); }
+    if (pkm == null && !pdate) continue;
+    const resteKm = pkm != null ? pkm - k : null; const resteJ = pdate ? ecartJours(aujourdhui(), pdate) : null;
+    let niveau = 'ok';
+    if ((resteKm != null && resteKm <= 0) || (resteJ != null && resteJ < 0)) niveau = 'critique';
+    else if ((resteKm != null && resteKm <= s.rappel_entretien_km) || (resteJ != null && resteJ <= s.rappel_entretien_jours)) niveau = 'haute';
+    const morceaux = [];
+    if (pkm != null) morceaux.push(resteKm <= 0 ? `dépassé de ${nf(-resteKm)} km` : `dans ${nf(resteKm)} km (à ${nf(pkm)} km)`);
+    if (pdate) morceaux.push(resteJ < 0 ? `date dépassée de ${-resteJ} j` : `avant le ${fmtJ(pdate)}`);
+    res.push({ type, libelle: LIB.typeEnt[type], niveau, km: pkm, date: pdate, resteKm, resteJ, depuisKm: e.km, depuisDate: e.date_op, texte: `${LIB.typeEnt[type]} ${morceaux.join(' · ')}` });
+  }
+  if (!parType.vidange) res.push({ type: 'vidange', libelle: 'Vidange', niveau: 'info', texte: 'Aucune vidange enregistrée : saisissez la dernière vidange pour activer le rappel' });
+  const rang = { critique: 0, haute: 1, info: 2, ok: 3 };
+  return res.sort((x, y) => rang[x.niveau] - rang[y.niveau] || (x.resteKm ?? 1e9) - (y.resteKm ?? 1e9));
+}
+const conducteur = (id) => id ? G('ambu_conducteurs', id) : undefined;
+const nomCond = (c) => c ? [c.prenom, c.nom].filter(Boolean).join(' ') : '—';
+const conducteursVisibles = () => L('ambu_conducteurs').filter((c) => c.actif !== false).sort((a, b) => nomCond(a).localeCompare(nomCond(b), 'fr'));
+const monConducteur = () => L('ambu_conducteurs').find((c) => c.profil_id && c.profil_id === S.profil?.id);
+/** État d'une date de validité (permis, aptitude, secourisme) */
+function etatValidite(date, rappel) {
+  if (!date) return { niveau: 'info', texte: 'Date non renseignée', jours: null };
+  const j = ecartJours(aujourdhui(), date);
+  if (j < 0) return { niveau: 'critique', texte: `Expiré depuis ${-j} j (${fmtJ(date)})`, jours: j };
+  if (j <= rappel) return { niveau: 'haute', texte: `Expire dans ${j} j (${fmtJ(date)})`, jours: j };
+  return { niveau: 'ok', texte: `Valide jusqu’au ${fmtJ(date)}`, jours: j };
+}
+/** Le chauffeur peut-il conduire cette ambulance ? (permis valide et catégorie requise) */
+function aptitudeConduite(c, a) {
+  if (!c) return { ok: true, niveau: 'info', texte: 'Aucun chauffeur désigné' };
+  const p = etatValidite(c.permis_expiration, seuils().rappel_permis_jours);
+  const cat = a?.categorie_permis || 'B';
+  if (p.niveau === 'critique') return { ok: false, niveau: 'critique', texte: `Permis de ${nomCond(c)} expiré (${fmtJ(c.permis_expiration)}) : conduite interdite` };
+  if ((c.permis_categories || []).length && !c.permis_categories.includes(cat)) return { ok: false, niveau: 'critique', texte: `${nomCond(c)} n’a pas la catégorie ${cat} exigée pour ${a?.code || 'cette ambulance'}` };
+  if (!c.permis_numero || !c.permis_expiration) return { ok: true, niveau: 'haute', texte: `Permis de ${nomCond(c)} non renseigné dans sa fiche` };
+  if (p.niveau === 'haute') return { ok: true, niveau: 'haute', texte: `Permis de ${nomCond(c)} : ${p.texte.toLowerCase()}` };
+  return { ok: true, niveau: 'ok', texte: `Permis ${c.permis_categories.join(', ') || '—'} valide jusqu’au ${fmtJ(c.permis_expiration)}` };
+}
+const initiales = (c) => ((c?.prenom || '')[0] || '') + ((c?.nom || '')[0] || '');
+const avatar = (c, t = 44) => `<span class="avatar" style="width:${t}px;height:${t}px;font-size:${Math.round(t / 2.6)}px">${c?.photo_id ? `<img data-fid="${esc(c.photo_id)}" alt="Photo de ${esc(nomCond(c))}">` : esc(initiales(c).toUpperCase() || '?')}</span>`;
 const ouvert = (s) => !['resolu', 'cloture'].includes(s.statut);
 /** Toutes les alertes visibles (cahier §7) */
 function alertes(filtreAmb) {
-  const res = []; const auj = aujourdhui();
+  const res = []; const auj = aujourdhui(); const s = seuils();
   const ambs = ambulancesVisibles().filter((a) => !filtreAmb || a.id === filtreAmb);
   const ids = new Set(ambs.map((a) => a.id));
-  for (const s of L('ambu_signalements')) {
-    if (!ids.has(s.ambulance_id) || !ouvert(s)) continue;
-    if (s.type === 'accident' || s.priorite === 'critique' || s.priorite === 'haute')
-      res.push({ niveau: s.type === 'accident' || s.priorite === 'critique' ? 'critique' : 'haute', titre: `${LIB.typeSig[s.type]} ${LIB.priorite[s.priorite][0].toLowerCase()} — ${amb(s.ambulance_id)?.code || ''}`, detail: s.description, href: '#/signalement/' + s.id });
-    if (s.echeance && s.echeance < auj) res.push({ niveau: 'haute', titre: `Action en retard — ${amb(s.ambulance_id)?.code || ''}`, detail: `Échéance du ${fmtJ(s.echeance)} : ${s.description}`, href: '#/signalement/' + s.id });
+  const ajout = (cat, niveau, titre, detail, href) => res.push({ cat, niveau, titre, detail, href });
+  for (const x of L('ambu_signalements')) {
+    if (!ids.has(x.ambulance_id) || !ouvert(x)) continue;
+    if (x.type === 'accident' || x.priorite === 'critique' || x.priorite === 'haute')
+      ajout('signalement', x.type === 'accident' || x.priorite === 'critique' ? 'critique' : 'haute', `${LIB.typeSig[x.type]} ${LIB.priorite[x.priorite][0].toLowerCase()} — ${amb(x.ambulance_id)?.code || ''}`, x.description, '#/signalement/' + x.id);
+    if (x.echeance && x.echeance < auj) ajout('signalement', 'haute', `Action en retard — ${amb(x.ambulance_id)?.code || ''}`, `Échéance du ${fmtJ(x.echeance)} : ${x.description}`, '#/signalement/' + x.id);
   }
   for (const i of L('ambu_inspections')) if (ids.has(i.ambulance_id) && i.revue_statut === 'a_revoir')
-    res.push({ niveau: 'haute', titre: `Contrôle à revoir par le superviseur — ${amb(i.ambulance_id)?.code || ''}`, detail: `${i.nb_nc || 0} NC${i.critique ? ' dont critique' : ''} · déclaré ${LIB.statutDecl[i.statut_declare]?.[0] || ''} · ${fmtDH(i.date_controle)}`, href: '#/controle-voir/' + i.id });
+    ajout('controle', 'haute', `Contrôle à revoir par le superviseur — ${amb(i.ambulance_id)?.code || ''}`, `${i.nb_nc || 0} NC${i.critique ? ' dont critique' : ''} · déclaré ${LIB.statutDecl[i.statut_declare]?.[0] || ''} · ${fmtDH(i.date_controle)}`, '#/controle-voir/' + i.id);
   for (const a of ambs) {
-    if (a.statut === 'immobilisee') res.push({ niveau: 'info', titre: `${a.code} immobilisée`, detail: a.notes || 'Voir la fiche ambulance', href: '#/ambulance/' + a.id });
+    if (a.statut === 'immobilisee') ajout('statut', 'info', `${a.code} immobilisée`, a.notes || 'Voir la fiche ambulance', '#/ambulance/' + a.id);
     const docs = documentsCourants(a.id);
     for (const t of DOCS_SUIVIS) {
       const d = docs[t];
-      if (!d) { res.push({ niveau: 'info', titre: `${LIB.typeDoc[t]} non enregistrée — ${a.code}`, detail: 'Ajoutez le document et sa date de validité', href: '#/ambulance/' + a.id + '?onglet=documents' }); continue; }
+      if (!d) { ajout('document', 'info', `${LIB.typeDoc[t]} non enregistrée — ${a.code}`, 'Ajoutez le document et sa date de validité', '#/ambulance/' + a.id + '?onglet=documents'); continue; }
       const e = etatDocument(d);
-      if (e.niveau === 'critique' || e.niveau === 'haute') res.push({ niveau: e.niveau, titre: `${LIB.typeDoc[t]} — ${a.code}`, detail: e.texte, href: '#/ambulance/' + a.id + '?onglet=documents' });
+      if (e.niveau === 'critique' || e.niveau === 'haute') ajout('document', e.niveau, `${LIB.typeDoc[t]} — ${a.code}`, e.texte, '#/ambulance/' + a.id + '?onglet=documents');
     }
-    const pe = prochainEntretien(a.id);
-    if (pe.niveau === 'critique' || pe.niveau === 'haute') res.push({ niveau: pe.niveau, titre: `Entretien — ${a.code}`, detail: pe.texte, href: '#/ambulance/' + a.id + '?onglet=entretien' });
+    for (const d of Object.values(docs)) if (!DOCS_SUIVIS.includes(d.type) && d.expiration) { const e = etatDocument(d); if (e.niveau === 'critique' || e.niveau === 'haute') ajout('document', e.niveau, `${LIB.typeDoc[d.type]} — ${a.code}`, e.texte, '#/ambulance/' + a.id + '?onglet=documents'); }
+    for (const e of entretiensDus(a.id)) if (e.niveau === 'critique' || e.niveau === 'haute') ajout('entretien', e.niveau, `${e.libelle} ${e.niveau === 'critique' ? 'dépassée' : 'à prévoir'} — ${a.code}`, e.texte, '#/alertes?onglet=km');
     const m = missionEnCours(a.id);
-    if (m && (Date.now() - new Date(m.debut)) > 12 * 3600000) res.push({ niveau: 'haute', titre: `Mission non clôturée — ${a.code}`, detail: `Démarrée le ${fmtDH(m.debut)}`, href: '#/mission/' + m.id });
+    if (m && (Date.now() - new Date(m.debut)) > 12 * 3600000) ajout('mission', 'haute', `Mission non clôturée — ${a.code}`, `Démarrée le ${fmtDH(m.debut)}`, '#/mission/' + m.id);
+  }
+  if (!filtreAmb) for (const c of conducteursVisibles()) {
+    const p = etatValidite(c.permis_expiration, s.rappel_permis_jours);
+    if (p.niveau === 'critique' || p.niveau === 'haute') ajout('permis', p.niveau, `Permis de conduire — ${nomCond(c)}`, p.texte, '#/chauffeur/' + c.id);
+    else if (!c.permis_numero || !c.permis_expiration) ajout('permis', 'info', `Permis non renseigné — ${nomCond(c)}`, 'Complétez le numéro, les catégories et la date de validité', '#/chauffeur/' + c.id);
+    for (const [champ, lib] of [['aptitude_expiration', 'Aptitude médicale'], ['secourisme_expiration', 'Formation secourisme']]) {
+      if (!c[champ]) continue; const e = etatValidite(c[champ], s.rappel_permis_jours);
+      if (e.niveau === 'critique' || e.niveau === 'haute') ajout('permis', e.niveau, `${lib} — ${nomCond(c)}`, e.texte, '#/chauffeur/' + c.id);
+    }
   }
   const nErr = S.out.filter((o) => o.statut !== 'attente').length;
-  if (nErr) res.push({ niveau: 'haute', titre: `${nErr} saisie(s) non synchronisée(s) à traiter`, detail: 'Erreur ou conflit : ouvrez l’écran Synchronisation', href: '#/sync' });
-  if (peut.sup()) { const nc = L('ambu_conflits').filter((c) => c.statut === 'ouvert').length; if (nc) res.push({ niveau: 'haute', titre: `${nc} conflit(s) de modification à arbitrer`, detail: 'Deux personnes ont modifié la même fiche', href: '#/sync' }); }
+  if (nErr) ajout('sync', 'haute', `${nErr} saisie(s) non synchronisée(s) à traiter`, 'Erreur ou conflit : ouvrez l’écran Synchronisation', '#/sync');
+  if (peut.sup()) { const nc = L('ambu_conflits').filter((c) => c.statut === 'ouvert').length; if (nc) ajout('sync', 'haute', `${nc} conflit(s) de modification à arbitrer`, 'Deux personnes ont modifié la même fiche', '#/sync'); }
   const rang = { critique: 0, haute: 1, info: 2 };
   return res.sort((a, b) => rang[a.niveau] - rang[b.niveau]);
 }
@@ -605,12 +727,12 @@ function compresser(f, max = 1280, q = 0.72) {
   });
 }
 /** Enregistre les nouvelles photos d'un champ et renvoie la liste complète des identifiants */
-async function sauverPhotos(cle, ambulance_id, objet) {
+async function sauverPhotos(cle, ambulance_id, objet, site_id = null) {
   const ids = [];
   for (const p of PHOTOS[cle] || []) {
     if (!p.existant) {
       await IDB.ecrire('fichiers', { k: p.id, donnees: p.donnees });
-      await enregistrer('ambu_fichiers', p.id, { ambulance_id: ambulance_id || null, objet, nom: p.nom || 'photo.jpg', mime: p.mime, taille: p.donnees.length, donnees: p.donnees }, { sansSync: true });
+      await enregistrer('ambu_fichiers', p.id, { ambulance_id: ambulance_id || null, ...(ambulance_id ? {} : { site_id }), objet, nom: p.nom || 'photo.jpg', mime: p.mime, taille: p.donnees.length, donnees: p.donnees }, { sansSync: true });
       p.existant = true;
     }
     ids.push(p.id);
@@ -851,21 +973,43 @@ function choisirLieu(cb) {
 
 /* ----------------------------------------------------------------- Navigation */
 const MENU = [
-  ['accueil', 'Tableau de bord', 'accueil'], ['missions', 'Missions', 'mission'], ['ambulances', 'Ambulances', 'ambulance'],
-  ['controles', 'Contrôles quotidiens', 'controle'], ['signalements', 'Anomalies & incidents', 'alerte'], ['entretien', 'Entretien & documents', 'entretien'],
+  ['accueil', 'Tableau de bord', 'accueil'], ['alertes', 'Alertes', 'cloche'], ['missions', 'Missions', 'mission'], ['kilometrage', 'Relevés kilométriques', 'jauge'],
+  ['ambulances', 'Ambulances', 'ambulance'], ['chauffeurs', 'Chauffeurs', 'equipe'], ['controles', 'Contrôles quotidiens', 'controle'],
+  ['signalements', 'Anomalies & incidents', 'alerte'], ['entretien', 'Entretien & documents', 'entretien'],
   ['carte', 'Carte & localités', 'carte'], ['rapports', 'Rapports', 'rapport'], ['sync', 'Synchronisation', 'sync'],
 ];
+const estInstallee = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch { return false; } };
+const estIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+async function installerApp() {
+  if (window.__installer) {
+    const ev = window.__installer; window.__installer = null; ev.prompt();
+    try { const r = await ev.userChoice; if (r.outcome === 'accepted') toast('Ambu Track est installée sur cet appareil', 'ok'); } catch { /* rien */ }
+    dessinerNav(); return;
+  }
+  const etapes = estIOS()
+    ? ['Ouvrez ce lien dans <b>Safari</b>.', 'Touchez le bouton <b>Partager</b> (carré avec une flèche vers le haut).', 'Choisissez <b>« Sur l’écran d’accueil »</b>, puis <b>Ajouter</b>.']
+    : /android/i.test(navigator.userAgent)
+      ? ['Ouvrez ce lien dans <b>Chrome</b>.', 'Touchez le menu <b>⋮</b> en haut à droite.', 'Choisissez <b>« Installer l’application »</b> ou <b>« Ajouter à l’écran d’accueil »</b>.']
+      : ['Dans Chrome ou Edge, cliquez sur l’icône <b>Installer</b> à droite de la barre d’adresse.', 'Ou ouvrez le menu <b>⋮</b> puis <b>« Installer Ambu Track »</b>.'];
+  modale('Installer Ambu Track', `<p>L’application s’installe comme une application normale : icône sur l’écran d’accueil, ouverture en plein écran et fonctionnement sans réseau.</p>
+    <ol class="etapes-install">${etapes.map((e) => `<li>${e}</li>`).join('')}</ol>
+    <p class="aide">Adresse à ouvrir : <b class="mono">${esc(location.origin + location.pathname)}</b></p>`);
+}
 function dessinerNav() {
   const nom = (location.hash.slice(2).split(/[/?]/)[0]) || 'accueil';
   const actif = (k) => nom === k || (nom.startsWith(k.replace(/s$/, '')) && k !== 'accueil') ? ' actif' : '';
-  $('#nav').innerHTML = MENU.map(([k, l, i]) => `<a href="#/${k}" class="${actif(k)}">${ic(i)}<span>${l}</span></a>`).join('')
+  const nAl = alertes().filter((a) => a.niveau !== 'info').length;
+  const pastille = (k) => k === 'alertes' && nAl ? `<em class="pastille">${nAl > 99 ? '99+' : nAl}</em>` : '';
+  $('#nav').innerHTML = MENU.map(([k, l, i]) => `<a href="#/${k}" class="${actif(k)}">${ic(i)}<span>${l}</span>${pastille(k)}</a>`).join('')
     + (peut.admin() ? `<a href="#/admin" class="${actif('admin')}">${ic('admin')}<span>Administration</span></a>` : '')
+    + (estInstallee() ? '' : `<a href="javascript:void 0" class="nav-installer" data-installer-nav>${ic('installer')}<span>Installer l’application</span></a>`)
     + `<div class="sep"></div><a href="#/compte" class="${actif('compte')}">${ic('compte')}<span>Mon compte</span></a>
        <div class="qui">${esc(S.profil?.nom || '')}<br>${esc(LIB.role[role()] || '')}<br>Version ${CONFIG.VERSION}</div>`;
-  const bas = [['accueil', 'Accueil', 'accueil'], ['missions', 'Missions', 'mission'], ['signaler', 'Signaler', 'alerte', true], ['ambulances', 'Parc', 'ambulance'], ['menu', 'Plus', 'plusmenu']];
+  const bas = [['accueil', 'Accueil', 'accueil'], ['missions', 'Missions', 'mission'], ['signaler', 'Signaler', 'alerte', true], ['alertes', 'Alertes', 'cloche'], ['menu', 'Plus', 'plusmenu']];
   $('#bas').innerHTML = bas.map(([k, l, i, cta]) => k === 'menu' ? `<a href="javascript:void 0" data-menu>${ic(i, 22)}<span>${l}</span></a>`
-    : `<a href="#/${k}" class="${actif(k)}${cta ? ' cta' : ''}">${cta ? `<span class="rond">${ic(i, 20)}</span>` : ic(i, 22)}<span>${l}</span></a>`).join('');
+    : `<a href="#/${k}" class="${actif(k)}${cta ? ' cta' : ''}">${cta ? `<span class="rond">${ic(i, 20)}</span>` : `<span class="ico-bas">${ic(i, 22)}${pastille(k)}</span>`}<span>${l}</span></a>`).join('');
   $('[data-menu]', $('#bas')).onclick = () => basculerMenu(true);
+  const bi = $('[data-installer-nav]', $('#nav')); if (bi) bi.onclick = () => { basculerMenu(false); installerApp(); };
 }
 function basculerMenu(o) { $('#nav').classList.toggle('ouvert', o); $('#voile').classList.toggle('ouvert', o); }
 function majIndicateur() {
@@ -924,19 +1068,22 @@ VUES.accueil = () => {
   const sigOuverts = L('ambu_signalements').filter(ouvert);
   const ctrlJour = L('ambu_inspections').filter((i) => jourDe(i.date_controle) === auj);
   const al = alertes();
-  const echeances = al.filter((a) => /Entretien|Assurance|Visite|Extincteur/.test(a.titre) && a.niveau !== 'info').length;
+  const echeances = al.filter((a) => ['document', 'entretien', 'permis'].includes(a.cat) && a.niveau !== 'info').length;
   const attente = S.out.length;
   const kmJour = L('ambu_missions').filter((m) => m.statut === 'cloturee' && jourDe(m.debut) === auj).reduce((s, m) => s + (Number(m.distance_compteur) > 0 ? Number(m.distance_compteur) : 0), 0);
   const immo = ambs.filter((a) => a.statut === 'immobilisee').length;
   const urgentes = al.filter((a) => a.niveau !== 'info'); const infos = al.filter((a) => a.niveau === 'info');
   const ligneAlerte = (a) => `<a class="alerte ${a.niveau}" href="${a.href}"><span>${ic('alerte', 18)}</span><span><b>${esc(a.titre)}</b><small>${esc(a.detail || '')}</small></span></a>`;
   const tuile = (cls, href, v, l) => `<a class="kpi ${cls}" href="${href}"><div class="v">${v}</div><div class="l">${l}</div></a>`;
-  const html = entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])}`, `${esc(LIB.role[role()])}${S.profil.sites?.length ? ' · ' + S.profil.sites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
+  let masque = false; try { masque = localStorage.getItem('ambu.install.masque') === '1'; } catch { /* rien */ }
+  const bandeauInstall = !estInstallee() && !masque ? `<div class="bandeau-install"><span class="ico">${ic('installer', 22)}</span><div><b>Installez Ambu Track sur ce téléphone</b><br><span>Icône sur l’écran d’accueil, plein écran, fonctionne sans réseau.</span></div><button class="btn p petit" data-installer>Installer</button><button class="fermer" data-masquer aria-label="Masquer">✕</button></div>` : '';
+  const html = bandeauInstall + entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])}`, `${esc(LIB.role[role()])}${S.profil.sites?.length ? ' · ' + S.profil.sites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
     + mienne.map((m) => `<div class="carte mission-cours"><div class="mc-haut"><b>Mission en cours · ${esc(amb(m.ambulance_id)?.code || '')}</b><span>${ilYa(m.debut).replace('il y a', 'depuis')}</span></div>
       <div class="mc-route"><span>${esc(nomLieu(m.depart_id))}</span><i></i><span>${esc(nomLieu(m.destination_id))}</span></div>
       <div class="mc-btns"><a class="btn" href="#/mission/${m.id}">${ic('plus', 16)} Événement</a><a class="btn p" href="#/mission-cloture/${m.id}">Clôturer la mission</a></div></div>`).join('')
     + `<div class="carte alertes-accueil"><div class="titre-ligne"><h2>Alertes</h2>${urgentes.length ? `<span class="chip ${urgentes.some((a) => a.niveau === 'critique') ? 'bad' : 'warn'}">${urgentes.length} à traiter</span>` : '<span class="chip ok">Tout est en ordre</span>'}</div>
       ${urgentes.slice(0, 4).map(ligneAlerte).join('') || (infos.length ? '' : vide('Aucune alerte.'))}
+      <a class="btn petit" href="#/alertes" style="margin:4px 0 6px">${ic('cloche', 16)} Ouvrir le centre d’alertes</a>
       ${urgentes.length > 4 || infos.length ? `<details class="plus-alertes"><summary>Voir ${urgentes.length > 4 ? `${urgentes.length - 4} autre(s) alerte(s)` : ''}${urgentes.length > 4 && infos.length ? ' et ' : ''}${infos.length ? `${infos.length} information(s)` : ''}</summary>${urgentes.slice(4).map(ligneAlerte).join('')}${infos.map(ligneAlerte).join('')}</details>` : ''}
       <p class="aide" style="margin:8px 0 0">Les alertes critiques suivent toujours le canal d’urgence Fortescue : l’application ne le remplace pas.</p></div>
     <div class="bande-kpi">
@@ -951,9 +1098,14 @@ VUES.accueil = () => {
       <a class="ar prim" href="#/mission-nouvelle"><span class="ico">${ic('mission')}</span>Démarrer une mission</a>
       <a class="ar vert" href="#/controle"><span class="ico">${ic('controle')}</span>Contrôle de prise de service</a>
       <a class="ar orange" href="#/signaler?type=anomalie"><span class="ico">${ic('alerte')}</span>Signaler une anomalie</a>
-      <a class="ar rouge" href="#/signaler?type=incident"><span class="ico">${ic('alerte')}</span>Déclarer un incident / accident</a></div>` : ''}
+      <a class="ar rouge" href="#/signaler?type=incident"><span class="ico">${ic('alerte')}</span>Déclarer un incident / accident</a>
+      <a class="ar" href="#/kilometrage"><span class="ico">${ic('jauge')}</span>Relevé kilométrique</a>
+      <a class="ar orange" href="#/alertes"><span class="ico">${ic('cloche')}</span>Alertes km et pièces du véhicule</a></div>` : ''}
     <div class="carte"><div class="titre-ligne"><h2>Parc ambulances</h2>${peut.sup() ? `<a class="btn petit" href="#/ambulance-form">${ic('plus', 16)} Ajouter</a>` : ''}</div><div class="liste">${ambs.length ? ambs.map(ligneAmbulance).join('') : videAction('Aucune ambulance enregistrée pour vos sites.', peut.sup() ? ['#/ambulance-form', 'Ajouter la première ambulance'] : null)}</div></div>`;
-  return { html };
+  return { html, init(el) {
+    const bi = $('[data-installer]', el); if (bi) bi.onclick = installerApp;
+    const bm = $('[data-masquer]', el); if (bm) bm.onclick = () => { try { localStorage.setItem('ambu.install.masque', '1'); } catch { /* rien */ } bm.closest('.bandeau-install').remove(); };
+  } };
 };
 function ligneAmbulance(a) {
   const m = missionEnCours(a.id); const k = kmCourant(a.id);
@@ -981,7 +1133,7 @@ VUES.missions = (arg, q) => {
 function ligneMission(m) {
   const a = amb(m.ambulance_id);
   return `<a class="ligne" href="#/mission/${m.id}"><span style="color:var(--info)">${ic('mission', 24)}</span><div class="corps"><div class="t">${esc(a?.code || '?')} · ${esc(nomLieu(m.depart_id))} → ${esc(nomLieu(m.destination_id))}</div>
-    <div class="s">${fmtDH(m.debut)}${m.fin ? ' → ' + fmtH(m.fin) : ''} · ${esc(nomUser(m.conducteur_id))}${m.motif ? ' · ' + esc(m.motif) : ''}</div></div>
+    <div class="s">${fmtDH(m.debut)}${m.fin ? ' → ' + fmtH(m.fin) : ''} · ${esc(m.chauffeur_id ? nomCond(conducteur(m.chauffeur_id)) : nomUser(m.conducteur_id))}${m.motif ? ' · ' + esc(m.motif) : ''}</div></div>
     <div class="droite">${m.statut === 'cloturee' ? `<b>${nf(m.distance_compteur)} km</b>` : ''}${chip(LIB.statutMission[m.statut])}${(m.alertes || []).length ? '<span class="chip warn">À vérifier</span>' : ''}${etatSync(m)}</div></a>`;
 }
 VUES['mission-nouvelle'] = (arg, q) => {
@@ -991,6 +1143,7 @@ VUES['mission-nouvelle'] = (arg, q) => {
   return { form: true, html: entete('Démarrer une mission', 'L’heure de démarrage est enregistrée automatiquement', '', '#/missions')
     + `<form class="carte" id="fm" novalidate>
       <div class="champ"><label class="lib">Ambulance <span class="obl">*</span></label><select name="ambulance_id" required>${options(ambs.map((a) => [a.id, `${a.code} · ${a.immatriculation}${a.modele ? ' · ' + a.modele : ''}`]), choix, 'Choisir l’ambulance')}</select><div class="aide" data-info-amb></div></div>
+      <div class="champ"><label class="lib">Chauffeur</label><div class="choix-chauffeur"><span data-avatar>${avatar(null, 44)}</span><select name="chauffeur_id"><option value="">Non désigné</option></select></div><div class="aide" data-permis></div></div>
       <div class="grille g2 r1"><div class="champ"><label class="lib">Point de départ <span class="obl">*</span></label>${champLieu('depart_id', q.depart)}</div>
       <div class="champ"><label class="lib">Destination prévue <span class="obl">*</span></label>${champLieu('destination_id', q.destination)}</div></div>
       <div class="bandeau" data-estim>Choisissez le départ et la destination pour obtenir une estimation d’itinéraire.</div>
@@ -1012,8 +1165,18 @@ VUES['mission-nouvelle'] = (arg, q) => {
       if (m) { bl.innerHTML = `Une mission est déjà en cours pour ${esc(a.code)} (démarrée le ${fmtDH(m.debut)}). <a href="#/mission-cloture/${m.id}">Clôturez-la d’abord</a>.`; bl.classList.remove('cache'); }
       else if (a.statut === 'immobilisee') { bl.textContent = `${a.code} est immobilisée : démarrage interdit tant que le superviseur n’a pas levé l’immobilisation.`; bl.classList.remove('cache'); }
       else if (a.statut === 'maintenance') { bl.textContent = `Attention : ${a.code} est indiquée « en maintenance ». Vérifiez avec le point focal avant de partir.`; bl.className = 'bandeau warn'; }
+      const sel = f.chauffeur_id.value || monConducteur()?.id || '';
+      f.chauffeur_id.innerHTML = '<option value="">Non désigné</option>' + options(conducteursVisibles().filter((c) => c.site_id === a.site_id).map((c) => [c.id, `${nomCond(c)}${c.matricule ? ' · ' + c.matricule : ''}`]), sel);
+      majChauffeur();
       if (!f.depart_id.value) { const base = L('ambu_localites').find((l) => l.type === 'site' && nomSite(a.site_id).split(' ')[0] && l.nom.startsWith(nomSite(a.site_id).split(' ')[0])); if (base) { f.depart_id.value = base.id; $('[data-lieu="depart_id"] span', el).textContent = base.nom; majEstim(); } }
     };
+    const majChauffeur = () => {
+      const c = conducteur(f.chauffeur_id.value); const a = amb(f.ambulance_id.value);
+      $('[data-avatar]', el).innerHTML = avatar(c, 44); hydraterImages($('[data-avatar]', el));
+      const ap = aptitudeConduite(c, a); const d = $('[data-permis]', el);
+      d.innerHTML = c ? `<span class="chip ${ap.niveau === 'ok' ? 'ok' : ap.niveau === 'critique' ? 'bad' : 'warn'}">${esc(ap.texte)}</span>` : 'Choisissez le chauffeur pour vérifier son permis (catégorie exigée : ' + esc(a?.categorie_permis || 'B') + ').';
+    };
+    f.chauffeur_id.onchange = majChauffeur;
     const majEstim = async () => {
       const b = $('[data-estim]', el); if (!f.depart_id.value || !f.destination_id.value) return;
       b.textContent = 'Calcul de l’itinéraire estimé…';
@@ -1030,11 +1193,13 @@ VUES['mission-nouvelle'] = (arg, q) => {
       if (v.km_depart === null || v.km_depart < 0) return erreurChamp(f, 'km_depart', 'Saisissez le kilométrage de départ');
       if (missionEnCours(a.id)) return toast('Une mission est déjà en cours pour cette ambulance', 'bad');
       if (a.statut === 'immobilisee') return toast('Ambulance immobilisée : démarrage interdit', 'bad');
+      const apt = aptitudeConduite(conducteur(v.chauffeur_id), a);
+      if (!apt.ok) return erreurChamp(f, 'chauffeur_id', apt.texte + '. Choisissez un autre chauffeur.');
       const k = kmCourant(a.id).km;
       if (v.km_depart < k && !(await confirmer(`Le kilométrage saisi (${nf(v.km_depart)} km) est inférieur au dernier connu (${nf(k)} km). Confirmez-vous ce relevé ?`, { ok: 'Oui, le compteur indique bien cela' }))) return;
       if (!estim) estim = await estimerItineraire(v.depart_id, v.destination_id);
       const id = await enregistrer('ambu_missions', null, { ambulance_id: a.id, depart_id: v.depart_id, destination_id: v.destination_id, km_depart: v.km_depart,
-        motif: v.motif || null, equipage: v.equipage || null, notes: v.notes || null, debut: new Date().toISOString(), statut: 'en_cours', conducteur_id: S.profil.id,
+        motif: v.motif || null, equipage: v.equipage || null, notes: v.notes || null, debut: new Date().toISOString(), statut: 'en_cours', conducteur_id: S.profil.id, chauffeur_id: v.chauffeur_id || null,
         distance_carte: estim ? estim.km : null, distance_carte_source: estim ? estim.source : null, journal: [], conditions: {} });
       S.enForm = false; toast('Mission démarrée à ' + fmtH(new Date().toISOString()), 'ok'); location.hash = '#/mission/' + id;
     };
@@ -1060,7 +1225,7 @@ VUES.mission = (id) => {
         ${m.derogation ? `<div class="bandeau" style="margin:8px 0 0"><b>Dérogation / justification :</b> ${esc(m.derogation)}</div>` : ''}</div>` : '')
     + `<div class="grille g2 r1"><div class="carte"><h2>Informations</h2><dl class="def">
         <dt>Ambulance</dt><dd><a href="#/ambulance/${a?.id}">${esc(nomAmb(m.ambulance_id))}</a></dd><dt>Site</dt><dd>${esc(nomSite(m.site_id || a?.site_id))}</dd>
-        <dt>Conducteur</dt><dd>${esc(nomUser(m.conducteur_id))}</dd><dt>Équipage</dt><dd>${esc(m.equipage || '—')}</dd><dt>Motif</dt><dd>${esc(m.motif || '—')}</dd>
+        <dt>Chauffeur</dt><dd>${m.chauffeur_id ? `<a class="lien-cond" href="#/chauffeur/${m.chauffeur_id}">${avatar(conducteur(m.chauffeur_id), 28)} ${esc(nomCond(conducteur(m.chauffeur_id)))}</a>` : '—'}</dd><dt>Saisie par</dt><dd>${esc(nomUser(m.conducteur_id))}</dd><dt>Équipage</dt><dd>${esc(m.equipage || '—')}</dd><dt>Motif</dt><dd>${esc(m.motif || '—')}</dd>
         <dt>Démarrage</dt><dd>${fmtDH(m.debut)}</dd><dt>Clôture</dt><dd>${fmtDH(m.fin)}</dd>
         <dt>Km départ</dt><dd>${nf(m.km_depart)} km</dd><dt>Km arrivée</dt><dd>${m.km_arrivee != null ? nf(m.km_arrivee) + ' km' : '—'}</dd>
         <dt>État de la route</dt><dd>${esc(cond.route || '—')}</dd><dt>Météo</dt><dd>${esc(cond.meteo || '—')}</dd><dt>Trafic</dt><dd>${esc(cond.trafic || '—')}</dd>
@@ -1180,7 +1345,7 @@ VUES.ambulance = (id, q) => {
     corps = `<div class="grille g2 r1"><div class="carte"><h2>Fiche</h2><dl class="def">
       <dt>Identifiant</dt><dd>${esc(a.code)}</dd><dt>Immatriculation</dt><dd>${esc(a.immatriculation)}</dd><dt>N° de châssis</dt><dd class="mono">${esc(a.chassis || '—')}</dd>
       <dt>Marque / modèle</dt><dd>${esc([a.marque, a.modele].filter(Boolean).join(' ') || '—')}</dd><dt>Année</dt><dd>${esc(a.annee || '—')}</dd>
-      <dt>Site d’affectation</dt><dd>${esc(nomSite(a.site_id))}</dd><dt>Statut</dt><dd>${m ? '<span class="chip info">En mission</span> ' : ''}${chip(LIB.statutAmb[a.statut])}</dd>
+      <dt>Site d’affectation</dt><dd>${esc(nomSite(a.site_id))}</dd><dt>Permis exigé</dt><dd>Catégorie ${esc(a.categorie_permis || 'B')}</dd><dt>Statut</dt><dd>${m ? '<span class="chip info">En mission</span> ' : ''}${chip(LIB.statutAmb[a.statut])}</dd>
       <dt>Responsable / équipe</dt><dd>${esc(a.responsable || '—')}</dd><dt>Kilométrage courant</dt><dd>${nf(k.km)} km <span class="aide">(${k.quand ? 'mis à jour le ' + fmtDH(k.quand) : 'valeur initiale'})</span></dd>
       <dt>Caractéristiques</dt><dd>${esc(a.caracteristiques || '—')}</dd><dt>Notes</dt><dd>${esc(a.notes || '—')}</dd></dl></div>
       <div class="carte"><h2>Alertes</h2>${al.length ? al.map((x) => `<a class="alerte ${x.niveau}" href="${x.href}"><span>${ic('alerte', 18)}</span><span><b>${esc(x.titre)}</b><small>${esc(x.detail || '')}</small></span></a>`).join('') : vide('Aucune alerte pour ce véhicule.')}
@@ -1217,7 +1382,7 @@ VUES.ambulance = (id, q) => {
       ${peut.gestion() ? '<p class="aide">Le changement de statut est enregistré immédiatement et tracé.</p>' : ''}</div>`;
   }
   return { html: entete(`${esc(a.code)} · ${esc(a.immatriculation)}`, `${esc([a.marque, a.modele].filter(Boolean).join(' '))} · ${esc(nomSite(a.site_id))} · ${nf(k.km)} km`,
-      (peut.terrain() && !m && a.statut !== 'immobilisee' ? `<a class="btn p" href="#/mission-nouvelle?amb=${id}">Démarrer une mission</a>` : '') + (peut.terrain() ? `<a class="btn" href="#/controle?amb=${id}">Contrôle</a><a class="btn" href="#/signaler?type=anomalie&amb=${id}">Signaler</a>` : '')
+      (peut.terrain() && !m && a.statut !== 'immobilisee' ? `<a class="btn p" href="#/mission-nouvelle?amb=${id}">Démarrer une mission</a>` : '') + (peut.terrain() ? `<a class="btn" href="#/kilometrage?amb=${id}">${ic('jauge', 16)} Relevé km</a><a class="btn" href="#/controle?amb=${id}">Contrôle</a><a class="btn" href="#/signaler?type=anomalie&amb=${id}">Signaler</a>` : '')
       + (peut.gestion() ? `<button class="btn" data-statut>Changer le statut</button><a class="btn" href="#/ambulance-form/${id}">Modifier</a>` : '') + (peut.admin() ? `<button class="btn petit" data-audit="${id}">Historique des modifications</button>` : ''), '#/ambulances')
     + `<div class="barre-actions" style="margin-bottom:10px">${m ? '<span class="chip info">En mission</span>' : ''}${chip(LIB.statutAmb[a.statut])}${etatSync(a)}</div>
       <div class="onglets">${onglets.map(([o, l]) => `<a href="#/ambulance/${id}?onglet=${o}" class="${o === onglet ? 'actif' : ''}">${l}</a>`).join('')}</div>${corps}`,
@@ -1255,6 +1420,7 @@ VUES['ambulance-form'] = (id) => {
       <div class="champ"><label class="lib">Modèle</label><input name="modele" list="modeles" value="${esc(a?.modele || '')}"><datalist id="modeles">${modeles.map((x) => `<option value="${x}">`).join('')}</datalist></div>
       <div class="champ"><label class="lib">Année</label><input type="number" name="annee" min="1980" max="2100" value="${esc(a?.annee || '')}"></div>
       <div class="champ"><label class="lib">Kilométrage initial (à la mise en service dans l’application)</label><input type="number" name="km_initial" min="0" value="${esc(a?.km_initial ?? '')}"></div>
+      <div class="champ"><label class="lib">Catégorie de permis exigée</label><select name="categorie_permis">${options(listes().categories_permis || ['B'], a?.categorie_permis || 'B')}</select><div class="aide">Vérifiée au démarrage de chaque mission.</div></div>
       <div class="champ"><label class="lib">Responsable / équipe de référence</label><input name="responsable" value="${esc(a?.responsable || '')}"></div>
       ${a ? '' : `<div class="champ"><label class="lib">Statut</label><select name="statut">${options(Object.entries(LIB.statutAmb).map(([k, v]) => [k, v[0]]), 'disponible')}</select></div>`}</div>
       <div class="champ"><label class="lib">Caractéristiques</label><textarea name="caracteristiques" placeholder="Diesel, 4x4, cellule sanitaire…">${esc(a?.caracteristiques || '')}</textarea></div>
@@ -1274,7 +1440,7 @@ VUES['ambulance-form'] = (id) => {
       if (!a && !v.site_id) return erreurChamp(f, 'site_id', 'Choisissez le site');
       if (L('ambu_ambulances').some((x) => x.id !== id && x.code.toLowerCase() === v.code.toLowerCase())) return erreurChamp(f, 'code', 'Cet identifiant existe déjà');
       const data = { code: v.code, immatriculation: v.immatriculation.toUpperCase(), chassis: v.chassis || null, marque: v.marque || 'Toyota', modele: v.modele || null, annee: v.annee, km_initial: v.km_initial || 0,
-        responsable: v.responsable || null, caracteristiques: v.caracteristiques || null, notes: v.notes || null, equipements: liste.filter((x) => x.nom.trim()) };
+        responsable: v.responsable || null, categorie_permis: v.categorie_permis || 'B', caracteristiques: v.caracteristiques || null, notes: v.notes || null, equipements: liste.filter((x) => x.nom.trim()) };
       if (v.site_id && (!a || peut.sup())) data.site_id = v.site_id;
       if (!a) data.statut = v.statut || 'disponible';
       const nid = await enregistrer('ambu_ambulances', id || null, data);
@@ -1739,11 +1905,13 @@ function calculRapport(q) {
       ent: ents.filter((e) => e.ambulance_id === a.id).length, cout: ents.filter((e) => e.ambulance_id === a.id).reduce((s, e) => s + (Number(e.cout) || 0), 0) + sigs.filter((s) => s.ambulance_id === a.id).flatMap((s) => s.suivi || []).filter((x) => x.date && dans(x.date + 'T12:00:00Z')).reduce((s, x) => s + (Number(x.cout) || 0), 0),
       statut: missionEnCours(a.id) ? 'En mission' : LIB.statutAmb[a.statut][0] }; });
   const parSite = sitesVisibles().map((s) => { const r = par.filter((x) => x.a.site_id === s.id); return { s, n: r.length, missions: r.reduce((t, x) => t + x.missions, 0), km: r.reduce((t, x) => t + x.km, 0), ctrl: r.reduce((t, x) => t + x.ctrl, 0), anom: r.reduce((t, x) => t + x.anom, 0), inc: r.reduce((t, x) => t + x.inc, 0), cout: r.reduce((t, x) => t + x.cout, 0) }; }).filter((x) => x.n);
+  const parChauffeur = conducteursVisibles().map((c) => { const mc = clot.filter((m) => m.chauffeur_id === c.id);
+    return { c, missions: missions.filter((m) => m.chauffeur_id === c.id).length, km: mc.reduce((s, m) => s + km(m), 0), heures: mc.reduce((s, m) => s + (Number(m.duree_min) > 0 ? Number(m.duree_min) : 0), 0) / 60 }; }).filter((x) => x.missions);
   const retard = sigs.filter((s) => ouvert(s) && s.echeance && s.echeance < aujourdhui());
   const ech = echeances().filter((x) => ids.has(x.amb.id) && x.niveau !== 'ok' && x.niveau !== 'info');
   const ecarts = clot.filter((m) => (m.alertes || []).length);
   const dispo = ambs.filter((a) => ['disponible', 'reserve'].includes(a.statut)).length;
-  return { p, ambs, missions, clot, ctrl, sigNouv, sigResolus, sigOuverts: sigs.filter(ouvert), ents, par, parSite, retard, ech, ecarts, dispo,
+  return { p, ambs, missions, clot, ctrl, sigNouv, sigResolus, sigOuverts: sigs.filter(ouvert), ents, par, parSite, parChauffeur, retard, ech, ecarts, dispo,
     totKm: clot.reduce((s, m) => s + km(m), 0), totCout: par.reduce((s, x) => s + x.cout, 0), aSync: S.out.length, sansCloture: missions.filter((m) => m.statut === 'en_cours').length };
 }
 VUES.rapports = (arg, q) => {
@@ -1772,6 +1940,7 @@ VUES.rapports = (arg, q) => {
     <div class="carte"><h2>Par ambulance</h2><div class="defile"><table class="tab"><thead><tr><th>Ambulance</th><th>Site</th><th>Statut</th><th class="n">Missions</th><th class="n">km</th><th class="n">Heures</th><th class="n">Contrôles</th><th class="n">NC</th><th class="n">Anomalies</th><th class="n">Inc./acc.</th><th class="n">Entretiens</th><th class="n">Coût</th></tr></thead>
       <tbody>${R.par.map((x) => `<tr><td><a href="#/ambulance/${x.a.id}">${esc(x.a.code)}</a></td><td>${esc(nomSite(x.a.site_id))}</td><td>${esc(x.statut)}</td><td class="n">${x.missions}</td><td class="n">${nf(x.km)}</td><td class="n">${nf(x.heures, 1)}</td><td class="n">${x.ctrl}</td><td class="n">${x.nc}</td><td class="n">${x.anom}</td><td class="n">${x.inc}</td><td class="n">${x.ent}</td><td class="n">${nf(x.cout)}</td></tr>`).join('')}</tbody>
       <tfoot><tr><td colspan="3">Total</td><td class="n">${R.par.reduce((s, x) => s + x.missions, 0)}</td><td class="n">${nf(R.par.reduce((s, x) => s + x.km, 0))}</td><td class="n">${nf(R.par.reduce((s, x) => s + x.heures, 0), 1)}</td><td class="n">${R.par.reduce((s, x) => s + x.ctrl, 0)}</td><td class="n">${R.par.reduce((s, x) => s + x.nc, 0)}</td><td class="n">${R.par.reduce((s, x) => s + x.anom, 0)}</td><td class="n">${R.par.reduce((s, x) => s + x.inc, 0)}</td><td class="n">${R.par.reduce((s, x) => s + x.ent, 0)}</td><td class="n">${nf(R.totCout)}</td></tr></tfoot></table></div></div>
+    ${R.parChauffeur.length ? `<div class="carte"><h2>Par chauffeur</h2><div class="defile"><table class="tab"><thead><tr><th>Chauffeur</th><th>Matricule</th><th class="n">Missions</th><th class="n">km</th><th class="n">Heures</th></tr></thead><tbody>${R.parChauffeur.map((x) => `<tr><td><a href="#/chauffeur/${x.c.id}">${esc(nomCond(x.c))}</a></td><td>${esc(x.c.matricule || '—')}</td><td class="n">${x.missions}</td><td class="n">${nf(x.km)}</td><td class="n">${nf(x.heures, 1)}</td></tr>`).join('')}</tbody></table></div></div>` : ''}
     ${R.parSite.length > 1 ? `<div class="carte"><h2>Par site</h2><div class="defile"><table class="tab"><thead><tr><th>Site</th><th class="n">Ambulances</th><th class="n">Missions</th><th class="n">km</th><th class="n">Contrôles</th><th class="n">Anomalies</th><th class="n">Inc./acc.</th><th class="n">Coût</th></tr></thead><tbody>${R.parSite.map((x) => `<tr><td>${esc(x.s.nom)}</td><td class="n">${x.n}</td><td class="n">${x.missions}</td><td class="n">${nf(x.km)}</td><td class="n">${x.ctrl}</td><td class="n">${x.anom}</td><td class="n">${x.inc}</td><td class="n">${nf(x.cout)}</td></tr>`).join('')}</tbody></table></div></div>` : ''}
     <div class="carte"><h2>Missions de la période (${tabMissions.length})</h2>${tabMissions.length ? `<div class="defile"><table class="tab"><thead><tr><th>Démarrage</th><th>Ambulance</th><th>Trajet</th><th>Statut</th><th class="n">Km départ</th><th class="n">Km arrivée</th><th class="n">Distance</th><th class="n">Durée</th><th class="n">Vit. moy.*</th><th class="n">Carte (est.)</th><th>Écarts</th></tr></thead><tbody>${tabMissions.map((m) => `<tr><td>${fmtDH(m.debut)}</td><td>${esc(amb(m.ambulance_id)?.code || '')}</td><td><a href="#/mission/${m.id}">${esc(nomLieu(m.depart_id))} → ${esc(nomLieu(m.destination_id))}</a></td><td>${LIB.statutMission[m.statut][0]}</td><td class="n">${nf(m.km_depart)}</td><td class="n">${nf(m.km_arrivee)}</td><td class="n">${nf(m.distance_compteur)}</td><td class="n">${fmtDuree(m.duree_min)}</td><td class="n">${nf(m.vitesse_moy, 1)}</td><td class="n">${nf(m.distance_carte, 1)}</td><td>${(m.alertes || []).map((x) => esc(LIB.alerteMission[x])).join(', ')}</td></tr>`).join('')}</tbody></table></div><p class="aide">* Vitesse moyenne sur la durée totale, arrêts et retards inclus. La distance carte est une estimation.</p>` : vide('Aucune mission.')}</div>
     <div class="grille g2 r1"><div class="carte"><h2>Anomalies et incidents ouverts (${R.sigOuverts.length})</h2>${R.sigOuverts.length ? `<div class="liste">${R.sigOuverts.slice(0, 40).map(ligneSignalement).join('')}</div>` : vide('Aucun.')}</div>
@@ -1787,8 +1956,10 @@ VUES.rapports = (arg, q) => {
         { Indicateur: 'Résolus sur la période', Valeur: R.sigResolus.length }, { Indicateur: 'Encore ouverts', Valeur: R.sigOuverts.length }, { Indicateur: 'Actions en retard', Valeur: R.retard.length }, { Indicateur: 'Entretiens réalisés', Valeur: R.ents.length },
         { Indicateur: 'Dépenses (FCFA)', Valeur: R.totCout }, { Indicateur: 'Écarts à examiner', Valeur: R.ecarts.length }, { Indicateur: 'Édité le', Valeur: fmtDH(new Date().toISOString()) }, { Indicateur: 'Par', Valeur: S.profil.nom }]);
       ajout('Par ambulance', R.par.map((x) => ({ Ambulance: x.a.code, Immatriculation: x.a.immatriculation, Site: nomSite(x.a.site_id), Statut: x.statut, Missions: x.missions, km: x.km, Heures: Math.round(x.heures * 10) / 10, Contrôles: x.ctrl, NC: x.nc, Anomalies: x.anom, 'Incidents/accidents': x.inc, Entretiens: x.ent, 'Coût FCFA': x.cout })));
+      ajout('Par chauffeur', R.parChauffeur.map((x) => ({ Chauffeur: nomCond(x.c), Matricule: x.c.matricule || '', Missions: x.missions, km: x.km, Heures: Math.round(x.heures * 10) / 10 })));
+      ajout('Relevés km', L('ambu_releves_km').filter((r) => R.ambs.some((a) => a.id === r.ambulance_id) && (jourDe(r.date_releve) || '') >= p.du && (jourDe(r.date_releve) || '') <= p.au).sort((a, b) => a.date_releve.localeCompare(b.date_releve)).map((r) => ({ Date: fmtDH(r.date_releve), Ambulance: amb(r.ambulance_id)?.code, km: r.km, Motif: r.motif || '', 'Carburant (L)': r.carburant_litres, 'Montant FCFA': r.montant, Alerte: r.alerte ? LIB.alerteReleve[r.alerte] : '', Justification: r.justification || '' })));
       ajout('Par site', R.parSite.map((x) => ({ Site: x.s.nom, Ambulances: x.n, Missions: x.missions, km: x.km, Contrôles: x.ctrl, Anomalies: x.anom, 'Incidents/accidents': x.inc, 'Coût FCFA': x.cout })));
-      ajout('Missions', tabMissions.map((m) => ({ Démarrage: fmtDH(m.debut), Clôture: fmtDH(m.fin), Ambulance: amb(m.ambulance_id)?.code, Site: nomSite(m.site_id), Conducteur: nomUser(m.conducteur_id), Motif: m.motif || '', Départ: nomLieu(m.depart_id), Destination: nomLieu(m.destination_id), Statut: LIB.statutMission[m.statut][0],
+      ajout('Missions', tabMissions.map((m) => ({ Démarrage: fmtDH(m.debut), Clôture: fmtDH(m.fin), Ambulance: amb(m.ambulance_id)?.code, Site: nomSite(m.site_id), Chauffeur: m.chauffeur_id ? nomCond(conducteur(m.chauffeur_id)) : '', 'Saisie par': nomUser(m.conducteur_id), Motif: m.motif || '', Départ: nomLieu(m.depart_id), Destination: nomLieu(m.destination_id), Statut: LIB.statutMission[m.statut][0],
         'Km départ': m.km_depart, 'Km arrivée': m.km_arrivee, 'Distance compteur (km)': m.distance_compteur, 'Durée (min)': m.duree_min, 'Vitesse moyenne arrêts inclus (km/h)': m.vitesse_moy, 'Distance carte estimée (km)': m.distance_carte, 'Écart (km)': m.ecart_km, 'Écart (%)': m.ecart_pct,
         Route: m.conditions?.route || '', Météo: m.conditions?.meteo || '', Trafic: m.conditions?.trafic || '', Alertes: (m.alertes || []).map((x) => LIB.alerteMission[x]).join(', '), Dérogation: m.derogation || '' })));
       ajout('Contrôles', R.ctrl.map((i) => ({ Date: fmtDH(i.date_controle), Ambulance: amb(i.ambulance_id)?.code, Type: LIB.typeCtrl[i.type_controle], km: i.km, NC: i.nb_nc, Critique: i.critique ? 'Oui' : 'Non', 'Statut déclaré': LIB.statutDecl[i.statut_declare]?.[0], Contrôleur: i.controleur_nom, 'Points NC': (i.items || []).filter((x) => x.etat === 'nc').map((x) => `${x.libelle} : ${x.observation}`).join(' | ') })));
@@ -1801,6 +1972,236 @@ VUES.rapports = (arg, q) => {
   } };
 };
 
+
+/* ================================================================= CENTRE D'ALERTES */
+function jaugeEntretien(e, kmAct) {
+  let pct = null;
+  if (e.km != null && e.depuisKm != null && e.km > e.depuisKm) pct = Math.max(0, Math.min(100, (kmAct - e.depuisKm) / (e.km - e.depuisKm) * 100));
+  else if (e.resteKm != null) pct = e.resteKm <= 0 ? 100 : null;
+  const etat = { critique: ['Dépassé', 'bad'], haute: ['À prévoir', 'warn'], ok: ['À jour', 'ok'], info: ['À compléter', 'mute'] }[e.niveau];
+  return `<div class="jauge-ent"><div class="haut"><b>${esc(e.libelle)}</b>${chip(etat)}</div>${pct != null ? `<div class="barre-km ${e.niveau}"><i style="width:${pct.toFixed(0)}%"></i></div>` : ''}<div class="aide">${esc(e.texte)}${e.depuisDate ? ` · dernière le ${fmtJ(e.depuisDate)}${e.depuisKm != null ? ' à ' + nf(e.depuisKm) + ' km' : ''}` : ''}</div></div>`;
+}
+VUES.alertes = (arg, q) => {
+  const onglet = q.onglet || 'km'; const al = alertes(); const ambs = ambulancesVisibles(); const sl = seuils();
+  const nb = (cats) => al.filter((a) => cats.includes(a.cat) && a.niveau !== 'info').length;
+  const rang = { critique: 0, haute: 1, info: 2, ok: 3 };
+  let corps = '';
+  if (onglet === 'km') {
+    const lignes = ambs.map((a) => ({ a, k: kmCourant(a.id), dus: entretiensDus(a.id) })).sort((x, y) => rang[x.dus[0]?.niveau || 'ok'] - rang[y.dus[0]?.niveau || 'ok']);
+    const dep = lignes.flatMap((x) => x.dus).filter((e) => e.niveau === 'critique').length, pro = lignes.flatMap((x) => x.dus).filter((e) => e.niveau === 'haute').length;
+    corps = `<div class="resume-alertes"><div class="kpi ${dep ? 'bad' : 'ok'}"><div class="v">${dep}</div><div class="l">Kilométrages / dates dépassés</div></div><div class="kpi ${pro ? 'warn' : ''}"><div class="v">${pro}</div><div class="l">À prévoir (moins de ${nf(sl.rappel_entretien_km)} km ou ${sl.rappel_entretien_jours} j)</div></div><div class="kpi"><div class="v">${ambs.length}</div><div class="l">Ambulances suivies</div></div></div>`
+      + (lignes.length ? lignes.map(({ a, k, dus }) => `<div class="carte"><div class="titre-ligne"><div><h2>${esc(a.code)} · ${esc(a.immatriculation)}</h2><span class="aide">${esc(a.modele || '')} · ${esc(nomSite(a.site_id))}</span></div><span class="km-gros">${nf(k.km)} km</span></div>
+        <p class="aide" style="margin:-4px 0 6px">Kilométrage courant : ${esc(k.source)}${k.quand ? ', ' + fmtDH(k.quand) : ''}</p>${dus.map((e) => jaugeEntretien(e, k.km)).join('')}
+        <div class="barre-actions" style="margin-top:10px">${peut.terrain() ? `<a class="btn petit" href="#/kilometrage?amb=${a.id}">${ic('jauge', 16)} Relevé km</a>` : ''}${peut.gestion() ? `<a class="btn petit" href="#/entretien-form?amb=${a.id}">${ic('entretien', 16)} Enregistrer un entretien</a>` : ''}</div></div>`).join('') : videAction('Aucune ambulance enregistrée.', null))
+      + `<p class="aide">Seuils : vidange tous les ${nf(sl.vidange_km)} km ou ${sl.vidange_jours} jours ; pour les autres entretiens, indiquez le « prochain rappel » lors de la saisie. Réglages dans Administration → Paramètres.</p>`;
+  } else if (onglet === 'pieces') {
+    const types = Object.keys(LIB.typeDoc).filter((t) => t !== 'autre');
+    const lignes = ambs.map((a) => { const docs = documentsCourants(a.id); const etats = types.map((t) => ({ t, d: docs[t], e: docs[t] ? etatDocument(docs[t]) : (DOCS_SUIVIS.includes(t) ? { niveau: 'manquant', texte: 'Non enregistré' } : null) })).filter((x) => x.e);
+      return { a, etats, pire: Math.min(...etats.map((x) => ({ critique: 0, manquant: 1, haute: 2 }[x.e.niveau] ?? 3))) }; }).sort((x, y) => x.pire - y.pire);
+    const tous = lignes.flatMap((x) => x.etats);
+    corps = `<div class="resume-alertes"><div class="kpi ${tous.some((x) => x.e.niveau === 'critique') ? 'bad' : 'ok'}"><div class="v">${tous.filter((x) => x.e.niveau === 'critique').length}</div><div class="l">Pièces expirées</div></div>
+      <div class="kpi ${tous.some((x) => x.e.niveau === 'haute') ? 'warn' : ''}"><div class="v">${tous.filter((x) => x.e.niveau === 'haute').length}</div><div class="l">Expirent dans moins de ${sl.rappel_document_jours} j</div></div>
+      <div class="kpi"><div class="v">${tous.filter((x) => x.e.niveau === 'manquant').length}</div><div class="l">Pièces obligatoires non enregistrées</div></div></div>`
+      + lignes.map(({ a, etats }) => `<div class="carte"><div class="titre-ligne"><h2>${esc(a.code)} · ${esc(a.immatriculation)}</h2><a class="btn petit" href="#/ambulance/${a.id}?onglet=documents">Voir la fiche</a></div><div class="defile"><table class="tab"><tbody>${etats.map(({ t, d, e }) => `<tr><td><b>${LIB.typeDoc[t]}</b>${d?.numero ? `<br><span class="aide">N° ${esc(d.numero)}</span>` : ''}</td><td>${esc(e.texte)}</td>
+        <td>${chip({ critique: ['Expirée', 'bad'], haute: ['Bientôt', 'warn'], ok: ['Valide', 'ok'], info: ['Sans date', 'mute'], manquant: ['Manquante', 'bad'] }[e.niveau])}</td><td style="text-align:right">${peut.gestion() ? `<button class="btn petit" data-doc="${t}" data-amb="${a.id}" data-rempl="${d?.id || ''}">${d ? 'Renouveler' : 'Ajouter'}</button>` : ''}</td></tr>`).join('')}</tbody></table></div></div>`).join('')
+      + `<p class="aide">Pièces du véhicule = documents administratifs (assurance, visite technique, extincteur, carte grise, autorisations). Rappel ${sl.rappel_document_jours} jours avant l’expiration.</p>`;
+  } else if (onglet === 'permis') {
+    const cs = conducteursVisibles().map((c) => { const p = etatValidite(c.permis_expiration, sl.rappel_permis_jours); return { c, p, a: etatValidite(c.aptitude_expiration, sl.rappel_permis_jours), sc: etatValidite(c.secourisme_expiration, sl.rappel_permis_jours) }; })
+      .sort((x, y) => rang[x.p.niveau] - rang[y.p.niveau]);
+    const ch = (e) => chip({ critique: ['Expiré', 'bad'], haute: ['Bientôt', 'warn'], ok: ['Valide', 'ok'], info: ['Non renseigné', 'mute'] }[e.niveau]);
+    corps = cs.length ? `<div class="carte"><div class="defile"><table class="tab"><thead><tr><th>Chauffeur</th><th>Permis</th><th>Catégories</th><th>Validité permis</th><th>Aptitude médicale</th><th>Secourisme</th></tr></thead><tbody>${cs.map(({ c, p, a, sc }) => `<tr>
+      <td><a class="lien-cond" href="#/chauffeur/${c.id}">${avatar(c, 34)} <span><b>${esc(nomCond(c))}</b><br><span class="aide">${esc(c.matricule || '')}</span></span></a></td><td class="mono">${esc(c.permis_numero || '—')}</td>
+      <td>${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join(' ') || '—'}</td><td>${ch(p)}<br><span class="aide">${fmtJ(c.permis_expiration)}</span></td><td>${ch(a)}<br><span class="aide">${fmtJ(c.aptitude_expiration)}</span></td><td>${ch(sc)}<br><span class="aide">${fmtJ(c.secourisme_expiration)}</span></td></tr>`).join('')}</tbody></table></div></div>`
+      : videAction('Aucune fiche chauffeur.', peut.gestion() ? ['#/chauffeur-form', 'Créer une fiche chauffeur'] : null);
+  } else {
+    corps = `<div class="carte">${al.length ? al.map((a) => `<a class="alerte ${a.niveau}" href="${a.href}"><span>${ic('alerte', 18)}</span><span><b>${esc(a.titre)}</b><small>${esc(a.detail || '')}</small></span></a>`).join('') : vide('Aucune alerte.')}</div>`;
+  }
+  return { html: entete('Centre d’alertes', 'Kilométrages dépassés, pièces du véhicule expirées, permis des chauffeurs')
+    + `<div class="onglets">${[['km', 'Kilométrage', nb(['entretien'])], ['pieces', 'Pièces du véhicule', nb(['document'])], ['permis', 'Permis et aptitudes', nb(['permis'])], ['toutes', 'Toutes', al.filter((a) => a.niveau !== 'info').length]].map(([k, l, n]) => `<a href="#/alertes?onglet=${k}" class="${k === onglet ? 'actif' : ''}">${l}${n ? ` <em class="pastille" style="margin-left:4px">${n}</em>` : ''}</a>`).join('')}</div>${corps}`,
+  init(el) { $$('[data-doc]', el).forEach((b) => b.onclick = () => formDocument(b.dataset.amb, b.dataset.doc, b.dataset.rempl || null)); } };
+};
+
+/* ================================================================= RELEVÉS KILOMÉTRIQUES */
+function courbeKm(releves) {
+  if (releves.length < 2) return '';
+  const pts = releves.map((r) => ({ t: new Date(r.date_releve).getTime(), k: Number(r.km) }));
+  const t0 = pts[0].t, t1 = pts[pts.length - 1].t || t0 + 1, k0 = Math.min(...pts.map((p) => p.k)), k1 = Math.max(...pts.map((p) => p.k));
+  const X = (t) => 8 + (t1 === t0 ? 0 : (t - t0) / (t1 - t0)) * 584, Y = (k) => 100 - (k1 === k0 ? 0.5 : (k - k0) / (k1 - k0)) * 84;
+  const ligne = pts.map((p) => `${X(p.t).toFixed(1)},${Y(p.k).toFixed(1)}`).join(' ');
+  return `<svg class="courbe" viewBox="0 0 600 120" preserveAspectRatio="none" role="img" aria-label="Évolution du kilométrage">
+    <line x1="8" y1="100" x2="592" y2="100" stroke="var(--bord)"/><polygon points="${X(pts[0].t)},100 ${ligne} ${X(pts[pts.length - 1].t)},100" fill="var(--prim-c)"/>
+    <polyline points="${ligne}" fill="none" stroke="var(--prim)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+    <circle cx="${X(pts[pts.length - 1].t)}" cy="${Y(pts[pts.length - 1].k)}" r="4" fill="var(--prim)"/></svg>
+    <div class="legende" style="justify-content:space-between;margin-top:2px"><span>${fmtJ(jourDe(releves[0].date_releve))} · ${nf(pts[0].k)} km</span><span>${fmtJ(jourDe(releves[releves.length - 1].date_releve))} · ${nf(pts[pts.length - 1].k)} km</span></div>`;
+}
+VUES.kilometrage = (arg, q) => {
+  const ambs = ambulancesVisibles(); const choix = q.amb || (ambs.length === 1 ? ambs[0].id : ''); const lst = listes();
+  const tous = L('ambu_releves_km').filter((r) => !choix || r.ambulance_id === choix).sort((a, b) => (a.date_releve || '').localeCompare(b.date_releve || ''));
+  const conso = {}; const precPlein = {};
+  for (const r of tous) if (Number(r.carburant_litres) > 0) { const p = precPlein[r.ambulance_id]; if (p && r.km > p.km) conso[r.id] = Math.round(Number(r.carburant_litres) / (r.km - p.km) * 1000) / 10; precPlein[r.ambulance_id] = r; }
+  const prec = {}; const ecart = {};
+  for (const r of tous) { const p = prec[r.ambulance_id]; if (p) ecart[r.id] = r.km - p.km; prec[r.ambulance_id] = r; }
+  const hist = [...tous].reverse().slice(0, 150);
+  const consos = Object.values(conso); const consoMoy = consos.length ? Math.round(consos.reduce((x, y) => x + y, 0) / consos.length * 10) / 10 : null;
+  const form = peut.terrain() ? `<form class="carte" id="fk" novalidate><h2>Nouveau relevé kilométrique</h2>
+    <div class="champ" data-champ="ambulance_id"><span class="lib">Ambulance <span class="obl">*</span></span><div class="choix-amb">${ambs.map((a) => `<button type="button" data-amb="${a.id}" class="${a.id === choix ? 'on' : ''}"><b>${esc(a.code)}</b><span>${esc(a.immatriculation)}</span><span>${nf(kmCourant(a.id).km)} km</span></button>`).join('') || '<span class="aide">Aucune ambulance</span>'}</div></div>
+    <div class="dernier-km" data-dernier>Choisissez l’ambulance pour afficher son dernier kilométrage.</div>
+    <label class="lib" for="km-saisi">Kilométrage affiché au compteur <span class="obl">*</span></label>
+    <div class="km-zone"><input id="km-saisi" name="km" type="number" inputmode="numeric" min="0" step="1" placeholder="000000" autocomplete="off" aria-describedby="km-delta"><span>km</span></div>
+    <div class="km-delta" id="km-delta" data-delta></div>
+    <div class="champ"><span class="lib">Motif</span><div class="puces-choix" data-motif>${(lst.motifs_releve || ['Prise de service']).map((m, i) => `<button type="button" data-v="${esc(m)}" class="${i === 0 ? 'on' : ''}">${esc(m)}</button>`).join('')}</div></div>
+    <label class="case"><input type="checkbox" name="plein"> Un plein de carburant a été fait</label>
+    <div class="grille g2 cache" data-carbu style="margin-top:10px"><div class="champ"><label class="lib">Litres</label><input type="number" name="carburant_litres" min="0" max="500" step="0.1" inputmode="decimal"></div><div class="champ"><label class="lib">Montant (FCFA)</label><input type="number" name="montant" min="0" inputmode="numeric"></div></div>
+    <div class="champ" style="margin-top:10px"><label class="lib">Photo du compteur (recommandée)</label>${champPhotos('compteur')}</div>
+    <div class="champ cache" data-justif><label class="lib">Justification <span class="obl">*</span></label><textarea name="justification" maxlength="500" placeholder="Ex. : erreur de lecture au relevé précédent, compteur remplacé…"></textarea></div>
+    <p class="aide">Date et heure enregistrées automatiquement (heure du Gabon).</p>
+    <button class="btn p large">${ic('jauge', 18)} Enregistrer le relevé</button></form>` : '';
+  const a = amb(choix);
+  return { form: !!form, html: entete('Relevés kilométriques', 'Relevés du compteur en dehors des missions (prise de service, plein, contrôle)')
+    + `<div class="grille g2 r1" style="align-items:start"><div>${form}</div><div>
+      <div class="carte"><div class="titre-ligne"><h2>${a ? `Évolution — ${esc(a.code)}` : 'Historique'}</h2><select data-filtre style="max-width:220px">${options(optAmb(), choix, 'Toutes les ambulances')}</select></div>
+        ${a ? (courbeKm(tous) || '<p class="aide">La courbe apparaît à partir de deux relevés.</p>') : ''}
+        ${consoMoy != null ? `<p style="margin:10px 0 0">Consommation moyenne entre deux pleins : <b>${nf(consoMoy, 1)} L/100 km</b></p>` : ''}</div>
+      <div class="carte"><h2>Derniers relevés (${tous.length})</h2>${hist.length ? `<div class="defile"><table class="tab"><thead><tr><th>Date</th>${choix ? '' : '<th>Ambulance</th>'}<th class="n">Compteur</th><th class="n">Écart</th><th>Motif</th><th class="n">Carburant</th><th>Saisi par</th><th></th></tr></thead><tbody>${hist.map((r) => `<tr>
+        <td>${fmtDH(r.date_releve)}</td>${choix ? '' : `<td>${esc(amb(r.ambulance_id)?.code || '')}</td>`}<td class="n"><b>${nf(r.km)}</b></td><td class="n">${ecart[r.id] != null ? (ecart[r.id] >= 0 ? '+' : '') + nf(ecart[r.id]) : '—'}</td><td>${esc(r.motif || '—')}</td>
+        <td class="n">${r.carburant_litres ? nf(r.carburant_litres, 1) + ' L' + (conso[r.id] ? `<br><span class="aide">${nf(conso[r.id], 1)} L/100</span>` : '') : '—'}</td><td>${esc(nomUser(r.created_by || S.profil.id))}</td>
+        <td>${r.alerte ? `<span class="chip ${r.alerte === 'km_inferieur' ? 'bad' : 'warn'}" title="${esc(r.justification || '')}">${esc(LIB.alerteReleve[r.alerte])}</span>` : ''}${r.photo_id ? `<div class="photos" style="margin-top:4px"><div class="vign" style="width:44px;height:44px"><img data-fid="${esc(r.photo_id)}" alt="Compteur"></div></div>` : ''}${etatSync(r)}</td></tr>`).join('')}</tbody></table></div>` : videAction('Aucun relevé pour le moment.', null)}</div></div></div>`,
+  init(el) {
+    const fl = $('[data-filtre]', el); fl.onchange = () => { location.hash = '#/kilometrage' + (fl.value ? '?amb=' + fl.value : ''); };
+    const f = $('#fk', el); if (!f) return;
+    lierPhotos(el);
+    let aid = choix; let motif = $('[data-motif] button.on', el)?.dataset.v || null;
+    const delta = $('[data-delta]', el), justif = $('[data-justif]', el);
+    const maj = () => {
+      const a2 = amb(aid); const k = a2 ? kmCourant(aid) : null; const v = nombre(f.km.value);
+      $('[data-dernier]', el).innerHTML = a2 ? `Dernier kilométrage connu de <b style="font-size:inherit">${esc(a2.code)}</b> : <br><b>${nf(k.km)} km</b> <span class="aide">· ${esc(k.source)}${k.quand ? ', ' + fmtDH(k.quand) : ''}</span>` : 'Choisissez l’ambulance pour afficher son dernier kilométrage.';
+      justif.classList.add('cache'); delta.className = 'km-delta'; delta.textContent = '';
+      if (!a2 || v === null) return;
+      const d = v - k.km;
+      if (d < 0) { delta.className = 'km-delta bad'; delta.textContent = `${nf(d)} km : inférieur au dernier kilométrage connu. Vérifiez le compteur ; une justification est obligatoire.`; justif.classList.remove('cache'); }
+      else if (d > seuils().distance_max) { delta.className = 'km-delta warn'; delta.textContent = `+${nf(d)} km depuis le dernier relevé : valeur inhabituelle, vérifiez la saisie.`; }
+      else { delta.className = 'km-delta ok'; delta.textContent = `+${nf(d)} km depuis le dernier relevé`; }
+    };
+    $$('[data-amb]', el).forEach((b) => b.onclick = () => { aid = b.dataset.amb; $$('[data-amb]', el).forEach((x) => x.classList.toggle('on', x === b)); $('[data-champ="ambulance_id"]', el).classList.remove('invalide'); maj(); f.km.focus(); });
+    $$('[data-motif] button', el).forEach((b) => b.onclick = () => { motif = b.dataset.v; $$('[data-motif] button', el).forEach((x) => x.classList.toggle('on', x === b)); if (/plein/i.test(motif)) { f.plein.checked = true; $('[data-carbu]', el).classList.remove('cache'); } });
+    f.plein.onchange = () => $('[data-carbu]', el).classList.toggle('cache', !f.plein.checked);
+    f.km.oninput = maj; maj();
+    f.onsubmit = async (e) => {
+      e.preventDefault(); const v = lireForm(f); const a2 = amb(aid);
+      if (!a2) return erreurChamp(f, 'ambulance_id', 'Choisissez l’ambulance');
+      if (v.km === null || v.km < 0) return erreurChamp(f, 'km', 'Saisissez le kilométrage affiché au compteur');
+      const k = kmCourant(aid).km;
+      if (v.km < k && (v.justification || '').length < 5) return erreurChamp(f, 'justification', 'Justification obligatoire (5 caractères minimum)');
+      if (v.km - k > seuils().distance_max && !(await confirmer(`Hausse de ${nf(v.km - k)} km depuis le dernier relevé. Confirmez-vous ${nf(v.km)} km ?`, { ok: 'Oui, c’est bien le compteur' }))) return;
+      if (f.plein.checked && !(v.carburant_litres > 0)) return erreurChamp(f, 'carburant_litres', 'Indiquez le nombre de litres du plein');
+      const id = uuid(); const photos = await sauverPhotos('compteur', aid, 'releve:' + id);
+      await enregistrer('ambu_releves_km', id, { ambulance_id: aid, date_releve: new Date().toISOString(), km: v.km, motif, carburant_litres: f.plein.checked ? v.carburant_litres : null,
+        montant: f.plein.checked ? v.montant : null, photo_id: photos[0] || null, justification: v.km < k ? v.justification : (v.justification || null) });
+      S.enForm = false; toast(`Relevé enregistré : ${nf(v.km)} km`, 'ok'); location.hash = '#/kilometrage?amb=' + aid; router();
+    };
+  } };
+};
+
+/* ================================================================= CHAUFFEURS / AMBULANCIERS */
+VUES.chauffeurs = (arg, q) => {
+  let cs = L('ambu_conducteurs').filter((c) => q.inactifs ? true : c.actif !== false);
+  if (q.site) cs = cs.filter((c) => c.site_id === q.site);
+  const fq = (q.q || '').toLowerCase(); if (fq) cs = cs.filter((c) => `${nomCond(c)} ${c.matricule || ''} ${c.permis_numero || ''}`.toLowerCase().includes(fq));
+  cs.sort((a, b) => nomCond(a).localeCompare(nomCond(b), 'fr'));
+  const sl = seuils();
+  return { html: entete('Chauffeurs et ambulanciers', `${cs.length} fiche(s) · photo d’identification, permis et aptitudes`, peut.gestion() ? `<a class="btn p" href="#/chauffeur-form">${ic('plus', 18)} Nouvelle fiche</a>` : '')
+    + `<div class="filtres"><input type="search" data-f="q" placeholder="Nom, matricule, n° de permis…" value="${esc(q.q || '')}"><select data-f="site">${options(sitesVisibles().map((x) => [x.id, x.nom]), q.site, 'Tous les sites')}</select></div>
+    ${cs.length ? `<div class="grille-cond">${cs.map((c) => { const p = etatValidite(c.permis_expiration, sl.rappel_permis_jours);
+      return `<a class="carte-cond" href="#/chauffeur/${c.id}">${avatar(c, 56)}<div class="corps"><div class="t">${esc(nomCond(c))}</div><div class="s">${esc(c.fonction || '')}${c.matricule ? ' · ' + esc(c.matricule) : ''} · ${esc(nomSite(c.site_id))}</div>
+        <div class="cats">${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join('')}${chip({ critique: ['Permis expiré', 'bad'], haute: ['Permis bientôt expiré', 'warn'], ok: ['Permis valide', 'ok'], info: ['Permis à compléter', 'mute'] }[p.niveau])}${c.actif === false ? '<span class="chip mute">Inactif</span>' : ''}${etatSync(c)}</div></div></a>`; }).join('')}</div>`
+      : videAction('Aucune fiche chauffeur pour le moment.', peut.gestion() ? ['#/chauffeur-form', 'Créer la première fiche'] : null)}`,
+  init(el) { const go = () => { const p = new URLSearchParams(); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/chauffeurs?' + p; };
+    $$('[data-f]', el).forEach((x) => x.onchange = go); } };
+};
+function badgeIdentification(c) {
+  return `<div class="badge-id"><div class="bandeau"><b>${ic('croix', 12)}</b>Ambu Track · ${esc(nomSite(c.site_id))}</div>
+    <div class="contenu">${avatar(c, 116)}<div><div class="nom">${esc(c.nom || '')}<br>${esc(c.prenom || '')}</div><div class="fonction">${esc(c.fonction || '')}</div>
+      <dl><dt>Matricule</dt><dd>${esc(c.matricule || '—')}</dd><dt>Permis</dt><dd class="mono">${esc(c.permis_numero || '—')}</dd><dt>Catégories</dt><dd>${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join(' ') || '—'}</dd><dt>Valide jusqu’au</dt><dd>${fmtJ(c.permis_expiration)}</dd></dl></div></div>
+    <div class="pied-id"><span>${c.telephone ? 'Tél. ' + esc(c.telephone) : ''}</span><span>Vérifié le ${fmtJ(aujourdhui())}</span></div></div>`;
+}
+VUES.chauffeur = (id) => {
+  const c = conducteur(id); if (!c) return { html: entete('Fiche introuvable', '', '', '#/chauffeurs') };
+  const sl = seuils(); const ms = L('ambu_missions').filter((m) => m.chauffeur_id === id).sort((a, b) => (b.debut || '').localeCompare(a.debut || ''));
+  const mois = aujourdhui().slice(0, 7); const kmM = ms.filter((m) => m.statut === 'cloturee' && (jourDe(m.debut) || '').startsWith(mois)).reduce((x, m) => x + (Number(m.distance_compteur) > 0 ? Number(m.distance_compteur) : 0), 0);
+  const kmT = ms.filter((m) => m.statut === 'cloturee').reduce((x, m) => x + (Number(m.distance_compteur) > 0 ? Number(m.distance_compteur) : 0), 0);
+  const ligneEtat = (lib, date) => { const e = etatValidite(date, sl.rappel_permis_jours); return `<div class="ligne"><div class="corps"><div class="t">${lib}</div><div class="s">${esc(e.texte)}</div></div>${chip({ critique: ['Expiré', 'bad'], haute: ['Bientôt', 'warn'], ok: ['Valide', 'ok'], info: ['Non renseigné', 'mute'] }[e.niveau])}</div>`; };
+  return { html: entete(esc(nomCond(c)), `${esc(c.fonction || '')} · ${esc(nomSite(c.site_id))}`, `<button class="btn" data-plein>${ic('badge', 18)} Carte d’identification</button>` + (peut.gestion() ? `<a class="btn p" href="#/chauffeur-form/${id}">Modifier</a>` : ''), '#/chauffeurs')
+    + `<div class="grille g2 r1" style="align-items:start"><div>${badgeIdentification(c)}
+      <div class="carte"><h2>Permis et aptitudes</h2><div class="liste">${ligneEtat('Permis de conduire' + (c.permis_numero ? ' n° ' + esc(c.permis_numero) : ''), c.permis_expiration)}${ligneEtat('Aptitude médicale à la conduite', c.aptitude_expiration)}${ligneEtat('Formation secourisme', c.secourisme_expiration)}</div>
+      <dl class="def" style="margin-top:12px"><dt>Délivré le</dt><dd>${fmtJ(c.permis_delivrance)}</dd><dt>Lieu de délivrance</dt><dd>${esc(c.permis_lieu || '—')}</dd><dt>Scan du permis</dt><dd>${vignettes(c.permis_fichiers)}</dd></dl></div></div>
+      <div><div class="carte"><h2>Activité</h2><div class="grille g3"><div class="kpi"><div class="v">${ms.length}</div><div class="l">Missions</div></div><div class="kpi"><div class="v">${nf(kmM)}</div><div class="l">km ce mois</div></div><div class="kpi"><div class="v">${nf(kmT)}</div><div class="l">km au total</div></div></div></div>
+      <div class="carte"><h2>Informations</h2><dl class="def"><dt>Téléphone</dt><dd>${esc(c.telephone || '—')}</dd><dt>Compte Ambu Track</dt><dd>${c.profil_id ? esc(nomUser(c.profil_id)) : 'Aucun'}</dd><dt>Notes</dt><dd>${esc(c.notes || '—')}</dd><dt>Statut</dt><dd>${c.actif === false ? 'Inactif' : 'Actif'}</dd></dl></div>
+      <div class="carte"><h2>Dernières missions</h2><div class="liste">${ms.length ? ms.slice(0, 10).map(ligneMission).join('') : vide('Aucune mission avec ce chauffeur.')}</div></div></div></div>`,
+  init(el) { $('[data-plein]', el).onclick = () => modale('Carte d’identification', badgeIdentification(c), (m) => hydraterImages(m)); } };
+};
+function photoCarree(f, taille = 480) {
+  return new Promise((ok, ko) => {
+    const url = URL.createObjectURL(f); const img = new Image();
+    img.onload = () => { const c = Math.min(img.width, img.height); const cv = document.createElement('canvas'); cv.width = cv.height = Math.min(taille, c);
+      cv.getContext('2d').drawImage(img, (img.width - c) / 2, (img.height - c) / 2, c, c, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url); ok(cv.toDataURL('image/jpeg', 0.82)); };
+    img.onerror = () => { URL.revokeObjectURL(url); ko(new Error('Image illisible')); };
+    img.src = url;
+  });
+}
+VUES['chauffeur-form'] = (id) => {
+  const c = id ? conducteur(id) : null;
+  if (!peut.gestion()) return { html: entete('Accès refusé') + '<div class="bandeau warn">Réservé au point focal, au superviseur et à l’administrateur.</div>' };
+  const cats = listes().categories_permis || ['A1', 'A', 'B', 'BE', 'C', 'CE', 'D', 'DE'];
+  const sites = sitesVisibles(); const pris = new Set(L('ambu_conducteurs').filter((x) => x.id !== id && x.profil_id).map((x) => x.profil_id));
+  const comptes = L('ambu_profils').filter((p) => p.actif && !pris.has(p.id)).sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+  return { form: true, html: entete(c ? `Modifier — ${esc(nomCond(c))}` : 'Nouvelle fiche chauffeur', 'La photo sert à identifier la personne sur le terrain et sur sa carte d’identification', '', c ? '#/chauffeur/' + id : '#/chauffeurs')
+    + `<form id="fc2" novalidate><div class="carte"><h2>Photo d’identification</h2><div class="photo-id"><div class="apercu" data-apercu>${c?.photo_id ? `<img data-fid="${esc(c.photo_id)}" alt="Photo">` : esc(initiales(c).toUpperCase() || '?')}</div>
+      <div class="barre-actions"><label class="btn p">${ic('photo', 18)} Prendre la photo<input type="file" accept="image/*" capture="user" hidden data-photo></label><label class="btn">Choisir dans la galerie<input type="file" accept="image/*" hidden data-photo></label></div></div>
+      <p class="aide">Photo de face, visage dégagé, fond clair. Elle est recadrée automatiquement.</p></div>
+    <div class="carte"><h2>Identité</h2><div class="grille g2 r1">
+      <div class="champ"><label class="lib">Nom <span class="obl">*</span></label><input name="nom" maxlength="80" value="${esc(c?.nom || '')}" autocomplete="family-name"></div>
+      <div class="champ"><label class="lib">Prénom</label><input name="prenom" maxlength="80" value="${esc(c?.prenom || '')}" autocomplete="given-name"></div>
+      <div class="champ"><label class="lib">Matricule</label><input name="matricule" maxlength="30" value="${esc(c?.matricule || '')}"></div>
+      <div class="champ"><label class="lib">Téléphone</label><input name="telephone" type="tel" inputmode="tel" maxlength="20" value="${esc(c?.telephone || '')}" placeholder="0X XX XX XX"></div>
+      <div class="champ"><label class="lib">Fonction</label><select name="fonction">${options(LIB.fonctionCond, c?.fonction || 'Ambulancier')}</select></div>
+      <div class="champ"><label class="lib">Site <span class="obl">*</span></label><select name="site_id">${options(sites.map((x) => [x.id, x.nom]), c?.site_id || (sites.length === 1 ? sites[0].id : ''), 'Choisir')}</select></div>
+      <div class="champ"><label class="lib">Compte Ambu Track lié</label><select name="profil_id">${options(comptes.map((p) => [p.id, `${p.nom} (${p.email || LIB.role[p.role]})`]), c?.profil_id, 'Aucun compte')}</select><div class="aide">Permet de proposer automatiquement cette personne comme chauffeur de ses missions.</div></div></div></div>
+    <div class="carte"><h2>Permis de conduire</h2><div class="grille g2 r1">
+      <div class="champ"><label class="lib">Numéro de permis</label><input name="permis_numero" maxlength="40" class="mono" value="${esc(c?.permis_numero || '')}"></div>
+      <div class="champ"><label class="lib">Lieu de délivrance</label><input name="permis_lieu" maxlength="80" value="${esc(c?.permis_lieu || '')}" placeholder="Ex. : Libreville"></div>
+      <div class="champ"><label class="lib">Date de délivrance</label><input type="date" name="permis_delivrance" value="${esc(c?.permis_delivrance || '')}"></div>
+      <div class="champ"><label class="lib">Date de fin de validité</label><input type="date" name="permis_expiration" value="${esc(c?.permis_expiration || '')}"></div></div>
+      <div class="champ" data-champ="categories"><span class="lib">Catégories obtenues</span><div class="puces-cat">${cats.map((x) => `<label><input type="checkbox" name="cat_${esc(x)}" ${(c?.permis_categories || []).includes(x) ? 'checked' : ''}>${esc(x)}</label>`).join('')}</div>
+        <div class="aide">Une ambulance exige la catégorie indiquée sur sa fiche (B par défaut) : la mission est refusée si le chauffeur ne l’a pas.</div></div>
+      <div class="champ"><label class="lib">Scan ou photo du permis</label>${champPhotos('permis', c?.permis_fichiers || [], { pdf: true })}</div></div>
+    <div class="carte"><h2>Aptitudes</h2><div class="grille g2 r1">
+      <div class="champ"><label class="lib">Aptitude médicale à la conduite : valable jusqu’au</label><input type="date" name="aptitude_expiration" value="${esc(c?.aptitude_expiration || '')}"><div class="aide">Date seulement, aucune information médicale.</div></div>
+      <div class="champ"><label class="lib">Formation secourisme : valable jusqu’au</label><input type="date" name="secourisme_expiration" value="${esc(c?.secourisme_expiration || '')}"></div></div>
+      <div class="champ"><label class="lib">Notes</label><textarea name="notes" maxlength="1000">${esc(c?.notes || '')}</textarea></div>
+      <label class="case"><input type="checkbox" name="actif" ${c?.actif === false ? '' : 'checked'}> Fiche active (proposée pour les missions)</label></div>
+    <button class="btn p large">${c ? 'Enregistrer les modifications' : 'Créer la fiche'}</button></form>`,
+  init(el) {
+    const f = $('#fc2', el); lierPhotos(el); let photo = null;
+    $$('[data-photo]', el).forEach((inp) => inp.onchange = async () => { const fi = inp.files[0]; if (!fi) return;
+      try { photo = await photoCarree(fi); $('[data-apercu]', el).innerHTML = `<img src="${photo}" alt="Nouvelle photo">`; } catch (e) { toast(e.message, 'bad'); } inp.value = ''; });
+    f.onsubmit = async (e) => {
+      e.preventDefault(); const v = lireForm(f);
+      if (!v.nom) return erreurChamp(f, 'nom', 'Le nom est obligatoire');
+      if (!v.site_id) return erreurChamp(f, 'site_id', 'Choisissez le site');
+      if (v.permis_delivrance && v.permis_expiration && v.permis_expiration < v.permis_delivrance) return erreurChamp(f, 'permis_expiration', 'La fin de validité est antérieure à la délivrance');
+      if (v.matricule && L('ambu_conducteurs').some((x) => x.id !== id && (x.matricule || '').toLowerCase() === v.matricule.toLowerCase())) return erreurChamp(f, 'matricule', 'Ce matricule est déjà utilisé');
+      const nid = id || uuid(); let photo_id = c?.photo_id || null;
+      if (photo) { photo_id = uuid(); await IDB.ecrire('fichiers', { k: photo_id, donnees: photo });
+        await enregistrer('ambu_fichiers', photo_id, { site_id: v.site_id, objet: 'conducteur:' + nid, nom: 'photo-identite.jpg', mime: 'image/jpeg', taille: photo.length, donnees: photo }, { sansSync: true }); }
+      const permis_fichiers = await sauverPhotos('permis', null, 'conducteur:' + nid, v.site_id);
+      await enregistrer('ambu_conducteurs', nid, { nom: v.nom.toUpperCase(), prenom: v.prenom || null, matricule: v.matricule || null, telephone: v.telephone || null, fonction: v.fonction, site_id: v.site_id,
+        profil_id: v.profil_id || null, photo_id, permis_numero: v.permis_numero || null, permis_lieu: v.permis_lieu || null, permis_delivrance: v.permis_delivrance || null, permis_expiration: v.permis_expiration || null,
+        permis_categories: cats.filter((x) => v['cat_' + x]), permis_fichiers, aptitude_expiration: v.aptitude_expiration || null, secourisme_expiration: v.secourisme_expiration || null, notes: v.notes || null, actif: v.actif });
+      S.enForm = false; toast(c ? 'Fiche mise à jour' : 'Fiche chauffeur créée', 'ok'); location.hash = '#/chauffeur/' + nid;
+    };
+  } };
+};
+
 /* ================================================================= SYNCHRONISATION */
 function resumeOp(o) {
   const d = o.data || {}; const r = G(o.table, o.id) || d;
@@ -1809,6 +2210,8 @@ function resumeOp(o) {
   if (o.table === 'ambu_inspections') return `${amb(r.ambulance_id)?.code || ''} · ${fmtDH(r.date_controle)}`;
   if (o.table === 'ambu_fichiers') return `${d.nom || 'photo'} (${nf((d.taille || 0) / 1024)} ko)`;
   if (o.table === 'ambu_ambulances') return r.code || '';
+  if (o.table === 'ambu_conducteurs') return nomCond(r);
+  if (o.table === 'ambu_releves_km') return `${amb(r.ambulance_id)?.code || ''} · ${nf(r.km)} km`;
   return r.nom || r.cle || r.texte || r.type || '';
 }
 VUES.sync = () => {
@@ -1869,8 +2272,8 @@ VUES.admin = (arg, q) => {
     corps = `<form class="carte" data-seuils><h2>Seuils et rappels</h2><p class="aide">À confirmer à partir des procédures Fortescue et des recommandations du constructeur.</p><div class="grille g3">
       ${champS('distance_max', 'Distance max. par mission (km)')}${champS('vitesse_max', 'Vitesse moyenne max. (km/h)')}${champS('ecart_pct', 'Écart carte signalé au-delà de (%)')}
       ${champS('rappel_document_jours', 'Rappel documents (jours avant)')}${champS('vidange_km', 'Intervalle vidange (km)')}${champS('vidange_jours', 'Intervalle vidange (jours)')}
-      ${champS('rappel_entretien_km', 'Rappel entretien (km avant)')}${champS('rappel_entretien_jours', 'Rappel entretien (jours avant)')}${champS('session_heures', 'Expiration de session (heures d’inactivité)')}</div><button class="btn p">Enregistrer les seuils</button></form>
-      <form class="carte" data-listes><h2>Listes de choix</h2><p class="aide">Une valeur par ligne.</p><div class="grille g2 r1">${Object.entries({ motifs_mission: 'Motifs de mission', categories_anomalie: 'Catégories d’anomalie', natures_incident: 'Natures d’incident', etat_route: 'États de la route', meteo: 'Météo', trafic: 'Trafic', carburant: 'Niveaux de carburant', equipements_defaut: 'Équipements par défaut (nouvelle ambulance)' }).map(([k, l]) => `<div class="champ"><label class="lib">${l}</label><textarea name="${k}" rows="5">${esc((lst[k] || []).join('\n'))}</textarea></div>`).join('')}</div><button class="btn p">Enregistrer les listes</button></form>
+      ${champS('rappel_entretien_km', 'Rappel entretien (km avant)')}${champS('rappel_entretien_jours', 'Rappel entretien (jours avant)')}${champS('session_heures', 'Expiration de session (heures d’inactivité)')}${champS('rappel_permis_jours', 'Rappel permis / aptitudes (jours avant)')}</div><button class="btn p">Enregistrer les seuils</button></form>
+      <form class="carte" data-listes><h2>Listes de choix</h2><p class="aide">Une valeur par ligne.</p><div class="grille g2 r1">${Object.entries({ motifs_mission: 'Motifs de mission', categories_anomalie: 'Catégories d’anomalie', natures_incident: 'Natures d’incident', etat_route: 'États de la route', meteo: 'Météo', trafic: 'Trafic', carburant: 'Niveaux de carburant', categories_permis: 'Catégories de permis', motifs_releve: 'Motifs de relevé kilométrique', equipements_defaut: 'Équipements par défaut (nouvelle ambulance)' }).map(([k, l]) => `<div class="champ"><label class="lib">${l}</label><textarea name="${k}" rows="5">${esc((lst[k] || []).join('\n'))}</textarea></div>`).join('')}</div><button class="btn p">Enregistrer les listes</button></form>
       <form class="carte" data-grille><h2>Points de la fiche de contrôle</h2><p class="aide">Format : une ligne « ## Groupe » puis une ligne par point. Ajoutez « ! » en début de ligne pour un point critique. Ne changez pas l’ordre des points existants sans prévenir les équipes.</p>
         <textarea name="grille" rows="16" class="mono">${esc((P('controle', []) || []).map((g) => '## ' + g.groupe + '\n' + g.items.map((i) => (i.critique ? '!' : '') + i.libelle).join('\n')).join('\n'))}</textarea><button class="btn p">Enregistrer la fiche de contrôle</button></form>
       <form class="carte" data-cartev><h2>Version des données cartographiques</h2><div class="grille g2"><div class="champ"><label class="lib">Version</label><input name="version" value="${esc(P('carte', {})?.version || '')}"></div><div class="champ"><label class="lib">Date</label><input type="date" name="date" value="${esc(P('carte', {})?.date || '')}"></div></div><button class="btn p">Enregistrer</button></form>`;
@@ -1987,12 +2390,12 @@ VUES.compte = () => ({ html: entete('Mon compte')
     <dt>Sites</dt><dd>${S.profil.sites?.length ? S.profil.sites.map(nomSite).map(esc).join(', ') : 'Tous les sites autorisés'}</dd><dt>Version</dt><dd>Ambu Track ${CONFIG.VERSION}</dd><dt>Heure</dt><dd>Heure du Gabon (Libreville, UTC+1)</dd></dl></div>
   <div class="carte"><h2>Changer mon mot de passe</h2><form data-mdp novalidate><div class="champ"><label class="lib">Nouveau mot de passe (8 caractères minimum)</label><input type="password" name="m1" autocomplete="new-password"></div><div class="champ"><label class="lib">Confirmer</label><input type="password" name="m2" autocomplete="new-password"></div><button class="btn p">Changer</button></form></div>
   <div class="carte"><h2>Affichage</h2><p class="aide" style="margin:0 0 10px">« Plein soleil » renforce les contrastes et grossit le texte pour la lecture en extérieur.</p><div class="seg choix" data-themes style="flex-wrap:wrap">${[['auto', 'Automatique'], ['light', 'Clair'], ['dark', 'Sombre'], ['soleil', 'Plein soleil']].map(([k, l]) => `<button type="button" data-v="${k}" class="${(localStorage.getItem('ambu.theme') || 'auto') === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
-  <div class="carte"><h2>Installer l’application</h2><p class="aide">Sur téléphone : menu du navigateur → « Ajouter à l’écran d’accueil ». L’application s’ouvre ensuite même sans réseau.</p><button class="btn ${window.__installer ? '' : 'cache'}" data-installer>Installer Ambu Track</button></div>
+  <div class="carte"><h2>Installer l’application</h2>${estInstallee() ? '<p class="aide">Ambu Track est déjà installée sur cet appareil.</p>' : `<p class="aide">Icône sur l’écran d’accueil, ouverture en plein écran, fonctionnement sans réseau.</p><button class="btn p" data-installer>${ic('installer', 18)} Installer Ambu Track</button>`}</div>
   <div class="barre-actions"><button class="btn danger" data-deco>Se déconnecter</button></div>`,
 init(el) {
   $('[data-mdp]', el).onsubmit = async (e) => { e.preventDefault(); const v = lireForm(e.target); try { await changerMdp(v.m1, v.m2); e.target.reset(); toast('Mot de passe changé', 'ok'); } catch (err) { toast(err.message, 'bad'); } };
   $$('[data-themes] button', el).forEach((b) => b.onclick = () => { localStorage.setItem('ambu.theme', b.dataset.v); appliquerTheme(); router(true); });
-  $('[data-installer]', el).onclick = async () => { if (window.__installer) { window.__installer.prompt(); window.__installer = null; } };
+  const bi = $('[data-installer]', el); if (bi) bi.onclick = installerApp;
   $('[data-deco]', el).onclick = deconnexion;
 } });
 function appliquerTheme() { let t = 'auto'; try { t = localStorage.getItem('ambu.theme') || 'auto'; } catch { /* stockage bloqué */ } if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t;
@@ -2023,8 +2426,10 @@ function ecranConnexion({ email = '', verrou = false, message = '' } = {}) {
     <div class="champ"><label class="lib" for="mp">Mot de passe</label><input id="mp" type="password" name="mdp" autocomplete="current-password" required></div>
     <div class="bandeau bad cache" data-err></div><button class="btn p large" type="submit">Se connecter</button></form>
     <p class="aide" style="margin-top:12px">Mot de passe oublié : contactez l’administrateur Ambu Track. La première connexion nécessite le réseau ; ensuite l’application fonctionne hors ligne.</p>
+    ${estInstallee() ? '' : `<button type="button" class="btn large" data-installer-cnx style="margin-top:6px">${ic('installer', 18)} Installer l’application sur ce téléphone</button>`}
     <div class="pied">Version ${CONFIG.VERSION}</div></div>`;
   const f = $('#fl', e); (dernier ? f.mdp : f.email).focus();
+  const bic = $('[data-installer-cnx]', e); if (bic) bic.onclick = installerApp;
   f.onsubmit = async (ev) => {
     ev.preventDefault(); const v = lireForm(f); const err = $('[data-err]', e); err.classList.add('cache');
     const montrer = (m) => { err.textContent = m; err.classList.remove('cache'); };
@@ -2100,6 +2505,7 @@ function enregistrerSW() {
 }
 async function persisterTout() { for (const o of S.out) await persisterOp(o); }
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.__installer = e; });
+window.addEventListener('appinstalled', () => { window.__installer = null; if (S.profil) { dessinerNav(); router(true); } });
 
 async function demarrer() {
   appliquerTheme(); enregistrerSW();
