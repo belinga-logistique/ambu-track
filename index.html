@@ -5,39 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ambu Track</title>
 <meta name="description" content="Suivi opérationnel des ambulances — Fortescue Belinga">
-<meta name="theme-color" content="#b3122e">
+<meta name="theme-color" content="#0f1e2e">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icone.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icone-192.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap">
 <style>
+/* Palette A « Secours Belinga » : bleu = action, rouge = urgence uniquement */
 :root{
-  --rouge:#b3122e;--rouge-f:#8c0e24;--rouge-c:#fde8eb;--nuit:#10243d;
-  --fond:#f2f4f7;--carte:#ffffff;--texte:#16212e;--doux:#5a6676;--bord:#dde2e8;--survol:#f6f8fa;
-  --ok:#12703a;--ok-f:#e2f3e8;--warn:#8a5300;--warn-f:#fff0d4;--bad:#b3122e;--bad-f:#fde4e7;
-  --info:#1456a0;--info-f:#e3eefb;--mute:#5a6676;--mute-f:#eceff3;
-  --ombre:0 1px 2px rgba(16,36,61,.06),0 2px 8px rgba(16,36,61,.05);
-  --r:12px;--haut:56px;--bas:64px;
+  --prim:#0b62a4;--prim-f:#084d82;--prim-c:#e4eff9;--sur-prim:#ffffff;
+  --rouge:#d42b1f;--rouge-f:#a91f15;--rouge-c:#fdeceb;--nuit:#0f1e2e;--nuit-2:#17324d;
+  --fond:#f2f5f9;--carte:#ffffff;--texte:#0f1e2e;--doux:#44546a;--bord:#dbe3ec;--survol:#f5f8fb;
+  --ok:#0f7a4f;--ok-f:#dcf2e7;--warn:#a65300;--warn-f:#ffedd5;--bad:#d42b1f;--bad-f:#fde6e4;
+  --info:#0b62a4;--info-f:#e4eff9;--mute:#44546a;--mute-f:#e9eef4;
+  --ombre:0 1px 2px rgba(15,30,46,.06),0 4px 14px rgba(15,30,46,.06);
+  --f-titre:"Archivo","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --r:14px;--haut:58px;--bas:66px;--epais:1px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --fond:#0e141b;--carte:#17202a;--texte:#e7ecf2;--doux:#9aa7b6;--bord:#2a3543;--survol:#1d2733;
-  --ok:#5fd08a;--ok-f:#173323;--warn:#f0b354;--warn-f:#3a2c12;--bad:#ff7b8c;--bad-f:#3d1820;
-  --info:#79b2f5;--info-f:#15283f;--mute:#9aa7b6;--mute-f:#222c38;--rouge-c:#3d1820;--nuit:#0b1622;
+@media (prefers-color-scheme:dark){:root:not([data-theme]){
+  --prim:#5aa9e6;--prim-f:#7dbdee;--prim-c:#132f48;--sur-prim:#07131f;
+  --fond:#0b131c;--carte:#14202d;--texte:#e6edf5;--doux:#a3b3c5;--bord:#283a4e;--survol:#1a2938;
+  --ok:#5fd19b;--ok-f:#133326;--warn:#f2b25c;--warn-f:#3a2a12;--bad:#ff8a80;--bad-f:#3d1a18;
+  --info:#5aa9e6;--info-f:#132f48;--mute:#a3b3c5;--mute-f:#1f2c3a;--rouge-c:#3d1a18;--nuit:#08111a;--nuit-2:#102435;
+  color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --fond:#0e141b;--carte:#17202a;--texte:#e7ecf2;--doux:#9aa7b6;--bord:#2a3543;--survol:#1d2733;
-  --ok:#5fd08a;--ok-f:#173323;--warn:#f0b354;--warn-f:#3a2c12;--bad:#ff7b8c;--bad-f:#3d1820;
-  --info:#79b2f5;--info-f:#15283f;--mute:#9aa7b6;--mute-f:#222c38;--rouge-c:#3d1820;--nuit:#0b1622;
+  --prim:#5aa9e6;--prim-f:#7dbdee;--prim-c:#132f48;--sur-prim:#07131f;
+  --fond:#0b131c;--carte:#14202d;--texte:#e6edf5;--doux:#a3b3c5;--bord:#283a4e;--survol:#1a2938;
+  --ok:#5fd19b;--ok-f:#133326;--warn:#f2b25c;--warn-f:#3a2a12;--bad:#ff8a80;--bad-f:#3d1a18;
+  --info:#5aa9e6;--info-f:#132f48;--mute:#a3b3c5;--mute-f:#1f2c3a;--rouge-c:#3d1a18;--nuit:#08111a;--nuit-2:#102435;
+  color-scheme:dark;
 }
+/* Mode « Plein soleil » : contraste maximal pour la lecture en extérieur */
+:root[data-theme="soleil"]{
+  --prim:#004a87;--prim-f:#003664;--prim-c:#dcebf8;--sur-prim:#ffffff;
+  --fond:#ffffff;--carte:#ffffff;--texte:#000000;--doux:#1d2733;--bord:#5d6b7a;--survol:#eef2f6;
+  --ok:#005c35;--ok-f:#ccefdc;--warn:#7a3d00;--warn-f:#ffe2bf;--bad:#b00d00;--bad-f:#ffd9d4;
+  --info:#004a87;--info-f:#dcebf8;--mute:#1d2733;--mute-f:#e3e8ee;--rouge:#c40f00;--rouge-c:#ffd9d4;--nuit:#000000;--nuit-2:#000000;
+  --ombre:none;--epais:2px;color-scheme:light;
+}
+:root[data-theme="soleil"] body{font-size:16.5px}
+:root[data-theme="soleil"] .carte,:root[data-theme="soleil"] .ligne,:root[data-theme="soleil"] .kpi,:root[data-theme="soleil"] .ar,
+:root[data-theme="soleil"] input,:root[data-theme="soleil"] select,:root[data-theme="soleil"] textarea,:root[data-theme="soleil"] .btn{border-width:2px}
+:root[data-theme="soleil"] .chip{border:1.5px solid currentColor}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--fond);color:var(--texte);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
 body{min-height:100vh;overflow-x:hidden}
 a{color:var(--info)}
-h1{font-size:1.35rem;margin:0 0 .2rem}h2{font-size:1.08rem;margin:0 0 .6rem}h3{font-size:.98rem;margin:.2rem 0 .5rem}
+h1,h2,h3{font-family:var(--f-titre);letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:1.5rem;font-weight:800;margin:0 0 .2rem}h2{font-size:1.1rem;font-weight:700;margin:0 0 .6rem}h3{font-size:.98rem;font-weight:700;margin:.2rem 0 .5rem}
 .cache{display:none!important}
 .barre{position:fixed;top:0;left:0;right:0;height:var(--haut);display:flex;align-items:center;gap:10px;padding:0 12px;
-  padding-top:env(safe-area-inset-top);background:var(--nuit);color:#fff;z-index:30}
-.logo{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem;letter-spacing:.2px}
+  padding-top:env(safe-area-inset-top);background:linear-gradient(90deg,var(--nuit),var(--nuit-2));color:#fff;z-index:30}
+.logo{display:flex;align-items:center;gap:9px;color:#fff;text-decoration:none;font:800 1.08rem/1 var(--f-titre);letter-spacing:.1px}
 .logo b{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--rouge)}
 .barre .esp{flex:1}
 .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;
@@ -47,7 +68,7 @@ h1{font-size:1.35rem;margin:0 0 .2rem}h2{font-size:1.08rem;margin:0 0 .6rem}h3{f
 @keyframes pulse{50%{opacity:.3}}
 .nav{position:fixed;top:var(--haut);bottom:0;left:0;width:232px;background:var(--carte);border-right:1px solid var(--bord);padding:12px 10px;overflow:auto;z-index:20}
 .nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:var(--texte);text-decoration:none;font-weight:500;margin-bottom:2px}
-.nav a:hover{background:var(--survol)}.nav a.actif{background:var(--rouge-c);color:var(--rouge);font-weight:650}
+.nav a:hover{background:var(--survol)}.nav a.actif{background:var(--prim-c);color:var(--prim);font-weight:650;box-shadow:inset 3px 0 0 var(--prim)}
 .nav .sep{height:1px;background:var(--bord);margin:10px 4px}
 .nav .qui{padding:8px 12px;font-size:.82rem;color:var(--doux)}
 main{padding:calc(var(--haut) + 16px) 16px 32px 248px;max-width:1240px}
@@ -61,7 +82,7 @@ main{padding:calc(var(--haut) + 16px) 16px 32px 248px;max-width:1240px}
   .bas{display:flex;position:fixed;bottom:0;left:0;right:0;height:calc(var(--bas) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
     background:var(--carte);border-top:1px solid var(--bord);z-index:25}
   .bas a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--doux);text-decoration:none;font-size:.72rem;font-weight:550}
-  .bas a.actif{color:var(--rouge)}
+  .bas a.actif{color:var(--prim)}
   .bas a.cta span.rond{background:var(--rouge);color:#fff;border-radius:14px;padding:6px 14px}
 }
 .voile{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:19;display:none}.voile.ouvert{display:block}
@@ -75,25 +96,45 @@ main{padding:calc(var(--haut) + 16px) 16px 32px 248px;max-width:1240px}
 @media (max-width:899px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.g2.r1,.g3.r1{grid-template-columns:1fr}}
 .kpi{background:var(--carte);border:1px solid var(--bord);border-radius:var(--r);padding:14px;text-decoration:none;color:var(--texte);display:block;box-shadow:var(--ombre)}
-.kpi .v{font-size:1.7rem;font-weight:750;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .v{font:800 1.75rem/1.1 var(--f-titre);font-variant-numeric:tabular-nums}
 .kpi .l{font-size:.82rem;color:var(--doux);margin-top:3px}
 .kpi.bad .v{color:var(--bad)}.kpi.warn .v{color:var(--warn)}.kpi.ok .v{color:var(--ok)}
+.mission-cours{border:0;background:linear-gradient(135deg,var(--prim),var(--prim-f));color:var(--sur-prim);display:flex;flex-direction:column;gap:12px}
+.mission-cours .mc-haut{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.86rem;opacity:.95}
+.mission-cours .mc-haut b{font:700 1rem/1.2 var(--f-titre)}
+.mc-route{display:flex;align-items:center;gap:10px;font:700 1.05rem/1.25 var(--f-titre)}
+.mc-route span{min-width:0;overflow-wrap:anywhere}
+.mc-route i{flex:1;min-width:30px;height:2px;background:repeating-linear-gradient(90deg,currentColor 0 7px,transparent 7px 12px);opacity:.7}
+.mc-btns{display:flex;gap:8px}.mc-btns .btn{flex:1}
+.mission-cours .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:inherit}
+.mission-cours .btn.p{background:var(--carte);border-color:var(--carte);color:var(--prim)}
+.titre-ligne{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.titre-ligne h2{margin:0}
+.titre-section{margin:6px 2px 10px}
+.bande-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.bande-kpi .kpi{padding:12px}.bande-kpi .kpi .v{font-size:1.5rem}.bande-kpi .kpi .v small{font-size:.85rem;color:var(--doux);font-weight:600}
+@media (max-width:560px){.bande-kpi{gap:8px}.bande-kpi .kpi{padding:10px 8px}.bande-kpi .kpi .v{font-size:1.25rem}.bande-kpi .kpi .l{font-size:.7rem;line-height:1.25}}
+details.autres-kpi,details.plus-alertes{margin-bottom:12px}
+details summary{cursor:pointer;color:var(--info);font-weight:600;font-size:.9rem;padding:6px 2px;list-style-position:inside}
+details.plus-alertes summary{margin-bottom:6px}
+.vide .btn{margin-top:12px}
 .actions-rapides{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
 @media (max-width:700px){.actions-rapides{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ar{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:var(--r);text-decoration:none;color:var(--texte);background:var(--carte);border:1px solid var(--bord);font-weight:650;box-shadow:var(--ombre);min-height:92px}
 .ar .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--info-f);color:var(--info)}
-.ar.rouge .ico{background:var(--rouge);color:#fff}.ar.orange .ico{background:var(--warn-f);color:var(--warn)}.ar.vert .ico{background:var(--ok-f);color:var(--ok)}
+.ar.prim .ico{background:var(--prim);color:var(--sur-prim)}.ar.rouge .ico{background:var(--bad-f);color:var(--bad)}.ar.orange .ico{background:var(--warn-f);color:var(--warn)}.ar.vert .ico{background:var(--ok-f);color:var(--ok)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--bord);background:var(--carte);color:var(--texte);
   border-radius:10px;padding:10px 15px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;min-height:44px}
 .btn:hover{background:var(--survol)}
-.btn.p{background:var(--rouge);border-color:var(--rouge);color:#fff}.btn.p:hover{background:var(--rouge-f)}
+.btn.p{background:var(--prim);border-color:var(--prim);color:var(--sur-prim)}.btn.p:hover{background:var(--prim-f);border-color:var(--prim-f)}
+.btn.urgence{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn:active{transform:scale(.98)}
 .btn.s{background:var(--nuit);border-color:var(--nuit);color:#fff}
 .btn.danger{color:var(--bad);border-color:var(--bad)}
 .btn.petit{min-height:34px;padding:6px 11px;font-size:.86rem}
 .btn.large{width:100%}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .barre-actions{display:flex;gap:8px;flex-wrap:wrap}
-.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:.78rem;font-weight:650;white-space:nowrap;background:var(--mute-f);color:var(--mute)}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:700;white-space:nowrap;background:var(--mute-f);color:var(--mute)}
 .chip.ok{background:var(--ok-f);color:var(--ok)}.chip.warn{background:var(--warn-f);color:var(--warn)}.chip.bad{background:var(--bad-f);color:var(--bad)}.chip.info{background:var(--info-f);color:var(--info)}
 .liste{display:flex;flex-direction:column;gap:8px}
 .ligne{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--carte);border:1px solid var(--bord);border-radius:var(--r);text-decoration:none;color:var(--texte)}
@@ -125,13 +166,23 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .calc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media (max-width:700px){.calc{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .calc div{background:var(--survol);border-radius:10px;padding:10px 12px}
-.calc .v{font-size:1.3rem;font-weight:750;font-variant-numeric:tabular-nums}.calc .l{font-size:.78rem;color:var(--doux)}
+.calc .v{font:800 1.35rem/1.2 var(--f-titre);font-variant-numeric:tabular-nums}.calc .l{font-size:.78rem;color:var(--doux)}
 .calc .reel{background:var(--ok-f)}.calc .estim{background:var(--info-f);border:1px dashed var(--info)}
 .seg{display:inline-flex;border:1px solid var(--bord);border-radius:10px;overflow:hidden;flex:none}
 .seg button{border:0;background:var(--carte);color:var(--texte);font:inherit;font-weight:700;padding:8px 12px;min-width:48px;min-height:42px;cursor:pointer;border-left:1px solid var(--bord)}
 .seg button:first-child{border-left:0}
 .seg button.on[data-v="c"]{background:var(--ok);color:#fff}.seg button.on[data-v="nc"]{background:var(--bad);color:#fff}.seg button.on[data-v="na"]{background:var(--mute);color:#fff}
 .seg.choix button.on{background:var(--nuit);color:#fff}
+.etapes-ctrl{display:flex;gap:6px;overflow-x:auto;margin:0 0 12px;padding-bottom:4px;scrollbar-width:none}
+.etapes-ctrl button{flex:none;display:flex;align-items:center;gap:7px;border:var(--epais) solid var(--bord);background:var(--carte);color:var(--texte);border-radius:12px;padding:7px 11px;font:600 .84rem/1.1 inherit;cursor:pointer}
+.etapes-ctrl b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--mute-f);font-size:.75rem}
+.etapes-ctrl em{font-style:normal;font-size:.72rem;color:var(--doux);font-variant-numeric:tabular-nums}
+.etapes-ctrl button.on{border-color:var(--prim);box-shadow:0 0 0 2px var(--prim-c)}.etapes-ctrl button.on b{background:var(--prim);color:var(--sur-prim)}
+.etapes-ctrl button.fait b{background:var(--ok);color:#fff}.etapes-ctrl button.fait.nc b{background:var(--warn)}
+.colle-ligne{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media (max-width:560px){.colle-ligne>div{flex-basis:100%!important}.colle-ligne .btn{flex:1}}
+.point.repere{background:var(--prim-c);border-radius:10px;transition:background .3s}
+.seg button{transition:background .12s,color .12s}
 .point{padding:10px 0;border-bottom:1px solid var(--bord)}
 .point:last-child{border-bottom:0}
 .point .haut{display:flex;align-items:center;gap:10px}
@@ -160,8 +211,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 @media (max-width:899px){.carte-map{height:58vh}}
 #toasts{pointer-events:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bas) + 18px);z-index:90;display:flex;flex-direction:column;gap:8px;width:min(92vw,460px)}
 @media (min-width:900px){#toasts{bottom:24px}}
-.toast{background:var(--nuit);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:.92rem}
-.toast.bad{background:#8c0e24}.toast.ok{background:#12703a}
+.toast{background:var(--nuit);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:.92rem;animation:entree .22s ease-out}
+.toast.bad{background:#a91f15}.toast.ok{background:#0f6b45}
+@keyframes entree{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
 .modal-fond{position:fixed;inset:0;background:rgba(10,18,28,.55);z-index:80;display:flex;align-items:flex-end;justify-content:center}
 @media (min-width:700px){.modal-fond{align-items:center}}
 .modal{background:var(--carte);color:var(--texte);width:min(100%,640px);max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
@@ -173,7 +227,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .recherche-lieux button:hover{background:var(--survol)}
 .choix-lieu{display:flex;align-items:center;gap:8px;justify-content:space-between;text-align:left;width:100%;border:1px solid var(--bord);background:var(--carte);color:var(--texte);border-radius:10px;padding:10px 12px;min-height:44px;font:inherit;cursor:pointer}
 .choix-lieu .vide2{color:var(--doux)}
-.ecran{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(160deg,var(--nuit),#1d3b5e 60%,var(--rouge-f))}
+.ecran{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(120% 90% at 0% 0%,var(--nuit-2),var(--nuit) 70%)}
 .ecran .boite{background:var(--carte);color:var(--texte);width:min(100%,420px);border-radius:18px;padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .ecran .marque{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .ecran .marque b{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:var(--rouge);color:#fff}
@@ -220,11 +274,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.0.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.1.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.0.0',
+  VERSION: '1.1.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -504,6 +558,7 @@ const options = (liste, val, vide) => (vide !== undefined ? `<option value="">${
 const optAmb = (val, filtre = () => true) => ambulancesVisibles().filter(filtre).map((a) => [a.id, `${a.code} · ${a.immatriculation}${a.modele ? ' · ' + a.modele : ''}`]);
 function erreurChamp(form, nom, msg) {
   const el = form.querySelector(`[name="${nom}"]`) || form.querySelector(`[data-champ="${nom}"]`);
+  if (el) el.dispatchEvent(new CustomEvent('montrer', { bubbles: true }));
   if (el) { el.classList.add('invalide'); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.addEventListener('input', () => el.classList.remove('invalide'), { once: true }); }
   toast(msg, 'bad'); return false;
 }
@@ -744,7 +799,7 @@ async function creerCarte(el, { lieux = L('ambu_localites'), surClic, surLieu, z
   const couches = window.L.layerGroup().addTo(carte);
   for (const l of lieux) {
     if (l.lat == null || l.actif === false) continue;
-    const c = l.type === 'site' || l.type === 'base' ? '#b3122e' : l.verifie ? '#12703a' : '#d08700';
+    const c = l.type === 'site' || l.type === 'base' ? '#0b62a4' : l.verifie ? '#0f7a4f' : '#c26a00';
     const m = window.L.circleMarker([l.lat, l.lng], { radius: l.type === 'site' ? 9 : 7, color: '#fff', weight: 2, fillColor: c, fillOpacity: 1 }).addTo(couches);
     m.bindTooltip(l.nom);
     if (surLieu) m.on('click', () => surLieu(l, m));
@@ -857,6 +912,7 @@ async function router(silencieux = false) {
 }
 const entete = (titre, sous = '', actions = '', retour = '') => `<div class="tete"><div class="titre">${retour ? `<a class="retour" href="${retour}">${ic('retour', 16)} Retour</a>` : ''}<h1>${titre}</h1>${sous ? `<p>${sous}</p>` : ''}</div>${actions ? `<div class="barre-actions">${actions}</div>` : ''}</div>`;
 const vide = (t) => `<div class="vide">${t}</div>`;
+const videAction = (t, act) => `<div class="vide"><div>${t}</div>${act ? `<a class="btn p" href="${act[0]}">${ic('plus', 18)} ${act[1]}</a>` : ''}</div>`;
 const lienSync = () => S.derniereSync ? `Données synchronisées ${ilYa(S.derniereSync)}` : 'Pas encore synchronisé';
 
 /* ================================================================= TABLEAU DE BORD */
@@ -870,36 +926,39 @@ VUES.accueil = () => {
   const al = alertes();
   const echeances = al.filter((a) => /Entretien|Assurance|Visite|Extincteur/.test(a.titre) && a.niveau !== 'info').length;
   const attente = S.out.length;
-  const html = entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])}`, `${esc(LIB.role[role()])} · ${lienSync()}`)
-    + mienne.map((m) => `<div class="carte" style="border-left:5px solid var(--info)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <div style="flex:1;min-width:220px"><b>Mission en cours — ${esc(amb(m.ambulance_id)?.code || '')}</b><br>
-      <span class="aide">${esc(nomLieu(m.depart_id))} → ${esc(nomLieu(m.destination_id))} · démarrée à ${fmtH(m.debut)} (${ilYa(m.debut)})</span></div>
-      <a class="btn" href="#/mission/${m.id}">Ajouter un événement</a><a class="btn p" href="#/mission-cloture/${m.id}">Clôturer</a></div></div>`).join('')
-    + (peut.terrain() ? `<div class="actions-rapides">
-      <a class="ar rouge" href="#/mission-nouvelle"><span class="ico">${ic('mission')}</span>Démarrer une mission</a>
+  const kmJour = L('ambu_missions').filter((m) => m.statut === 'cloturee' && jourDe(m.debut) === auj).reduce((s, m) => s + (Number(m.distance_compteur) > 0 ? Number(m.distance_compteur) : 0), 0);
+  const immo = ambs.filter((a) => a.statut === 'immobilisee').length;
+  const urgentes = al.filter((a) => a.niveau !== 'info'); const infos = al.filter((a) => a.niveau === 'info');
+  const ligneAlerte = (a) => `<a class="alerte ${a.niveau}" href="${a.href}"><span>${ic('alerte', 18)}</span><span><b>${esc(a.titre)}</b><small>${esc(a.detail || '')}</small></span></a>`;
+  const tuile = (cls, href, v, l) => `<a class="kpi ${cls}" href="${href}"><div class="v">${v}</div><div class="l">${l}</div></a>`;
+  const html = entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])}`, `${esc(LIB.role[role()])}${S.profil.sites?.length ? ' · ' + S.profil.sites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
+    + mienne.map((m) => `<div class="carte mission-cours"><div class="mc-haut"><b>Mission en cours · ${esc(amb(m.ambulance_id)?.code || '')}</b><span>${ilYa(m.debut).replace('il y a', 'depuis')}</span></div>
+      <div class="mc-route"><span>${esc(nomLieu(m.depart_id))}</span><i></i><span>${esc(nomLieu(m.destination_id))}</span></div>
+      <div class="mc-btns"><a class="btn" href="#/mission/${m.id}">${ic('plus', 16)} Événement</a><a class="btn p" href="#/mission-cloture/${m.id}">Clôturer la mission</a></div></div>`).join('')
+    + `<div class="carte alertes-accueil"><div class="titre-ligne"><h2>Alertes</h2>${urgentes.length ? `<span class="chip ${urgentes.some((a) => a.niveau === 'critique') ? 'bad' : 'warn'}">${urgentes.length} à traiter</span>` : '<span class="chip ok">Tout est en ordre</span>'}</div>
+      ${urgentes.slice(0, 4).map(ligneAlerte).join('') || (infos.length ? '' : vide('Aucune alerte.'))}
+      ${urgentes.length > 4 || infos.length ? `<details class="plus-alertes"><summary>Voir ${urgentes.length > 4 ? `${urgentes.length - 4} autre(s) alerte(s)` : ''}${urgentes.length > 4 && infos.length ? ' et ' : ''}${infos.length ? `${infos.length} information(s)` : ''}</summary>${urgentes.slice(4).map(ligneAlerte).join('')}${infos.map(ligneAlerte).join('')}</details>` : ''}
+      <p class="aide" style="margin:8px 0 0">Les alertes critiques suivent toujours le canal d’urgence Fortescue : l’application ne le remplace pas.</p></div>
+    <div class="bande-kpi">
+      ${tuile('ok', '#/ambulances', `${dispo}<small> / ${ambs.length}</small>`, 'Disponibles')}
+      ${tuile('', '#/missions', enCours.length, 'En mission')}
+      ${tuile(sigOuverts.some((s) => s.priorite === 'critique' || s.type === 'accident') ? 'bad' : sigOuverts.length ? 'warn' : '', '#/signalements', sigOuverts.length, 'Anomalies ouvertes')}
+      ${tuile(echeances ? 'warn' : '', '#/entretien', echeances, 'Échéances')}</div>
+    <details class="autres-kpi"><summary>Autres indicateurs du jour</summary><div class="bande-kpi">
+      ${tuile('', '#/controles', ctrlJour.length, 'Contrôles aujourd’hui')}${tuile('', '#/missions?onglet=cloturees', nf(kmJour), 'km au compteur aujourd’hui')}
+      ${tuile(immo ? 'bad' : '', '#/ambulances?statut=immobilisee', immo, 'Immobilisées')}${tuile(attente ? 'warn' : '', '#/sync', attente, 'Saisies à synchroniser')}</div></details>
+    ${peut.terrain() ? `<h2 class="titre-section">Actions rapides</h2><div class="actions-rapides">
+      <a class="ar prim" href="#/mission-nouvelle"><span class="ico">${ic('mission')}</span>Démarrer une mission</a>
       <a class="ar vert" href="#/controle"><span class="ico">${ic('controle')}</span>Contrôle de prise de service</a>
       <a class="ar orange" href="#/signaler?type=anomalie"><span class="ico">${ic('alerte')}</span>Signaler une anomalie</a>
-      <a class="ar" href="#/signaler?type=incident"><span class="ico">${ic('alerte')}</span>Déclarer un incident / accident</a></div>` : '')
-    + `<div class="grille g4" style="margin-bottom:14px">
-      <a class="kpi ok" href="#/ambulances"><div class="v">${dispo}<small style="font-size:.9rem;color:var(--doux)"> / ${ambs.length}</small></div><div class="l">Ambulances disponibles</div></a>
-      <a class="kpi" href="#/missions"><div class="v">${enCours.length}</div><div class="l">Missions en cours</div></a>
-      <a class="kpi ${sigOuverts.some((s) => s.priorite === 'critique' || s.type === 'accident') ? 'bad' : sigOuverts.length ? 'warn' : ''}" href="#/signalements"><div class="v">${sigOuverts.length}</div><div class="l">Anomalies / incidents ouverts</div></a>
-      <a class="kpi ${echeances ? 'warn' : ''}" href="#/entretien"><div class="v">${echeances}</div><div class="l">Échéances proches ou dépassées</div></a>
-      <a class="kpi" href="#/controles"><div class="v">${ctrlJour.length}</div><div class="l">Contrôles aujourd’hui</div></a>
-      <a class="kpi" href="#/missions?onglet=cloturees"><div class="v">${nf(L('ambu_missions').filter((m) => m.statut === 'cloturee' && jourDe(m.debut) === auj).reduce((s, m) => s + (Number(m.distance_compteur) > 0 ? Number(m.distance_compteur) : 0), 0))}</div><div class="l">km au compteur aujourd’hui</div></a>
-      <a class="kpi ${ambs.some((a) => a.statut === 'immobilisee') ? 'bad' : ''}" href="#/ambulances?statut=immobilisee"><div class="v">${ambs.filter((a) => a.statut === 'immobilisee').length}</div><div class="l">Immobilisées</div></a>
-      <a class="kpi ${attente ? 'warn' : ''}" href="#/sync"><div class="v">${attente}</div><div class="l">Saisies à synchroniser</div></a></div>
-    <div class="grille g2 r1">
-      <div class="carte"><h2>Alertes (${al.length})</h2>${al.length ? al.slice(0, 12).map((a) => `<a class="alerte ${a.niveau}" href="${a.href}"><span>${ic('alerte', 18)}</span><span><b>${esc(a.titre)}</b><small>${esc(a.detail || '')}</small></span></a>`).join('') + (al.length > 12 ? `<p class="aide">+ ${al.length - 12} autres alertes</p>` : '') : vide('Aucune alerte. Tout est en ordre.')}
-      <p class="aide" style="margin-top:8px">Les alertes critiques suivent toujours le canal d’urgence Fortescue : l’application ne le remplace pas.</p></div>
-      <div class="carte"><h2>Parc ambulances</h2><div class="liste">${ambs.length ? ambs.map(ligneAmbulance).join('') : vide(peut.sup() ? 'Aucune ambulance. <a href="#/ambulance-form">Ajouter la première ambulance</a>' : 'Aucune ambulance pour vos sites.')}</div></div>
-    </div>`;
+      <a class="ar rouge" href="#/signaler?type=incident"><span class="ico">${ic('alerte')}</span>Déclarer un incident / accident</a></div>` : ''}
+    <div class="carte"><div class="titre-ligne"><h2>Parc ambulances</h2>${peut.sup() ? `<a class="btn petit" href="#/ambulance-form">${ic('plus', 16)} Ajouter</a>` : ''}</div><div class="liste">${ambs.length ? ambs.map(ligneAmbulance).join('') : videAction('Aucune ambulance enregistrée pour vos sites.', peut.sup() ? ['#/ambulance-form', 'Ajouter la première ambulance'] : null)}</div></div>`;
   return { html };
 };
 function ligneAmbulance(a) {
   const m = missionEnCours(a.id); const k = kmCourant(a.id);
   const nSig = parAmb('ambu_signalements', a.id).filter(ouvert).length;
-  return `<a class="ligne" href="#/ambulance/${a.id}"><span style="color:var(--rouge)">${ic('ambulance', 26)}</span><div class="corps"><div class="t">${esc(a.code)} · ${esc(a.immatriculation)}</div>
+  return `<a class="ligne" href="#/ambulance/${a.id}"><span style="color:var(--prim)">${ic('ambulance', 26)}</span><div class="corps"><div class="t">${esc(a.code)} · ${esc(a.immatriculation)}</div>
     <div class="s">${esc(a.modele || a.marque || '')} · ${esc(nomSite(a.site_id))} · ${nf(k.km)} km</div></div>
     <div class="droite">${m ? '<span class="chip info">En mission</span>' : chip(LIB.statutAmb[a.statut])}${nSig ? `<span class="chip warn">${nSig} ouvert${nSig > 1 ? 's' : ''}</span>` : ''}${etatSync(a)}</div></a>`;
 }
@@ -916,7 +975,7 @@ VUES.missions = (arg, q) => {
   return { html: entete('Missions', 'Enregistrement des trajets au compteur', peut.terrain() ? `<a class="btn p" href="#/mission-nouvelle">${ic('plus', 18)} Démarrer une mission</a>` : '')
     + `<div class="onglets">${[['en_cours', 'En cours'], ['cloturees', 'Clôturées'], ['verifier', 'À vérifier'], ['annulees', 'Annulées']].map(([k, l]) => `<a href="${lien(k)}" class="${k === onglet ? 'actif' : ''}">${l} (${parOnglet[k].length})</a>`).join('')}</div>
     <div class="filtres"><select data-f="amb">${options(optAmb(), fa, 'Toutes les ambulances')}</select><select data-f="site">${options(sitesVisibles().map((s) => [s.id, s.nom]), fs, 'Tous les sites')}</select></div>
-    <div class="liste">${liste.length ? liste.map(ligneMission).join('') : vide('Aucune mission dans cette liste.')}</div>`,
+    <div class="liste">${liste.length ? liste.map(ligneMission).join('') : videAction('Aucune mission dans cette liste.', peut.terrain() && onglet === 'en_cours' ? ['#/mission-nouvelle', 'Démarrer une mission'] : null)}</div>`,
   init(el) { $$('[data-f]', el).forEach((s) => s.onchange = () => { const p = new URLSearchParams({ onglet }); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/missions?' + p; }); } };
 };
 function ligneMission(m) {
@@ -1105,7 +1164,7 @@ VUES.ambulances = (arg, q) => {
   return { html: entete('Ambulances', `${ambs.length} véhicule(s)`, peut.sup() ? `<a class="btn p" href="#/ambulance-form">${ic('plus', 18)} Ajouter</a>` : '')
     + `<div class="filtres"><input type="search" data-f="q" placeholder="Code, immatriculation, châssis…" value="${esc(q.q || '')}"><select data-f="site">${options(sitesVisibles().map((s) => [s.id, s.nom]), fs, 'Tous les sites')}</select>
       <select data-f="statut">${options(Object.entries(LIB.statutAmb).map(([k, v]) => [k, v[0]]), fst, 'Tous les statuts')}</select></div>
-    <div class="liste">${ambs.length ? ambs.map(ligneAmbulance).join('') : vide('Aucune ambulance.')}</div>`,
+    <div class="liste">${ambs.length ? ambs.map(ligneAmbulance).join('') : videAction('Aucune ambulance ne correspond.', peut.sup() ? ['#/ambulance-form', 'Ajouter une ambulance'] : null)}</div>`,
   init(el) {
     const go = () => { const p = new URLSearchParams(); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/ambulances?' + p; };
     $$('select[data-f]', el).forEach((s) => s.onchange = go); const qq = $('input[data-f]', el); qq.onchange = go;
@@ -1150,7 +1209,7 @@ VUES.ambulance = (id, q) => {
     const ents = parAmb('ambu_entretiens', id).sort((x, y) => (y.date_op || '').localeCompare(x.date_op || ''));
     corps = `<div class="bandeau ${pe.niveau === 'critique' ? 'bad' : pe.niveau === 'haute' ? 'warn' : pe.niveau === 'ok' ? 'ok' : ''}"><b>Prochaine vidange :</b> ${esc(pe.texte)}. <span class="aide">Kilométrage courant : ${nf(k.km)} km.</span></div>
       ${peut.gestion() ? `<a class="btn p" style="margin-bottom:12px" href="#/entretien-form?amb=${id}">${ic('plus', 18)} Enregistrer un entretien</a>` : ''}
-      <div class="liste">${ents.length ? ents.map(ligneEntretien).join('') : vide('Aucun entretien enregistré.')}</div>`;
+      <div class="liste">${ents.length ? ents.map(ligneEntretien).join('') : videAction('Aucun entretien enregistré.', peut.gestion() ? ['#/entretien-form', 'Enregistrer un entretien'] : null)}</div>`;
   } else if (onglet === 'equipements') {
     const eq = a.equipements || [];
     corps = `<div class="carte"><h2>Équipements embarqués</h2>${eq.length ? `<div class="liste" data-eq>${eq.map((e, i) => `<div class="ligne"><div class="corps"><div class="t">${esc(e.nom)}</div>${e.note ? `<div class="s">${esc(e.note)}</div>` : ''}</div>
@@ -1234,7 +1293,7 @@ VUES.controles = (arg, q) => {
     + `<div class="onglets">${[['tous', 'Tous'], ['revoir', 'À revoir'], ['nc', 'Avec NC']].map(([k, l]) => `<a href="#/controles?onglet=${k}" class="${k === onglet ? 'actif' : ''}">${l}</a>`).join('')}</div>
     <div class="liste">${cs.length ? cs.slice(0, 300).map((c) => `<a class="ligne" href="#/controle-voir/${c.id}"><span style="color:var(--ok)">${ic('controle', 24)}</span><div class="corps"><div class="t">${esc(amb(c.ambulance_id)?.code || '?')} · ${LIB.typeCtrl[c.type_controle]}</div>
       <div class="s">${fmtDH(c.date_controle)} · ${esc(c.controleur_nom || nomUser(c.created_by))}${c.km != null ? ' · ' + nf(c.km) + ' km' : ''}</div></div>
-      <div class="droite">${chip(LIB.statutDecl[c.statut_declare])}${c.nb_nc ? `<span class="chip ${c.critique ? 'bad' : 'warn'}">${c.nb_nc} NC</span>` : ''}${c.revue_statut === 'a_revoir' ? '<span class="chip bad">À revoir</span>' : ''}${etatSync(c)}</div></a>`).join('') : vide('Aucun contrôle.')}</div>` };
+      <div class="droite">${chip(LIB.statutDecl[c.statut_declare])}${c.nb_nc ? `<span class="chip ${c.critique ? 'bad' : 'warn'}">${c.nb_nc} NC</span>` : ''}${c.revue_statut === 'a_revoir' ? '<span class="chip bad">À revoir</span>' : ''}${etatSync(c)}</div></a>`).join('') : videAction('Aucun contrôle dans cette liste.', peut.terrain() ? ['#/controle', 'Faire un contrôle'] : null)}</div>` };
 };
 VUES.controle = (arg, q) => {
   if (!peut.terrain()) return { html: entete('Contrôle') + '<div class="bandeau warn">Votre profil est en consultation seule.</div>' };
@@ -1244,16 +1303,17 @@ VUES.controle = (arg, q) => {
   const heure = Number(partsGabon(new Date()).hour);
   return { form: true, html: entete('Fiche de contrôle et de transmission', 'Cocher C = conforme, NC = non conforme, NA = non applicable. Aucun résultat n’est présumé conforme.', '', '#/controles')
     + `<form id="fi" novalidate>
-      <div class="carte"><div class="grille g2 r1">
+      <nav class="etapes-ctrl" aria-label="Étapes du contrôle">${['Véhicule', ...grilles.map((g) => g.groupe), 'Transmission'].map((n, i) => `<button type="button" data-aller="${i}" class="${i ? '' : 'on'}"><b>${i + 1}</b><span>${esc(n)}</span><em data-compte="${i}"></em></button>`).join('')}</nav>
+      <div data-etape="0"><div class="carte"><div class="grille g2 r1">
         <div class="champ"><label class="lib">Ambulance <span class="obl">*</span></label><select name="ambulance_id">${options(ambs.map((a) => [a.id, `${a.code} · ${a.immatriculation}`]), choix, 'Choisir')}</select><div class="aide" data-prec></div></div>
         <div class="champ"><label class="lib">Type de contrôle <span class="obl">*</span></label><div class="seg choix" data-champ="type_controle">${Object.entries(LIB.typeCtrl).map(([k, l]) => `<button type="button" data-v="${k}" class="${k === (heure >= 15 ? 'fin' : 'prise') ? 'on' : ''}">${l}</button>`).join('')}</div></div>
         <div class="champ"><label class="lib">Kilométrage <span class="obl">*</span></label><input type="number" name="km" inputmode="numeric" min="0"></div>
         <div class="champ"><label class="lib">Carburant</label><select name="carburant">${options(lst.carburant || [], '', '—')}</select></div></div>
-        <div class="aide">Date et heure enregistrées automatiquement · Contrôleur : ${esc(S.profil.nom)}</div></div>
-      ${grilles.map((g, gi) => `<div class="carte"><h2>${esc(g.groupe)}</h2>${g.items.map((it) => `<div class="point" data-item="${esc(it.code)}"><div class="haut"><div class="nom">${esc(it.libelle)}${it.critique ? '<span class="crit">critique</span>' : ''}</div>
+        <div class="aide">Date et heure enregistrées automatiquement · Contrôleur : ${esc(S.profil.nom)}</div></div></div>
+      ${grilles.map((g, gi) => `<div data-etape="${gi + 1}" class="cache"><div class="carte"><div class="titre-ligne"><h2>${esc(g.groupe)}</h2><button type="button" class="btn petit" data-suivant-nc>Point suivant non coché</button></div>${g.items.map((it) => `<div class="point" data-item="${esc(it.code)}"><div class="haut"><div class="nom">${esc(it.libelle)}${it.critique ? '<span class="crit">critique</span>' : ''}</div>
         <div class="seg">${['c', 'nc', 'na'].map((e) => `<button type="button" data-v="${e}" title="${LIB.etat[e][2]}">${LIB.etat[e][0]}</button>`).join('')}</div></div>
-        <div class="cache" data-obs style="margin-top:8px"><textarea data-o placeholder="Observation / défaut constaté (obligatoire pour un NC)" maxlength="500"></textarea><div style="margin-top:6px">${champPhotos('it_' + it.code)}</div></div></div>`).join('')}</div>`).join('')}
-      <div class="carte"><h2>Anomalies, actions et transmission</h2><div data-anos></div><button type="button" class="btn petit" data-ajano>${ic('plus', 16)} Ajouter une anomalie notée</button>
+        <div class="cache" data-obs style="margin-top:8px"><textarea data-o placeholder="Observation / défaut constaté (obligatoire pour un NC)" maxlength="500"></textarea><div style="margin-top:6px">${champPhotos('it_' + it.code)}</div></div></div>`).join('')}</div></div>`).join('')}
+      <div data-etape="${grilles.length + 1}" class="cache"><div class="carte"><h2>Anomalies, actions et transmission</h2><div data-anos></div><button type="button" class="btn petit" data-ajano>${ic('plus', 16)} Ajouter une anomalie notée</button>
         <label class="case" style="margin-top:12px"><input type="checkbox" name="creer_anomalies" checked> Créer automatiquement une fiche anomalie pour chaque point NC</label></div>
       <div class="carte"><h2>Photos de l’état du véhicule</h2><p class="aide">Joindre les vues à la prise et à la fin de service. Décrire les différences ou dommages constatés.</p>
         <div class="grille g2 r1">${vues.map((v, i) => `<div class="champ"><label class="lib">${esc(v)}</label>${champPhotos('vue_' + i)}<input data-vobs="${i}" placeholder="Observations"></div>`).join('')}</div>
@@ -1264,8 +1324,9 @@ VUES.controle = (arg, q) => {
         <div class="grille g2 r1" style="margin-top:10px"><div class="champ"><label class="lib">Ambulancier (nom)</label><input name="controleur_nom" value="${esc(S.profil.nom)}"></div>
         <div class="champ"><label class="lib">Réception / responsable médical (nom)</label><input name="receptionnaire" maxlength="100"></div></div>
         <div class="champ"><label class="lib">Commentaire général</label><textarea name="commentaire" maxlength="1000"></textarea></div>
-        <label class="case"><input type="checkbox" name="atteste"> J’atteste avoir réalisé ce contrôle et déclaré les observations. Cette attestation ne constitue pas une attribution automatique de responsabilité pour les défauts préexistants.</label></div>
-      <div class="colle"><div style="display:flex;gap:10px;align-items:center"><div style="flex:1"><div class="aide" data-prog>0 / ${total} points cochés</div><div class="progression"><i data-barre style="width:0"></i></div></div><button class="btn p" type="submit">Enregistrer le contrôle</button></div></div>
+        <label class="case"><input type="checkbox" name="atteste"> J’atteste avoir réalisé ce contrôle et déclaré les observations. Cette attestation ne constitue pas une attribution automatique de responsabilité pour les défauts préexistants.</label></div></div>
+      <div class="colle"><div class="colle-ligne"><div style="flex:1;min-width:0"><div class="aide" data-prog>0 / ${total} points cochés</div><div class="progression"><i data-barre style="width:0"></i></div></div>
+        <button class="btn" type="button" data-precedent>Précédent</button><button class="btn p" type="button" data-suivant>Suivant</button><button class="btn p cache" type="submit" data-final>Enregistrer le contrôle</button></div></div>
       </form>`,
   init(el) {
     const f = $('#fi', el); lierPhotos(el);
@@ -1278,11 +1339,35 @@ VUES.controle = (arg, q) => {
     $$('.seg.choix', el).forEach((s) => $$('button', s).forEach((b) => b.onclick = () => { $$('button', s).forEach((x) => x.classList.toggle('on', x === b)); s.classList.remove('invalide');
       if (s.dataset.champ === 'statut_declare') $('[data-motif]', el).classList.toggle('cache', b.dataset.v !== 'indisponible'); }));
     const total = $$('[data-item]', el).length;
-    const prog = () => { const n = $$('[data-item] .seg button.on', el).length; $('[data-prog]', el).textContent = `${n} / ${total} points cochés`; $('[data-barre]', el).style.width = (total ? n / total * 100 : 0) + '%'; };
+    const nbEtapes = $$('[data-etape]', el).length; let etape = 0;
+    const prog = () => { const n = $$('[data-item] .seg button.on', el).length; $('[data-prog]', el).textContent = `Étape ${etape + 1} / ${nbEtapes} · ${n} / ${total} points cochés`; $('[data-barre]', el).style.width = (total ? n / total * 100 : 0) + '%';
+      $$('[data-compte]', el).forEach((c) => { const pts = $$(`[data-etape="${c.dataset.compte}"] [data-item]`, el); if (!pts.length) return; const k = pts.filter((x) => $('.seg button.on', x)).length;
+        c.textContent = `${k}/${pts.length}`; c.closest('button').classList.toggle('fait', k === pts.length); c.closest('button').classList.toggle('nc', pts.some((x) => $('.seg button.on[data-v="nc"]', x))); }); };
+    const aller = (n) => { etape = Math.max(0, Math.min(nbEtapes - 1, n));
+      $$('[data-etape]', el).forEach((d) => d.classList.toggle('cache', Number(d.dataset.etape) !== etape));
+      $$('[data-aller]', el).forEach((b) => b.classList.toggle('on', Number(b.dataset.aller) === etape));
+      $('[data-aller].on', el)?.scrollIntoView({ inline: 'center', block: 'nearest' });
+      $('[data-precedent]', el).disabled = etape === 0; $('[data-suivant]', el).classList.toggle('cache', etape === nbEtapes - 1); $('[data-final]', el).classList.toggle('cache', etape !== nbEtapes - 1);
+      prog(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    const etapeValide = () => {
+      if (etape === 0) { if (!f.ambulance_id.value) return erreurChamp(f, 'ambulance_id', 'Choisissez l’ambulance'); if (nombre(f.km.value) === null) return erreurChamp(f, 'km', 'Saisissez le kilométrage'); return true; }
+      for (const p of $$(`[data-etape="${etape}"] [data-item]`, el)) {
+        const etat = $('.seg button.on', p)?.dataset.v; const nom = $('.nom', p).firstChild.textContent;
+        if (!etat) { p.classList.add('invalide'); p.scrollIntoView({ block: 'center', behavior: 'smooth' }); toast(`Point non coché : ${nom}`, 'bad'); return false; }
+        if (etat === 'nc' && !$('[data-o]', p).value.trim()) { const t = $('[data-o]', p); t.classList.add('invalide'); t.focus(); toast(`Observation obligatoire pour le NC : ${nom}`, 'bad'); return false; }
+      }
+      return true; };
+    el.addEventListener('montrer', (e) => { const d = e.target.closest('[data-etape]'); if (d && Number(d.dataset.etape) !== etape) aller(Number(d.dataset.etape)); });
+    $('[data-suivant]', el).onclick = () => { if (etapeValide()) aller(etape + 1); };
+    $('[data-precedent]', el).onclick = () => aller(etape - 1);
+    $$('[data-aller]', el).forEach((b) => b.onclick = () => aller(Number(b.dataset.aller)));
+    $$('[data-suivant-nc]', el).forEach((b) => b.onclick = () => { const p = $$(`[data-etape="${etape}"] [data-item]`, el).find((x) => !$('.seg button.on', x));
+      if (p) { p.scrollIntoView({ block: 'center', behavior: 'smooth' }); p.classList.add('repere'); setTimeout(() => p.classList.remove('repere'), 1200); } else toast('Tous les points de cette étape sont cochés', 'ok'); });
     $$('[data-item]', el).forEach((p) => $$('.seg button', p).forEach((b) => b.onclick = () => {
       $$('.seg button', p).forEach((x) => x.classList.toggle('on', x === b)); p.classList.remove('invalide');
       $('[data-obs]', p).classList.toggle('cache', b.dataset.v !== 'nc'); prog();
     }));
+    aller(0);
     const majAmb = () => { const a = amb(f.ambulance_id.value); if (!a) return; f.km.value = kmCourant(a.id).km || '';
       const prec = parAmb('ambu_inspections', a.id).sort((x, y) => (y.date_controle || '').localeCompare(x.date_controle || ''))[0];
       $('[data-prec]', el).innerHTML = prec ? `Dernier contrôle : ${fmtDH(prec.date_controle)} · ${prec.nb_nc || 0} NC${prec.nb_nc ? ' (' + esc((prec.items || []).filter((i) => i.etat === 'nc').map((i) => i.libelle).join(', ')) + ')' : ''}` : 'Premier contrôle de ce véhicule'; };
@@ -1295,6 +1380,7 @@ VUES.controle = (arg, q) => {
       const items = []; const grilles = P('controle', []) || [];
       for (const g of grilles) for (const it of g.items) {
         const p = $(`[data-item="${CSS.escape(it.code)}"]`, el); const etat = $('.seg button.on', p)?.dataset.v; const obs = $('[data-o]', p).value.trim();
+        if (!etat || (etat === 'nc' && !obs)) p.dispatchEvent(new CustomEvent('montrer', { bubbles: true }));
         if (!etat) { p.classList.add('invalide'); p.scrollIntoView({ block: 'center', behavior: 'smooth' }); return toast(`Point non coché : ${it.libelle}`, 'bad'); }
         if (etat === 'nc' && !obs) { const t = $('[data-o]', p); t.classList.add('invalide'); t.focus(); return toast(`Observation obligatoire pour le NC : ${it.libelle}`, 'bad'); }
         items.push({ code: it.code, libelle: it.libelle, groupe: g.groupe, critique: !!it.critique, etat, observation: obs || null, cle: 'it_' + it.code });
@@ -1356,7 +1442,7 @@ VUES.signalements = (arg, q) => {
   return { html: entete('Anomalies, incidents et accidents', '', peut.terrain() ? `<a class="btn" href="#/signaler?type=anomalie">Signaler une anomalie</a><a class="btn p" href="#/signaler?type=incident">Déclarer un incident</a>` : '')
     + `<div class="onglets">${[['ouverts', 'Ouverts'], ['fermes', 'Résolus / clôturés'], ['tous', 'Tous']].map(([k, l]) => `<a href="${lien(k)}" class="${k === onglet ? 'actif' : ''}">${l} (${comptes[k]})</a>`).join('')}</div>
     <div class="filtres"><select data-f="type">${options(Object.entries(LIB.typeSig), q.type, 'Tous les types')}</select><select data-f="priorite">${options(Object.entries(LIB.priorite).map(([k, v]) => [k, v[0]]), q.priorite, 'Toutes priorités')}</select><select data-f="amb">${options(optAmb(), q.amb, 'Toutes les ambulances')}</select></div>
-    <div class="liste">${ss.length ? ss.slice(0, 300).map(ligneSignalement).join('') : vide('Aucune fiche.')}</div>`,
+    <div class="liste">${ss.length ? ss.slice(0, 300).map(ligneSignalement).join('') : videAction('Aucune fiche dans cette liste.', peut.terrain() ? ['#/signaler?type=anomalie', 'Signaler une anomalie'] : null)}</div>`,
   init(el) { $$('[data-f]', el).forEach((s) => s.onchange = () => { const p = new URLSearchParams({ onglet }); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/signalements?' + p; }); } };
 };
 VUES.signaler = (arg, q) => {
@@ -1489,7 +1575,7 @@ VUES.entretien = (arg, q) => {
       <a href="#/entretien?onglet=echeances${q.tout ? '' : '&tout=1'}" class="btn petit" style="margin-top:8px">${q.tout ? 'Masquer les éléments à jour' : 'Afficher aussi les éléments à jour'}</a></div>`;
   } else if (onglet === 'entretiens') {
     const ents = L('ambu_entretiens').filter((e) => !q.amb || e.ambulance_id === q.amb).sort((x, y) => (y.date_op || '').localeCompare(x.date_op || ''));
-    corps = `<div class="filtres"><select data-f="amb">${options(optAmb(), q.amb, 'Toutes les ambulances')}</select></div><div class="liste">${ents.length ? ents.slice(0, 300).map(ligneEntretien).join('') : vide('Aucun entretien enregistré.')}</div>`;
+    corps = `<div class="filtres"><select data-f="amb">${options(optAmb(), q.amb, 'Toutes les ambulances')}</select></div><div class="liste">${ents.length ? ents.slice(0, 300).map(ligneEntretien).join('') : videAction('Aucun entretien enregistré.', peut.gestion() ? ['#/entretien-form', 'Enregistrer un entretien'] : null)}</div>`;
   } else {
     const docs = L('ambu_documents').filter((d) => d.statut === 'valide' && (!q.amb || d.ambulance_id === q.amb)).sort((x, y) => (x.expiration || '9999').localeCompare(y.expiration || '9999'));
     corps = `<div class="filtres"><select data-f="amb">${options(optAmb(), q.amb, 'Toutes les ambulances')}</select></div><div class="carte">${docs.length ? `<div class="defile"><table class="tab"><thead><tr><th>Ambulance</th><th>Document</th><th>Numéro</th><th>Expiration</th><th>État</th><th>Pièces</th></tr></thead><tbody>${docs.map((d) => { const e = etatDocument(d); return `<tr><td><a href="#/ambulance/${d.ambulance_id}?onglet=documents">${esc(amb(d.ambulance_id)?.code || '')}</a></td><td>${LIB.typeDoc[d.type]}${d.libelle ? ' — ' + esc(d.libelle) : ''}</td><td>${esc(d.numero || '—')}</td><td>${fmtJ(d.expiration)}</td><td>${chip([e.niveau === 'ok' ? 'Valide' : e.niveau === 'critique' ? 'Expiré' : e.niveau === 'haute' ? 'Proche' : 'Sans date', e.niveau === 'ok' ? 'ok' : e.niveau === 'critique' ? 'bad' : e.niveau === 'haute' ? 'warn' : 'mute'])}</td><td>${vignettes(d.fichiers)}</td></tr>`; }).join('')}</tbody></table></div>` : vide('Aucun document enregistré.')}</div>`;
@@ -1572,7 +1658,7 @@ VUES.carte = (arg, q) => {
   const lieux = L('ambu_localites').filter((l) => l.actif !== false);
   return { html: entete('Carte et localités', `Référentiel : ${esc(mc.version || '—')} du ${fmtJ(mc.date)} · fond ${esc(mc.fond || 'OpenStreetMap')}`,
       `<button class="btn" data-estimer>Estimer un itinéraire</button>${peut.terrain() ? '<button class="btn" data-signaler>Signaler une correction</button>' : ''}${peut.sup() ? `<button class="btn p" data-ajout>${ic('plus', 18)} Ajouter un lieu</button>` : ''}`)
-    + `<div class="carte" style="padding:8px"><div class="carte-map" id="grande"></div><div class="legende"><span><i style="background:#b3122e"></i>Site / base</span><span><i style="background:#12703a"></i>Lieu vérifié</span><span><i style="background:#d08700"></i>À vérifier par le terrain</span></div>
+    + `<div class="carte" style="padding:8px"><div class="carte-map" id="grande"></div><div class="legende"><span><i style="background:#0b62a4"></i>Site / base</span><span><i style="background:#0f7a4f"></i>Lieu vérifié</span><span><i style="background:#d08700"></i>À vérifier par le terrain</span></div>
       <p class="aide" style="margin:6px 4px">Les zones consultées restent disponibles hors ligne. Distances de la carte = estimations : seule la distance compteur fait foi. Météo, état de la route et trafic sont saisis manuellement.</p></div>
     <div class="grille g2 r1"><div class="carte"><h2>Localités (${lieux.length})</h2><input type="search" data-q placeholder="Rechercher…" style="margin-bottom:8px"><div class="liste" data-lieux style="max-height:420px;overflow:auto"></div></div>
     <div class="carte"><h2>Remarques terrain (${rem.filter((r) => r.statut === 'ouverte').length} ouvertes)</h2>${rem.length ? `<div class="liste">${rem.slice(0, 60).map((r) => `<div class="ligne"><div class="corps"><div class="t">${esc(LIB.typeRem[r.type])}${r.localite_id ? ' — ' + esc(nomLieu(r.localite_id)) : ''}</div><div class="s">${esc(r.texte)}<br>${esc(nomUser(r.created_by))} · ${fmtDH(r.created_at)}${r.reponse ? ' · Réponse : ' + esc(r.reponse) : ''}</div></div>
@@ -1900,16 +1986,17 @@ VUES.compte = () => ({ html: entete('Mon compte')
   + `<div class="carte"><dl class="def"><dt>Nom</dt><dd>${esc(S.profil.nom)}</dd><dt>E-mail</dt><dd>${esc(S.profil.email || S.session?.user?.email || '')}</dd><dt>Profil</dt><dd>${esc(LIB.role[role()])}</dd>
     <dt>Sites</dt><dd>${S.profil.sites?.length ? S.profil.sites.map(nomSite).map(esc).join(', ') : 'Tous les sites autorisés'}</dd><dt>Version</dt><dd>Ambu Track ${CONFIG.VERSION}</dd><dt>Heure</dt><dd>Heure du Gabon (Libreville, UTC+1)</dd></dl></div>
   <div class="carte"><h2>Changer mon mot de passe</h2><form data-mdp novalidate><div class="champ"><label class="lib">Nouveau mot de passe (8 caractères minimum)</label><input type="password" name="m1" autocomplete="new-password"></div><div class="champ"><label class="lib">Confirmer</label><input type="password" name="m2" autocomplete="new-password"></div><button class="btn p">Changer</button></form></div>
-  <div class="carte"><h2>Affichage</h2><div class="seg choix" data-theme>${[['auto', 'Automatique'], ['light', 'Clair'], ['dark', 'Sombre']].map(([k, l]) => `<button type="button" data-v="${k}" class="${(localStorage.getItem('ambu.theme') || 'auto') === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+  <div class="carte"><h2>Affichage</h2><p class="aide" style="margin:0 0 10px">« Plein soleil » renforce les contrastes et grossit le texte pour la lecture en extérieur.</p><div class="seg choix" data-themes style="flex-wrap:wrap">${[['auto', 'Automatique'], ['light', 'Clair'], ['dark', 'Sombre'], ['soleil', 'Plein soleil']].map(([k, l]) => `<button type="button" data-v="${k}" class="${(localStorage.getItem('ambu.theme') || 'auto') === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
   <div class="carte"><h2>Installer l’application</h2><p class="aide">Sur téléphone : menu du navigateur → « Ajouter à l’écran d’accueil ». L’application s’ouvre ensuite même sans réseau.</p><button class="btn ${window.__installer ? '' : 'cache'}" data-installer>Installer Ambu Track</button></div>
   <div class="barre-actions"><button class="btn danger" data-deco>Se déconnecter</button></div>`,
 init(el) {
   $('[data-mdp]', el).onsubmit = async (e) => { e.preventDefault(); const v = lireForm(e.target); try { await changerMdp(v.m1, v.m2); e.target.reset(); toast('Mot de passe changé', 'ok'); } catch (err) { toast(err.message, 'bad'); } };
-  $$('[data-theme] button', el).forEach((b) => b.onclick = () => { localStorage.setItem('ambu.theme', b.dataset.v); appliquerTheme(); router(true); });
+  $$('[data-themes] button', el).forEach((b) => b.onclick = () => { localStorage.setItem('ambu.theme', b.dataset.v); appliquerTheme(); router(true); });
   $('[data-installer]', el).onclick = async () => { if (window.__installer) { window.__installer.prompt(); window.__installer = null; } };
   $('[data-deco]', el).onclick = deconnexion;
 } });
-function appliquerTheme() { const t = localStorage.getItem('ambu.theme') || 'auto'; if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t; }
+function appliquerTheme() { let t = 'auto'; try { t = localStorage.getItem('ambu.theme') || 'auto'; } catch { /* stockage bloqué */ } if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t;
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = t === 'soleil' ? '#000000' : '#0f1e2e'; }
 async function changerMdp(m1, m2) {
   if (!m1 || m1.length < 8) throw new Error('8 caractères minimum');
   if (m1 !== m2) throw new Error('Les deux mots de passe sont différents');

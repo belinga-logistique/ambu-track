@@ -1,9 +1,10 @@
 // Ambu Track — service worker : ouverture hors ligne, cache des fonds de carte consultés.
 // Les données (Supabase) ne passent jamais par le cache : elles sont gérées par l'application.
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const CACHE_APP = 'ambu-app-' + VERSION;
 const CACHE_LIB = 'ambu-lib-1';
 const CACHE_TUILES = 'ambu-tuiles-1';
+const CACHE_POLICES = 'ambu-polices-1';
 const MAX_TUILES = 4000;
 const APP = ['./', './index.html', './manifest.webmanifest', './icone.svg', './icone-192.png', './icone-512.png'];
 const LIBS = [
@@ -54,6 +55,18 @@ self.addEventListener('fetch', (e) => {
         if (r.ok) { await c.put(req.url, r.clone()); limiterTuiles(); }
         return r;
       } catch { return new Response('', { status: 504 }); }
+    })());
+    return;
+  }
+
+  // Police des titres (Google Fonts) : cache d'abord, pour l'affichage hors ligne
+  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+    e.respondWith((async () => {
+      const c = await caches.open(CACHE_POLICES);
+      const hit = await c.match(req.url);
+      if (hit) return hit;
+      try { const r = await fetch(req); if (r.ok) await c.put(req.url, r.clone()); return r; }
+      catch { return new Response('', { status: 504 }); }
     })());
     return;
   }
