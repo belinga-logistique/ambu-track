@@ -302,6 +302,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .photo-id .apercu{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--prim-c);display:grid;place-items:center;color:var(--prim);font:800 2rem var(--f-titre);border:3px solid var(--carte);box-shadow:0 0 0 2px var(--bord)}
 .photo-id .apercu img{width:100%;height:100%;object-fit:cover}
 
+/* ---------- 1.5 : évacuations */
+.estim-evac{background:var(--bad-f);border:1px solid var(--bad)}
+.estim-evac b:first-child{color:var(--bad);display:inline-flex;align-items:center;gap:6px}
 /* ---------- 1.4 : liens Google Sheets */
 .copie{display:flex;gap:6px}.copie input{flex:1;min-width:0;font-size:.8rem}
 /* ---------- 1.3 : reporting à la hiérarchie */
@@ -369,11 +372,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.4.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.5.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.4.0',
+  VERSION: '1.5.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -460,7 +463,7 @@ const LIB = {
   table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique', ambu_rapports: 'Rapport transmis', ambu_liens_export: 'Lien Google Sheets' },
 };
 const chip = (paire, extra = '') => paire ? `<span class="chip ${paire[1]}">${esc(paire[0])}${extra}</span>` : '';
-const DEFAUT_SEUILS = { rappel_permis_jours: 60, distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
+const DEFAUT_SEUILS = { vitesse_estimation: 45, rappel_permis_jours: 60, distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
 
 /* ----------------------------------------------------------------- Stockage local (IndexedDB) */
 const IDB = (() => {
@@ -931,16 +934,24 @@ async function recevoir(complet = false) {
   const moi = S.srv.ambu_profils.get(S.session.user.id);
   if (moi) { S.profil = moi; await kvSet('profil', moi); }
   reconstruire();
+  // Données remises à zéro par l'administrateur : on recharge tout et on oublie les anciennes copies
+  const ri = P('reinitialisation', null);
+  if (ri?.le && (await kvGet('reinitVue')) !== ri.le) {
+    await kvSet('reinitVue', ri.le); S.itin = {}; await kvSet('itin', {});
+    if (depuis) await recevoir(true);
+  }
 }
 
 /* ----------------------------------------------------------------- Itinéraire estimé (carte) */
 async function estimerItineraire(idA, idB) {
   const a = G('ambu_localites', idA), b = G('ambu_localites', idB);
   if (!a || !b || a.lat == null || b.lat == null) return null;
-  if (a.id === b.id) return { km: 0, source: 'Même lieu' };
+  if (a.id === b.id) return { km: 0, duree: 0, source: 'Même lieu' };
+  const v = Number(seuils().vitesse_estimation) || 45;
+  const avecDuree = (x) => ({ ...x, duree: x.duree ?? Math.round(x.km / v * 60) });
   const cle = a.id + '>' + b.id;
-  if (S.itin[cle]) return S.itin[cle];
-  const approx = { km: Math.round(distanceKm(a, b) * 1.25 * 10) / 10, source: 'Approximation (vol d’oiseau × 1,25)' };
+  if (S.itin[cle]) return avecDuree(S.itin[cle]);
+  const approx = avecDuree({ km: Math.round(distanceKm(a, b) * 1.25 * 10) / 10, source: `Approximation (vol d’oiseau × 1,25, ${v} km/h de moyenne)` });
   if (!navigator.onLine) return approx;
   try {
     const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
@@ -948,10 +959,19 @@ async function estimerItineraire(idA, idB) {
     clearTimeout(t);
     const j = await r.json();
     if (j.code !== 'Ok' || !j.routes?.[0]) return approx;
-    const res = { km: Math.round(j.routes[0].distance / 100) / 10, source: 'Moteur d’itinéraire OSRM (OpenStreetMap)', geo: j.routes[0].geometry?.coordinates?.map(([x, y]) => [y, x]) };
+    const km = Math.round(j.routes[0].distance / 100) / 10;
+    // Durée : la plus prudente entre le moteur d'itinéraire et la vitesse moyenne paramétrée (pistes)
+    const duree = Math.max(Math.round((j.routes[0].duration || 0) / 60), Math.round(km / v * 60));
+    const res = { km, duree, source: 'Moteur d’itinéraire OSRM (OpenStreetMap)', geo: j.routes[0].geometry?.coordinates?.map(([x, y]) => [y, x]) };
     S.itin[cle] = res; kvSet('itin', S.itin).catch(() => {});
     return res;
   } catch { return approx; }
+}
+/** Texte d'estimation : distance, durée, heure d'arrivée estimée */
+function texteEstimation(e, depart = new Date().toISOString()) {
+  if (!e) return 'Estimation indisponible : coordonnées du lieu manquantes.';
+  const arrivee = e.duree != null ? fmtH(new Date(new Date(depart).getTime() + e.duree * 60000).toISOString()) : null;
+  return `Distance estimée : <b>${nf(e.km, 1)} km</b>${e.duree != null ? ` · durée estimée : <b>${fmtDuree(e.duree)}</b>${arrivee ? ` · arrivée vers <b>${arrivee}</b>` : ''}` : ''}<br><span class="aide">${esc(e.source)}. Estimation seulement : la distance réelle est celle du compteur.</span>`;
 }
 
 /* ----------------------------------------------------------------- Carte (Leaflet) */
@@ -989,16 +1009,19 @@ function choisirLieu(cb) {
   modale('Choisir un lieu', `<input type="search" placeholder="Rechercher une ville, un village, un site…" data-q autofocus>
     <div class="onglets" style="margin-top:8px"><button type="button" class="actif" data-mode="liste">Liste</button><button type="button" data-mode="carte">Sur la carte</button></div>
     <div class="recherche-lieux" data-res></div><div class="carte-map mini cache" data-carte style="height:52vh"></div>
-    <p class="aide">Lieu absent ? Signalez-le depuis l’écran Carte pour correction du référentiel.</p>`, (el, fermer) => {
+    ${peut.terrain() ? `<button type="button" class="btn large" data-nouveau-lieu style="margin-top:10px">${ic('plus', 18)} Ajouter une destination absente de la liste</button>` : ''}
+    <p class="aide">Une destination ajoutée est utilisable tout de suite ; elle reste « à vérifier » jusqu’à validation par un superviseur.</p>`, (el, fermer) => {
     const res = $('[data-res]', el);
     const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
     const dessiner = () => {
       const q = norm($('[data-q]', el).value);
       const l2 = lieux.filter((l) => !q || norm(l.nom + ' ' + (l.province || '')).includes(q)).slice(0, 80);
+      const nl = $('[data-nouveau-lieu]', el); if (nl) nl.innerHTML = `${ic('plus', 18)} ${$('[data-q]', el).value.trim() ? 'Ajouter « ' + esc($('[data-q]', el).value.trim()) + ' »' : 'Ajouter une destination absente de la liste'}`;
       res.innerHTML = l2.length ? l2.map((l) => `<button type="button" data-id="${l.id}">${ic('lieu', 16)}<span style="flex:1"><b>${esc(l.nom)}</b><br><small class="aide">${esc(LIB.typeLoc[l.type] || '')}${l.province ? ' · ' + esc(l.province) : ''}${l.verifie ? '' : ' · non vérifié'}</small></span></button>`).join('') : '<div class="vide">Aucun lieu trouvé</div>';
       $$('button[data-id]', res).forEach((b) => b.onclick = () => { cb(G('ambu_localites', b.dataset.id)); fermer(); });
     };
     $('[data-q]', el).oninput = dessiner; dessiner();
+    const nl = $('[data-nouveau-lieu]', el); if (nl) nl.onclick = () => { const texte = $('[data-q]', el).value.trim(); fermer(); formNouveauLieu(texte, cb); };
     let carte = null;
     $$('[data-mode]', el).forEach((b) => b.onclick = async () => {
       $$('[data-mode]', el).forEach((x) => x.classList.toggle('actif', x === b));
@@ -1009,6 +1032,42 @@ function choisirLieu(cb) {
         catch (e) { $('[data-carte]', el).innerHTML = `<div class="vide">${esc(e.message)}</div>`; }
       }
     });
+  });
+}
+
+const PROVINCES = ['Estuaire', 'Haut-Ogooué', 'Moyen-Ogooué', 'Ngounié', 'Nyanga', 'Ogooué-Ivindo', 'Ogooué-Lolo', 'Ogooué-Maritime', 'Woleu-Ntem'];
+function formNouveauLieu(nomInitial = '', cb = null) {
+  modale('Ajouter une destination', `<form novalidate><div class="champ"><label class="lib">Nom du lieu <span class="obl">*</span></label><input name="nom" maxlength="100" value="${esc(nomInitial)}" placeholder="Ex. : village, campement, carrefour, dispensaire"></div>
+    <div class="grille g2"><div class="champ"><label class="lib">Type</label><select name="type">${options([['village', 'Village'], ['ville', 'Ville'], ['hopital', 'Hôpital / centre de santé'], ['base', 'Base / camp'], ['point', 'Point de repère'], ['autre', 'Autre']], 'village')}</select></div>
+    <div class="champ"><label class="lib">Province</label><select name="province">${options(PROVINCES, 'Ogooué-Ivindo')}</select></div></div>
+    <div class="champ"><span class="lib">Position (pour estimer la distance)</span><div class="barre-actions"><button type="button" class="btn" data-gps>${ic('lieu', 18)} Utiliser ma position actuelle</button></div>
+      <div class="carte-map mini" data-mini style="margin-top:8px"></div><div class="aide" data-pos>Touchez la carte à l’emplacement du lieu, ou utilisez votre position si vous y êtes.</div>
+      <input type="hidden" name="lat"><input type="hidden" name="lng"></div>
+    <button class="btn p large">Ajouter et choisir ce lieu</button></form>`, async (mc, fermer) => {
+    const f = $('form', mc); let mk = null, carte = null;
+    const placer = (lat, lng, txt) => { f.lat.value = lat.toFixed(5); f.lng.value = lng.toFixed(5); $('[data-pos]', mc).textContent = `${txt} : ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      if (carte) { if (mk) mk.remove(); mk = window.L.circleMarker([lat, lng], { radius: 9, color: '#fff', weight: 2, fillColor: '#0b62a4', fillOpacity: 1 }).addTo(carte); carte.setView([lat, lng], Math.max(carte.getZoom(), 10)); } };
+    try { carte = await creerCarte($('[data-mini]', mc), { surClic: (ll) => placer(ll.lat, ll.lng, 'Position choisie sur la carte') }); carte.setView([0.9, 13.2], 8); }
+    catch { $('[data-mini]', mc).innerHTML = '<div class="vide">Carte indisponible hors ligne : utilisez votre position.</div>'; }
+    $('[data-gps]', mc).onclick = () => {
+      if (!navigator.geolocation) return toast('Position non disponible sur cet appareil', 'bad');
+      $('[data-pos]', mc).textContent = 'Recherche de la position…';
+      navigator.geolocation.getCurrentPosition((p) => placer(p.coords.latitude, p.coords.longitude, `Votre position (précision ${Math.round(p.coords.accuracy)} m)`),
+        () => { $('[data-pos]', mc).textContent = 'Position refusée ou indisponible : touchez la carte.'; }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+    };
+    f.onsubmit = async (e) => {
+      e.preventDefault(); const v = lireForm(f);
+      if ((v.nom || '').length < 2) return erreurChamp(f, 'nom', 'Indiquez le nom du lieu');
+      const norm = (x) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+      const existe = L('ambu_localites').find((l) => norm(l.nom) === norm(v.nom) && l.actif !== false);
+      if (existe) { fermer(); toast(`« ${existe.nom} » existe déjà : il a été choisi`, 'ok'); if (cb) cb(existe); return; }
+      const lat = v.lat ? Number(v.lat) : null, lng = v.lng ? Number(v.lng) : null;
+      if (lat != null && (lat < -5 || lat > 3 || lng < 7 || lng > 15)) return toast('Cette position est en dehors du Gabon', 'bad');
+      if (lat == null && !(await confirmer('Aucune position indiquée : la distance ne pourra pas être estimée vers ce lieu. Continuer ?', { ok: 'Ajouter sans position' }))) return;
+      const id = await enregistrer('ambu_localites', null, { nom: v.nom.trim(), type: v.type, province: v.province, lat, lng, source: 'Saisie terrain' });
+      fermer(); toast(`Destination « ${v.nom.trim()} » ajoutée (à vérifier par un superviseur)`, 'ok');
+      if (cb) cb(G('ambu_localites', id));
+    };
   });
 }
 
@@ -1119,7 +1178,7 @@ VUES.accueil = () => {
   let masque = false; try { masque = localStorage.getItem('ambu.install.masque') === '1'; } catch { /* rien */ }
   const bandeauInstall = !estInstallee() && !masque ? `<div class="bandeau-install"><span class="ico">${ic('installer', 22)}</span><div><b>Installez Ambu Track sur ce téléphone</b><br><span>Icône sur l’écran d’accueil, plein écran, fonctionne sans réseau.</span></div><button class="btn p petit" data-installer>Installer</button><button class="fermer" data-masquer aria-label="Masquer">✕</button></div>` : '';
   const html = bandeauInstall + entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])}`, `${esc(LIB.role[role()])}${S.profil.sites?.length ? ' · ' + S.profil.sites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
-    + mienne.map((m) => `<div class="carte mission-cours"><div class="mc-haut"><b>Mission en cours · ${esc(amb(m.ambulance_id)?.code || '')}</b><span>${ilYa(m.debut).replace('il y a', 'depuis')}</span></div>
+    + mienne.map((m) => `<div class="carte mission-cours"><div class="mc-haut"><b>Mission en cours · ${esc(amb(m.ambulance_id)?.code || '')}</b><span>${ilYa(m.debut).replace('il y a', 'depuis')}${m.duree_carte_min != null ? ' · arrivée estimée vers ' + fmtH(new Date(new Date(m.debut).getTime() + m.duree_carte_min * 60000).toISOString()) : ''}</span></div>
       <div class="mc-route"><span>${esc(nomLieu(m.depart_id))}</span><i></i><span>${esc(nomLieu(m.destination_id))}</span></div>
       <div class="mc-btns"><a class="btn" href="#/mission/${m.id}">${ic('plus', 16)} Événement</a><a class="btn p" href="#/mission-cloture/${m.id}">Clôturer la mission</a></div></div>`).join('')
     + `<div class="carte alertes-accueil"><div class="titre-ligne"><h2>Alertes</h2>${urgentes.length ? `<span class="chip ${urgentes.some((a) => a.niveau === 'critique') ? 'bad' : 'warn'}">${urgentes.length} à traiter</span>` : '<span class="chip ok">Tout est en ordre</span>'}</div>
@@ -1222,9 +1281,11 @@ VUES['mission-nouvelle'] = (arg, q) => {
       const b = $('[data-estim]', el); if (!f.depart_id.value || !f.destination_id.value) return;
       b.textContent = 'Calcul de l’itinéraire estimé…';
       estim = await estimerItineraire(f.depart_id.value, f.destination_id.value);
-      b.innerHTML = estim ? `Distance carte estimée : <b>${nf(estim.km, 1)} km</b> <span class="aide">(${esc(estim.source)} — estimation, ne remplace pas le compteur)</span>` : 'Estimation indisponible : coordonnées du lieu manquantes.';
+      const evac = /vacuation/i.test(f.motif.value);
+      b.className = 'bandeau' + (evac ? ' estim-evac' : '');
+      b.innerHTML = (evac ? `<b>${ic('alerte', 16)} Évacuation sanitaire</b><br>` : '') + texteEstimation(estim);
     };
-    f.ambulance_id.onchange = majAmb; lierLieux(el, () => majEstim()); if (choix) majAmb(); majEstim();
+    f.ambulance_id.onchange = majAmb; f.motif.onchange = () => majEstim(); lierLieux(el, () => majEstim()); if (choix) majAmb(); majEstim();
     f.onsubmit = async (e) => {
       e.preventDefault();
       const v = lireForm(f); const a = amb(v.ambulance_id);
@@ -1241,7 +1302,7 @@ VUES['mission-nouvelle'] = (arg, q) => {
       if (!estim) estim = await estimerItineraire(v.depart_id, v.destination_id);
       const id = await enregistrer('ambu_missions', null, { ambulance_id: a.id, depart_id: v.depart_id, destination_id: v.destination_id, km_depart: v.km_depart,
         motif: v.motif || null, equipage: v.equipage || null, notes: v.notes || null, debut: new Date().toISOString(), statut: 'en_cours', conducteur_id: S.profil.id, chauffeur_id: v.chauffeur_id || null,
-        distance_carte: estim ? estim.km : null, distance_carte_source: estim ? estim.source : null, journal: [], conditions: {} });
+        distance_carte: estim ? estim.km : null, distance_carte_source: estim ? estim.source : null, duree_carte_min: estim?.duree ?? null, journal: [], conditions: {} });
       S.enForm = false; toast('Mission démarrée à ' + fmtH(new Date().toISOString()), 'ok'); location.hash = '#/mission/' + id;
     };
   } };
@@ -1267,7 +1328,7 @@ VUES.mission = (id) => {
     + `<div class="grille g2 r1"><div class="carte"><h2>Informations</h2><dl class="def">
         <dt>Ambulance</dt><dd><a href="#/ambulance/${a?.id}">${esc(nomAmb(m.ambulance_id))}</a></dd><dt>Site</dt><dd>${esc(nomSite(m.site_id || a?.site_id))}</dd>
         <dt>Chauffeur</dt><dd>${m.chauffeur_id ? `<a class="lien-cond" href="#/chauffeur/${m.chauffeur_id}">${avatar(conducteur(m.chauffeur_id), 28)} ${esc(nomCond(conducteur(m.chauffeur_id)))}</a>` : '—'}</dd><dt>Saisie par</dt><dd>${esc(nomUser(m.conducteur_id))}</dd><dt>Équipage</dt><dd>${esc(m.equipage || '—')}</dd><dt>Motif</dt><dd>${esc(m.motif || '—')}</dd>
-        <dt>Démarrage</dt><dd>${fmtDH(m.debut)}</dd><dt>Clôture</dt><dd>${fmtDH(m.fin)}</dd>
+        <dt>Démarrage</dt><dd>${fmtDH(m.debut)}</dd><dt>Estimation carte</dt><dd>${m.distance_carte != null ? nf(m.distance_carte, 1) + ' km' : '—'}${m.duree_carte_min != null ? ' · ' + fmtDuree(Number(m.duree_carte_min)) + (m.statut === 'en_cours' ? ' · arrivée estimée vers ' + fmtH(new Date(new Date(m.debut).getTime() + m.duree_carte_min * 60000).toISOString()) : '') : ''}</dd><dt>Clôture</dt><dd>${fmtDH(m.fin)}</dd>
         <dt>Km départ</dt><dd>${nf(m.km_depart)} km</dd><dt>Km arrivée</dt><dd>${m.km_arrivee != null ? nf(m.km_arrivee) + ' km' : '—'}</dd>
         <dt>État de la route</dt><dd>${esc(cond.route || '—')}</dd><dt>Météo</dt><dd>${esc(cond.meteo || '—')}</dd><dt>Trafic</dt><dd>${esc(cond.trafic || '—')}</dd>
         <dt>Événements</dt><dd>${esc(m.evenements || '—')}</dd><dt>Notes</dt><dd>${esc(m.notes || '—')}</dd></dl></div>
@@ -1327,7 +1388,7 @@ VUES['mission-cloture'] = (id) => {
       <div class="champ cache" data-derog><label class="lib">Justification / dérogation <span class="obl">*</span></label><textarea name="derogation" maxlength="1000" placeholder="Expliquez la valeur inhabituelle (compteur remplacé, erreur de relevé, oubli de clôture…)"></textarea></div>
       <button class="btn p large" type="submit">Clôturer la mission</button></form>`,
   init(el) {
-    const f = $('#fc', el); let estim = { km: m.distance_carte, source: m.distance_carte_source };
+    const f = $('#fc', el); let estim = { km: m.distance_carte, source: m.distance_carte_source, duree: m.duree_carte_min };
     const fin = () => f.corriger_heure.checked ? depuisInput(f.fin_reelle.value) : new Date().toISOString();
     const maj = () => {
       $('[data-heure]', el).classList.toggle('cache', !f.corriger_heure.checked);
@@ -1355,7 +1416,7 @@ VUES['mission-cloture'] = (id) => {
       if (!c.bloquant && c.alertes.length && !(await confirmer('Certaines valeurs sont inhabituelles (' + c.alertes.map((x) => LIB.alerteMission[x]).join(', ') + '). Clôturer quand même ?', { ok: 'Clôturer' }))) return;
       const derog = [f.corriger_heure.checked ? `Heure de clôture corrigée (saisie le ${fmtDH(new Date().toISOString())})` : '', v.derogation].filter(Boolean).join(' — ') || null;
       await enregistrer('ambu_missions', m.id, { statut: 'cloturee', fin: fin(), km_arrivee: v.km_arrivee, destination_id: v.destination_id,
-        distance_carte: estim?.km ?? null, distance_carte_source: estim?.source ?? null,
+        distance_carte: estim?.km ?? null, distance_carte_source: estim?.source ?? null, duree_carte_min: estim?.duree ?? null,
         conditions: { route: v.route || null, meteo: v.meteo || null, trafic: v.trafic || null }, evenements: v.evenements || null, derogation: derog });
       S.enForm = false; toast(`Mission clôturée : ${nf(c.distance)} km au compteur`, 'ok'); location.hash = '#/mission/' + m.id;
     };
@@ -1864,7 +1925,7 @@ VUES.carte = (arg, q) => {
   const mc = P('carte', {}) || {}; const rem = L('ambu_remarques_carte').sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
   const lieux = L('ambu_localites').filter((l) => l.actif !== false);
   return { html: entete('Carte et localités', `Référentiel : ${esc(mc.version || '—')} du ${fmtJ(mc.date)} · fond ${esc(mc.fond || 'OpenStreetMap')}`,
-      `<button class="btn" data-estimer>Estimer un itinéraire</button>${peut.terrain() ? '<button class="btn" data-signaler>Signaler une correction</button>' : ''}${peut.sup() ? `<button class="btn p" data-ajout>${ic('plus', 18)} Ajouter un lieu</button>` : ''}`)
+      `<button class="btn" data-estimer>Estimer un itinéraire</button>${peut.terrain() ? '<button class="btn" data-signaler>Signaler une correction</button>' : ''}${peut.sup() ? `<button class="btn p" data-ajout>${ic('plus', 18)} Ajouter un lieu</button>` : peut.terrain() ? `<button class="btn p" data-ajout-terrain>${ic('plus', 18)} Ajouter une destination</button>` : ''}`)
     + `<div class="carte" style="padding:8px"><div class="carte-map" id="grande"></div><div class="legende"><span><i style="background:#0b62a4"></i>Site / base</span><span><i style="background:#0f7a4f"></i>Lieu vérifié</span><span><i style="background:#d08700"></i>À vérifier par le terrain</span></div>
       <p class="aide" style="margin:6px 4px">Les zones consultées restent disponibles hors ligne. Distances de la carte = estimations : seule la distance compteur fait foi. Météo, état de la route et trafic sont saisis manuellement.</p></div>
     <div class="grille g2 r1"><div class="carte"><h2>Localités (${lieux.length})</h2><input type="search" data-q placeholder="Rechercher…" style="margin-bottom:8px"><div class="liste" data-lieux style="max-height:420px;overflow:auto"></div></div>
@@ -1884,7 +1945,7 @@ VUES.carte = (arg, q) => {
     } catch (e) { $('#grande', el).innerHTML = `<div class="vide">${esc(e.message)}</div>`; }
     $('[data-estimer]', el).onclick = () => modale('Estimer un itinéraire', `<div class="champ"><label class="lib">Départ</label>${champLieu('a')}</div><div class="champ"><label class="lib">Arrivée</label>${champLieu('b')}</div><div data-r class="bandeau">Choisissez deux lieux.</div>`, (mc) => {
       lierLieux(mc, async () => { const a = $('[name=a]', mc).value, b = $('[name=b]', mc).value; if (!a || !b) return; $('[data-r]', mc).textContent = 'Calcul…'; const r = await estimerItineraire(a, b);
-        $('[data-r]', mc).innerHTML = r ? `Distance estimée : <b>${nf(r.km, 1)} km</b><br><span class="aide">${esc(r.source)} — estimation, distincte de la distance compteur.</span>` : 'Coordonnées manquantes pour l’un des lieux.';
+        $('[data-r]', mc).innerHTML = texteEstimation(r);
         if (r?.geo && carte) { if (trace) trace.remove(); trace = window.L.polyline(r.geo, { color: '#1456a0', weight: 4 }).addTo(carte); carte.fitBounds(trace.getBounds(), { padding: [20, 20] }); } });
     });
     const bsig = $('[data-signaler]', el);
@@ -1895,6 +1956,7 @@ VUES.carte = (arg, q) => {
         await enregistrer('ambu_remarques_carte', null, { type: v.type, texte: v.texte, localite_id: v.localite_id || null, lat: posClic?.lat ?? null, lng: posClic?.lng ?? null }); fermer(); toast('Remarque envoyée au référent carte', 'ok'); router(); };
     });
     const baj = $('[data-ajout]', el); if (baj) baj.onclick = () => formLieu(null, posClic);
+    const bat = $('[data-ajout-terrain]', el); if (bat) bat.onclick = () => formNouveauLieu('', () => router());
     $$('[data-traiter]', el).forEach((b) => b.onclick = () => modale('Traiter la remarque', `<form><div class="champ"><label class="lib">Décision</label><select name="statut">${options([['traitee', 'Traitée (référentiel corrigé)'], ['rejetee', 'Rejetée']])}</select></div><div class="champ"><label class="lib">Réponse</label><textarea name="reponse"></textarea></div><button class="btn p large">Enregistrer</button></form>`, (mc, fermer) => {
       $('form', mc).onsubmit = async (e) => { e.preventDefault(); const v = lireForm(e.target); await enregistrer('ambu_remarques_carte', b.dataset.traiter, { statut: v.statut, reponse: v.reponse || null }); fermer(); router(); };
     }));
@@ -2524,7 +2586,7 @@ VUES.admin = (arg, q) => {
     corps = `<form class="carte" data-seuils><h2>Seuils et rappels</h2><p class="aide">À confirmer à partir des procédures Fortescue et des recommandations du constructeur.</p><div class="grille g3">
       ${champS('distance_max', 'Distance max. par mission (km)')}${champS('vitesse_max', 'Vitesse moyenne max. (km/h)')}${champS('ecart_pct', 'Écart carte signalé au-delà de (%)')}
       ${champS('rappel_document_jours', 'Rappel documents (jours avant)')}${champS('vidange_km', 'Intervalle vidange (km)')}${champS('vidange_jours', 'Intervalle vidange (jours)')}
-      ${champS('rappel_entretien_km', 'Rappel entretien (km avant)')}${champS('rappel_entretien_jours', 'Rappel entretien (jours avant)')}${champS('session_heures', 'Expiration de session (heures d’inactivité)')}${champS('rappel_permis_jours', 'Rappel permis / aptitudes (jours avant)')}</div><button class="btn p">Enregistrer les seuils</button></form>
+      ${champS('rappel_entretien_km', 'Rappel entretien (km avant)')}${champS('rappel_entretien_jours', 'Rappel entretien (jours avant)')}${champS('session_heures', 'Expiration de session (heures d’inactivité)')}${champS('rappel_permis_jours', 'Rappel permis / aptitudes (jours avant)')}${champS('vitesse_estimation', 'Vitesse moyenne pour estimer les durées (km/h)')}</div><button class="btn p">Enregistrer les seuils</button></form>
       <form class="carte" data-listes><h2>Listes de choix</h2><p class="aide">Une valeur par ligne.</p><div class="grille g2 r1">${Object.entries({ motifs_mission: 'Motifs de mission', categories_anomalie: 'Catégories d’anomalie', natures_incident: 'Natures d’incident', etat_route: 'États de la route', meteo: 'Météo', trafic: 'Trafic', carburant: 'Niveaux de carburant', categories_permis: 'Catégories de permis', motifs_releve: 'Motifs de relevé kilométrique', equipements_defaut: 'Équipements par défaut (nouvelle ambulance)' }).map(([k, l]) => `<div class="champ"><label class="lib">${l}</label><textarea name="${k}" rows="5">${esc((lst[k] || []).join('\n'))}</textarea></div>`).join('')}</div><button class="btn p">Enregistrer les listes</button></form>
       <form class="carte" data-grille><h2>Points de la fiche de contrôle</h2><p class="aide">Format : une ligne « ## Groupe » puis une ligne par point. Ajoutez « ! » en début de ligne pour un point critique. Ne changez pas l’ordre des points existants sans prévenir les équipes.</p>
         <textarea name="grille" rows="16" class="mono">${esc((P('controle', []) || []).map((g) => '## ' + g.groupe + '\n' + g.items.map((i) => (i.critique ? '!' : '') + i.libelle).join('\n')).join('\n'))}</textarea><button class="btn p">Enregistrer la fiche de contrôle</button></form>
