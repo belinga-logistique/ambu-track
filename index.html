@@ -302,6 +302,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .photo-id .apercu{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--prim-c);display:grid;place-items:center;color:var(--prim);font:800 2rem var(--f-titre);border:3px solid var(--carte);box-shadow:0 0 0 2px var(--bord)}
 .photo-id .apercu img{width:100%;height:100%;object-fit:cover}
 
+/* ---------- 1.4 : liens Google Sheets */
+.copie{display:flex;gap:6px}.copie input{flex:1;min-width:0;font-size:.8rem}
 /* ---------- 1.3 : reporting à la hiérarchie */
 .reglages-rep{display:flex;flex-direction:column;gap:12px}
 .nav-periode{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -367,11 +369,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.3.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.4.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.3.0',
+  VERSION: '1.4.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -455,7 +457,7 @@ const LIB = {
   fonctionCond: ['Ambulancier', 'Chauffeur', 'Infirmier', 'Secouriste', 'Médecin', 'Autre'],
   alerteReleve: { km_inferieur: 'Inférieur au dernier kilométrage connu', saut_important: 'Hausse inhabituelle depuis le dernier relevé' },
   equip: { ok: ['Présent / OK', 'ok'], a_verifier: ['À vérifier', 'warn'], defectueux: ['Défectueux', 'bad'], absent: ['Absent', 'bad'] },
-  table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique', ambu_rapports: 'Rapport transmis' },
+  table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique', ambu_rapports: 'Rapport transmis', ambu_liens_export: 'Lien Google Sheets' },
 };
 const chip = (paire, extra = '') => paire ? `<span class="chip ${paire[1]}">${esc(paire[0])}${extra}</span>` : '';
 const DEFAUT_SEUILS = { rappel_permis_jours: 60, distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
@@ -489,7 +491,7 @@ const kvGet = async (k) => (await IDB.lire('kv', k))?.v;
 
 /* ----------------------------------------------------------------- État */
 const TABLES = ['ambu_sites', 'ambu_profils', 'ambu_ambulances', 'ambu_localites', 'ambu_missions', 'ambu_inspections', 'ambu_signalements',
-  'ambu_entretiens', 'ambu_documents', 'ambu_fichiers', 'ambu_remarques_carte', 'ambu_parametres', 'ambu_conflits', 'ambu_conducteurs', 'ambu_releves_km', 'ambu_rapports'];
+  'ambu_entretiens', 'ambu_documents', 'ambu_fichiers', 'ambu_remarques_carte', 'ambu_parametres', 'ambu_conflits', 'ambu_conducteurs', 'ambu_releves_km', 'ambu_rapports', 'ambu_liens_export'];
 const S = { session: null, profil: null, srv: {}, data: {}, out: [], rev: 0, sync: false, resync: false, dernierPull: null, derniereSync: null,
   erreurSync: null, reconnexion: false, itin: {}, vue: null, enForm: false };
 TABLES.forEach((t) => { S.srv[t] = new Map(); S.data[t] = new Map(); });
@@ -2415,6 +2417,7 @@ VUES.reporting = (arg, q) => {
         <button class="btn" data-xlsx>${ic('rapport', 18)} Télécharger Excel</button>
         <button class="btn" data-sheets>${ic('rapport', 18)} Ouvrir dans Google Sheets</button>
         <button class="btn cache" data-partager>${ic('envoi', 18)} Partager le PDF (WhatsApp, e-mail…)</button>
+        ${peut.admin() ? `<a class="btn" href="#/admin?onglet=sheets">${ic('rapport', 18)} Google Sheets relié en direct</a>` : ''}
         <p class="aide" style="margin:4px 0 0">${peut.gestion() ? 'Chaque export est enregistré dans l’historique avec les chiffres transmis.' : 'Consultation : les exports ne sont pas enregistrés dans l’historique.'}</p></div>
       <div class="carte hist-rap"><h2>Rapports transmis (${hist.length})</h2>${hist.length ? `<div class="liste">${hist.map((r) => `<div class="ligne"><div class="corps"><div class="t">Rapport ${TYPES_REP[r.type] || ''} · ${fmtJ(r.du)}${r.au !== r.du ? ' → ' + fmtJ(r.au) : ''}</div>
         <div class="s">${r.ambulance_id ? esc(amb(r.ambulance_id)?.code || '') : r.site_id ? esc(nomSite(r.site_id)) : 'Tous les sites'} · ${esc(r.signataire || nomUser(r.created_by))} · ${fmtDH(r.transmis_le)}</div>
@@ -2458,6 +2461,7 @@ function resumeOp(o) {
   if (o.table === 'ambu_fichiers') return `${d.nom || 'photo'} (${nf((d.taille || 0) / 1024)} ko)`;
   if (o.table === 'ambu_ambulances') return r.code || '';
   if (o.table === 'ambu_conducteurs') return nomCond(r);
+  if (o.table === 'ambu_liens_export') return r.nom || 'Lien';
   if (o.table === 'ambu_rapports') return `${r.titre || 'Rapport'} · ${fmtJ(r.du)}`;
   if (o.table === 'ambu_releves_km') return `${amb(r.ambulance_id)?.code || ''} · ${nf(r.km)} km`;
   return r.nom || r.cle || r.texte || r.type || '';
@@ -2525,13 +2529,23 @@ VUES.admin = (arg, q) => {
       <form class="carte" data-grille><h2>Points de la fiche de contrôle</h2><p class="aide">Format : une ligne « ## Groupe » puis une ligne par point. Ajoutez « ! » en début de ligne pour un point critique. Ne changez pas l’ordre des points existants sans prévenir les équipes.</p>
         <textarea name="grille" rows="16" class="mono">${esc((P('controle', []) || []).map((g) => '## ' + g.groupe + '\n' + g.items.map((i) => (i.critique ? '!' : '') + i.libelle).join('\n')).join('\n'))}</textarea><button class="btn p">Enregistrer la fiche de contrôle</button></form>
       <form class="carte" data-cartev><h2>Version des données cartographiques</h2><div class="grille g2"><div class="champ"><label class="lib">Version</label><input name="version" value="${esc(P('carte', {})?.version || '')}"></div><div class="champ"><label class="lib">Date</label><input type="date" name="date" value="${esc(P('carte', {})?.date || '')}"></div></div><button class="btn p">Enregistrer</button></form>`;
+  } else if (onglet === 'sheets') {
+    const liens = L('ambu_liens_export').sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    corps = `<div class="carte"><h2>Google Sheets relié en direct</h2><p class="aide" style="margin-top:0">Un lien permet à un Google Sheet de lire les données d’Ambu Track avec la formule IMPORTDATA. Google Sheets se met à jour tout seul (environ toutes les heures et à chaque ouverture). Le lien donne accès en lecture seule ; désactivez-le pour couper l’accès immédiatement.</p>
+      <button class="btn p" data-nl>${ic('plus', 18)} Créer un lien Google Sheets</button></div>
+      <div class="liste">${liens.length ? liens.map((x) => `<div class="ligne"><div class="corps"><div class="t">${esc(x.nom)}</div><div class="s">${x.site_id ? esc(nomSite(x.site_id)) : 'Tous les sites'} · créé le ${fmtDH(x.created_at)} · ${x.nb_acces || 0} lecture(s)${x.dernier_acces ? ', dernière le ' + fmtDH(x.dernier_acces) : ''}</div></div>
+        <div class="droite">${x.actif ? '<span class="chip ok">Actif</span>' : '<span class="chip mute">Désactivé</span>'}<button class="btn petit${x.actif ? ' danger' : ''}" data-bascule="${x.id}">${x.actif ? 'Désactiver' : 'Réactiver'}</button></div></div>`).join('') : vide('Aucun lien pour le moment.')}</div>`;
   } else if (onglet === 'audit') {
     corps = `<div class="filtres"><select data-t>${options(Object.entries(LIB.table), q.table, 'Toutes les tables')}</select></div><div class="carte" data-journal>${navigator.onLine ? 'Chargement…' : vide('Le journal d’audit se consulte en ligne.')}</div>`;
   }
   return { html: entete('Administration', 'Utilisateurs, référentiels, paramètres et journal d’audit')
-    + `<div class="onglets">${[['utilisateurs', 'Utilisateurs'], ['sites', 'Sites et import'], ['parametres', 'Paramètres'], ['audit', 'Journal d’audit']].map(([k, l]) => `<a href="#/admin?onglet=${k}" class="${k === onglet ? 'actif' : ''}">${l}</a>`).join('')}</div>${corps}`,
+    + `<div class="onglets">${[['utilisateurs', 'Utilisateurs'], ['sites', 'Sites et import'], ['parametres', 'Paramètres'], ['sheets', 'Google Sheets'], ['audit', 'Journal d’audit']].map(([k, l]) => `<a href="#/admin?onglet=${k}" class="${k === onglet ? 'actif' : ''}">${l}</a>`).join('')}</div>${corps}`,
   async init(el) {
     const nu = $('[data-nu]', el); if (nu) nu.onclick = () => formUtilisateur(null);
+    const nl = $('[data-nl]', el); if (nl) nl.onclick = formLienSheets;
+    $$('[data-bascule]', el).forEach((b) => b.onclick = async () => { const x = G('ambu_liens_export', b.dataset.bascule);
+      if (x.actif && !(await confirmer(`Désactiver le lien « ${x.nom} » ? Les Google Sheets qui l’utilisent n’afficheront plus de données.`, { ok: 'Désactiver', danger: true }))) return;
+      await enregistrer('ambu_liens_export', x.id, { actif: !x.actif }); toast(x.actif ? 'Lien désactivé' : 'Lien réactivé', 'ok'); router(); });
     $$('[data-eu]', el).forEach((b) => b.onclick = () => formUtilisateur(G('ambu_profils', b.dataset.eu)));
     $$('[data-mdp]', el).forEach((b) => b.onclick = async () => {
       const u = G('ambu_profils', b.dataset.mdp);
@@ -2630,6 +2644,41 @@ async function importerCsv(fichier) {
   }
   planifierSync(100);
   modale('Import terminé', `<p><b>${n}</b> ambulance(s) importée(s).</p>${erreurs.length ? `<div class="bandeau warn">Lignes ignorées : ${esc(erreurs.join(', '))} (code, immatriculation ou site manquant / inconnu).</div>` : ''}`);
+}
+
+
+/* ----------------------------------------------------------------- Liens Google Sheets */
+const DONNEES_SHEETS = [['parc', 'Parc', 'État des ambulances, km courant, échéances', false], ['synthese', 'Synthèse', 'Chiffres par ambulance sur la période', true],
+  ['missions', 'Missions', 'Détail des missions', true], ['incidents', 'Incidents', 'Anomalies et incidents (période + dossiers ouverts)', true],
+  ['controles', 'Contrôles', 'Contrôles quotidiens', true], ['entretiens', 'Entretiens', 'Entretiens et réparations', true],
+  ['releves', 'Relevés km', 'Relevés kilométriques et carburant', true], ['chauffeurs', 'Chauffeurs', 'Permis et aptitudes (sans numéro de permis)', false],
+  ['alertes', 'Alertes', 'Pièces expirées, vidanges, permis, incidents prioritaires', false]];
+async function sha256Hex(t) { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(h)].map((b) => b.toString(16).padStart(2, '0')).join(''); }
+function nouveauJeton() { const a = crypto.getRandomValues(new Uint8Array(30)); return btoa(String.fromCharCode(...a)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function formLienSheets() {
+  if (!navigator.onLine) return toast('Connexion nécessaire pour créer un lien', 'bad');
+  modale('Créer un lien Google Sheets', `<form novalidate><div class="champ"><label class="lib">Nom du lien <span class="obl">*</span></label><input name="nom" maxlength="80" placeholder="Ex. : Tableau de bord direction"></div>
+    <div class="champ"><label class="lib">Données accessibles</label><select name="site_id">${options(sitesVisibles().map((x) => [x.id, 'Seulement ' + x.nom]), '', 'Tous les sites')}</select></div>
+    <button class="btn p large">Créer le lien</button></form>`, (mc, fermer) => {
+    $('form', mc).onsubmit = async (e) => {
+      e.preventDefault(); const v = lireForm(e.target); if (!v.nom) return erreurChamp(e.target, 'nom', 'Donnez un nom au lien');
+      const jeton = nouveauJeton(); const id = uuid();
+      await enregistrer('ambu_liens_export', id, { nom: v.nom, site_id: v.site_id || null, jeton_hash: await sha256Hex(jeton), actif: true });
+      fermer(); await synchroniser(); afficherLienSheets(v.nom, jeton); router(true);
+    };
+  });
+}
+function afficherLienSheets(nom, jeton) {
+  const base = `${CONFIG.SUPABASE_URL}/functions/v1/ambu-export?t=${jeton}`;
+  const formule = (d, per) => `=IMPORTDATA("${base}&donnees=${d}${per ? '&periode=mois' : ''}";",";"en_US")`;
+  modale(`Lien « ${nom} »`, `<div class="bandeau warn">Copiez ces informations maintenant : la clé du lien ne sera plus affichée. Ne la diffusez qu’aux personnes autorisées.</div>
+    <div class="champ"><span class="lib">Adresse de base</span><div class="copie"><input readonly value="${esc(base)}" data-copie-val><button type="button" class="btn petit" data-copier>Copier</button></div></div>
+    <p class="aide">Dans Google Sheets, collez une formule en cellule A1 d’un onglet. Période possible : jour, hier, semaine, mois, mois_prec, annee, tout (ou du=AAAA-MM-JJ&au=AAAA-MM-JJ). La première fois, cliquez sur « Autoriser l’accès ».</p>
+    <div class="liste">${DONNEES_SHEETS.map(([d, lib, aide, per]) => `<div class="ligne" style="flex-wrap:wrap"><div class="corps"><div class="t">${lib}</div><div class="s">${aide}</div></div>
+      <div class="copie" style="flex-basis:100%"><input readonly value="${esc(formule(d, per))}" data-copie-val class="mono"><button type="button" class="btn petit" data-copier>Copier</button></div></div>`).join('')}</div>`, (mc) => {
+    $$('[data-copier]', mc).forEach((b) => b.onclick = async () => { const inp = b.parentElement.querySelector('input');
+      try { await navigator.clipboard.writeText(inp.value); toast('Copié', 'ok'); } catch { inp.select(); toast('Sélectionné : faites Copier', ''); } });
+  });
 }
 
 /* ================================================================= MON COMPTE */
