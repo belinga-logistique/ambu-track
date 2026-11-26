@@ -383,11 +383,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.5.3 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.5.4 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.5.3',
+  VERSION: '1.5.4',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -887,8 +887,9 @@ async function synchroniser({ complet = false, manuel = false } = {}) {
   if (S.sync) { S.resync = true; return; }
   S.sync = true; majIndicateur();
   try {
-    await envoyer();
+    // Lecture d'abord (remise à zéro, conflits), puis envoi des saisies, puis relecture des changements
     await recevoir(complet);
+    if (S.out.some((o) => o.statut === 'attente')) { await envoyer(); await recevoir(false); }
     S.derniereSync = new Date().toISOString(); S.erreurSync = null; await kvSet('derniereSync', S.derniereSync);
     if (manuel) toast('Synchronisation terminée', 'ok');
   } catch (e) {
@@ -954,6 +955,10 @@ async function recevoir(complet = false) {
   const ri = P('reinitialisation', null);
   if (ri?.le && (await kvGet('reinitVue')) !== ri.le) {
     await kvSet('reinitVue', ri.le); S.itin = {}; await kvSet('itin', {});
+    if (ri.vider_attente) {   // saisies faites avant la remise à zéro : abandonnées
+      for (const o of S.out.filter((x) => (x.cree || '') < ri.le)) await retirerOp(o);
+      await IDB.vider('fichiers'); reconstruire(); majIndicateur();
+    }
     if (depuis) await recevoir(true);
   }
 }
@@ -2924,7 +2929,7 @@ async function demarrer() {
   if (S.profil.doit_changer_mdp && navigator.onLine) return ecranNouveauMdp();
   noterActivite(); lancerApp();
 }
-window.__ambu = { S, synchroniser, calculMission, kmCourant, alertes, IDB };   // pour les tests automatiques
+window.__ambu = { S, synchroniser, enregistrer, calculMission, kmCourant, alertes, IDB };   // pour les tests automatiques
 demarrer();
 </script>
 </body>
