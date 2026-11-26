@@ -303,6 +303,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .photo-id .apercu{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--prim-c);display:grid;place-items:center;color:var(--prim);font:800 2rem var(--f-titre);border:3px solid var(--carte);box-shadow:0 0 0 2px var(--bord)}
 .photo-id .apercu img{width:100%;height:100%;object-fit:cover}
 
+/* ---------- 1.5.3 : carte satellite */
+.leaflet-tooltip.etiquette-lieu{background:rgba(15,30,46,.82);color:#fff;border:0;border-radius:6px;padding:3px 7px;font:600 12px/1.2 system-ui,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.leaflet-tooltip.etiquette-lieu::before{display:none}
+.leaflet-control-layers{border-radius:10px!important}.leaflet-control-layers-expanded{padding:8px 12px!important;font:600 13px system-ui,sans-serif}
 /* ---------- 1.5.2 : boutons Modifier dans les listes */
 .ligne-modif{display:flex;gap:8px;align-items:stretch}
 .ligne-modif>.ligne,.ligne-modif>.carte-cond{flex:1;min-width:0}
@@ -379,15 +383,18 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.5.2 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.5.3 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.5.2',
+  VERSION: '1.5.3',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
   TUILES: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  TUILES_SAT: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  TUILES_ROUTES: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+  TUILES_NOMS: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
   LEAFLET: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js',
   XLSX: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
   JSPDF: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
@@ -984,17 +991,35 @@ function texteEstimation(e, depart = new Date().toISOString()) {
 }
 
 /* ----------------------------------------------------------------- Carte (Leaflet) */
-async function creerCarte(el, { lieux = L('ambu_localites'), surClic, surLieu, zoom } = {}) {
+async function creerCarte(el, { lieux = L('ambu_localites'), surClic, surLieu, zoom, etiquettes = false } = {}) {
   await chargerScript(CONFIG.LEAFLET);
-  const carte = window.L.map(el, { zoomControl: true, attributionControl: true }).setView([0.6, 11.8], zoom || 6);
-  window.L.tileLayer(CONFIG.TUILES, { maxZoom: 17, attribution: '© OpenStreetMap' }).addTo(carte);
-  const couches = window.L.layerGroup().addTo(carte);
+  const Lf = window.L;
+  const carte = Lf.map(el, { zoomControl: true, attributionControl: true }).setView([0.6, 11.8], zoom || 6);
+  // Fonds : vue satellite (par défaut, avec routes et noms) ou plan OpenStreetMap ; le choix est mémorisé
+  const satellite = Lf.layerGroup([
+    Lf.tileLayer(CONFIG.TUILES_SAT, { maxZoom: 18, maxNativeZoom: 18, attribution: 'Imagerie © Esri, Maxar, Earthstar Geographics' }),
+    Lf.tileLayer(CONFIG.TUILES_ROUTES, { maxZoom: 18, maxNativeZoom: 18 }),
+    Lf.tileLayer(CONFIG.TUILES_NOMS, { maxZoom: 18, maxNativeZoom: 18 }),
+  ]);
+  const plan = Lf.tileLayer(CONFIG.TUILES, { maxZoom: 18, maxNativeZoom: 17, attribution: '© OpenStreetMap' });
+  let fond = 'satellite'; try { fond = localStorage.getItem('ambu.fond') || 'satellite'; } catch { /* stockage indisponible */ }
+  (fond === 'plan' ? plan : satellite).addTo(carte);
+  Lf.control.layers({ 'Satellite': satellite, 'Plan': plan }, null, { position: 'topright' }).addTo(carte);
+  carte.on('baselayerchange', (e) => { try { localStorage.setItem('ambu.fond', e.name === 'Plan' ? 'plan' : 'satellite'); } catch { /* rien */ } });
+  const couches = Lf.layerGroup().addTo(carte);
+  const marqueurs = [];
   for (const l of lieux) {
     if (l.lat == null || l.actif === false) continue;
-    const c = l.type === 'site' || l.type === 'base' ? '#0b62a4' : l.verifie ? '#0f7a4f' : '#c26a00';
-    const m = window.L.circleMarker([l.lat, l.lng], { radius: l.type === 'site' ? 9 : 7, color: '#fff', weight: 2, fillColor: c, fillOpacity: 1 }).addTo(couches);
-    m.bindTooltip(l.nom);
+    const c = l.type === 'site' || l.type === 'base' ? '#2f80ed' : l.verifie ? '#22a35a' : '#f2a33a';
+    const m = Lf.circleMarker([l.lat, l.lng], { radius: l.type === 'site' ? 10 : 8, color: '#fff', weight: 2.5, fillColor: c, fillOpacity: 1 }).addTo(couches);
+    m.bindTooltip(l.nom, { className: 'etiquette-lieu', direction: 'right', offset: [8, 0], permanent: etiquettes });
+    marqueurs.push(m);
     if (surLieu) m.on('click', () => surLieu(l, m));
+  }
+  // Noms permanents seulement quand on zoome (sinon la carte est illisible)
+  if (etiquettes) {
+    const majNoms = () => { const z = carte.getZoom(); marqueurs.forEach((m) => { const t = m.getTooltip(); if (!t) return; if (z >= 8) m.openTooltip(); else m.closeTooltip(); }); };
+    carte.on('zoomend', majNoms); setTimeout(majNoms, 100);
   }
   if (surClic) carte.on('click', (e) => surClic(e.latlng));
   setTimeout(() => carte.invalidateSize(), 50);
@@ -1939,8 +1964,8 @@ VUES.carte = (arg, q) => {
   const lieux = L('ambu_localites').filter((l) => l.actif !== false);
   return { html: entete('Carte et localités', `Référentiel : ${esc(mc.version || '—')} du ${fmtJ(mc.date)} · fond ${esc(mc.fond || 'OpenStreetMap')}`,
       `<button class="btn" data-estimer>Estimer un itinéraire</button>${peut.terrain() ? '<button class="btn" data-signaler>Signaler une correction</button>' : ''}${peut.sup() ? `<button class="btn p" data-ajout>${ic('plus', 18)} Ajouter un lieu</button>` : peut.terrain() ? `<button class="btn p" data-ajout-terrain>${ic('plus', 18)} Ajouter une destination</button>` : ''}`)
-    + `<div class="carte" style="padding:8px"><div class="carte-map" id="grande"></div><div class="legende"><span><i style="background:#0b62a4"></i>Site / base</span><span><i style="background:#0f7a4f"></i>Lieu vérifié</span><span><i style="background:#d08700"></i>À vérifier par le terrain</span></div>
-      <p class="aide" style="margin:6px 4px">Les zones consultées restent disponibles hors ligne. Distances de la carte = estimations : seule la distance compteur fait foi. Météo, état de la route et trafic sont saisis manuellement.</p></div>
+    + `<div class="carte" style="padding:8px"><div class="carte-map" id="grande"></div><div class="legende"><span><i style="background:#2f80ed"></i>Site / base</span><span><i style="background:#22a35a"></i>Lieu vérifié</span><span><i style="background:#f2a33a"></i>À vérifier par le terrain</span></div>
+      <p class="aide" style="margin:6px 4px">Vue satellite par défaut (bouton en haut à droite de la carte pour passer en plan). Les zones consultées restent disponibles hors ligne. Distances de la carte = estimations : seule la distance compteur fait foi. Météo, état de la route et trafic sont saisis manuellement.</p></div>
     <div class="grille g2 r1"><div class="carte"><h2>Localités (${lieux.length})</h2><input type="search" data-q placeholder="Rechercher…" style="margin-bottom:8px"><div class="liste" data-lieux style="max-height:420px;overflow:auto"></div></div>
     <div class="carte"><h2>Remarques terrain (${rem.filter((r) => r.statut === 'ouverte').length} ouvertes)</h2>${rem.length ? `<div class="liste">${rem.slice(0, 60).map((r) => `<div class="ligne"><div class="corps"><div class="t">${esc(LIB.typeRem[r.type])}${r.localite_id ? ' — ' + esc(nomLieu(r.localite_id)) : ''}</div><div class="s">${esc(r.texte)}<br>${esc(nomUser(r.created_by))} · ${fmtDH(r.created_at)}${r.reponse ? ' · Réponse : ' + esc(r.reponse) : ''}</div></div>
       <div class="droite">${chip(r.statut === 'ouverte' ? ['Ouverte', 'warn'] : r.statut === 'traitee' ? ['Traitée', 'ok'] : ['Rejetée', 'mute'])}${peut.sup() && r.statut === 'ouverte' ? `<button class="btn petit" data-traiter="${r.id}">Traiter</button>` : ''}</div></div>`).join('')}</div>` : vide('Aucune remarque.')}</div></div>`,
@@ -1953,8 +1978,13 @@ VUES.carte = (arg, q) => {
     };
     $('[data-q]', el).oninput = dessLieux; dessLieux();
     try {
-      carte = await creerCarte($('#grande', el), { lieux, surClic: (ll) => { posClic = ll; }, surLieu: (l, m) => m.bindPopup(`<b>${esc(l.nom)}</b><br>${esc(LIB.typeLoc[l.type])}${l.province ? ' · ' + esc(l.province) : ''}<br>${l.verifie ? 'Vérifié' : 'À vérifier'}`).openPopup() });
-      const pts = lieux.filter((l) => l.lat != null).map((l) => [l.lat, l.lng]); if (pts.length) carte.fitBounds(pts, { padding: [20, 20] });
+      carte = await creerCarte($('#grande', el), { lieux, etiquettes: true, surClic: (ll) => { posClic = ll; }, surLieu: (l, m) => m.bindPopup(`<b>${esc(l.nom)}</b><br>${esc(LIB.typeLoc[l.type])}${l.province ? ' · ' + esc(l.province) : ''}<br>${l.verifie ? 'Vérifié' : 'À vérifier'}`).openPopup() });
+      // Ouverture sur la zone de travail : lieux à moins de 120 km du site (Belinga), sinon tout le référentiel
+      const avecPos = lieux.filter((l) => l.lat != null && l.actif !== false);
+      const site = avecPos.find((l) => l.type === 'site');
+      const zone = site ? avecPos.filter((l) => distanceKm(site, l) <= 120) : avecPos;
+      const pts = (zone.length > 1 ? zone : avecPos).map((l) => [l.lat, l.lng]);
+      if (pts.length) carte.fitBounds(pts, { padding: [40, 40], maxZoom: 11 });
     } catch (e) { $('#grande', el).innerHTML = `<div class="vide">${esc(e.message)}</div>`; }
     $('[data-estimer]', el).onclick = () => modale('Estimer un itinéraire', `<div class="champ"><label class="lib">Départ</label>${champLieu('a')}</div><div class="champ"><label class="lib">Arrivée</label>${champLieu('b')}</div><div data-r class="bandeau">Choisissez deux lieux.</div>`, (mc) => {
       lierLieux(mc, async () => { const a = $('[name=a]', mc).value, b = $('[name=b]', mc).value; if (!a || !b) return; $('[data-r]', mc).textContent = 'Calcul…'; const r = await estimerItineraire(a, b);
