@@ -383,11 +383,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.5.4 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.6.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.5.4',
+  VERSION: '1.6.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -545,7 +545,8 @@ const nomSite = (id) => G('ambu_sites', id)?.nom || '—';
 const amb = (id) => G('ambu_ambulances', id);
 const nomAmb = (id) => { const a = amb(id); return a ? `${a.code} · ${a.immatriculation}` : 'Ambulance inconnue'; };
 const ambulancesVisibles = () => L('ambu_ambulances').filter((a) => a.actif !== false).sort((a, b) => a.code.localeCompare(b.code, 'fr', { numeric: true }));
-const sitesVisibles = () => L('ambu_sites').filter((s) => s.actif !== false).sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+const ordreSite = (a, b) => (a.ordre ?? 999) - (b.ordre ?? 999) || a.nom.localeCompare(b.nom, 'fr');
+const sitesVisibles = () => L('ambu_sites').filter((s) => s.actif !== false).sort(ordreSite);
 const etatSync = (r) => r?._etat === 'attente' ? '<span class="chip info" title="En attente d’envoi">⇡ À envoyer</span>'
   : r?._etat === 'erreur' ? '<span class="chip bad">Erreur d’envoi</span>' : r?._etat === 'conflit' ? '<span class="chip bad">Conflit</span>' : '';
 
@@ -2315,7 +2316,7 @@ VUES['chauffeur-form'] = (id) => {
       <div class="champ"><label class="lib">Matricule</label><input name="matricule" maxlength="30" value="${esc(c?.matricule || '')}"></div>
       <div class="champ"><label class="lib">Téléphone</label><input name="telephone" type="tel" inputmode="tel" maxlength="20" value="${esc(c?.telephone || '')}" placeholder="0X XX XX XX"></div>
       <div class="champ"><label class="lib">Fonction</label><select name="fonction">${options(LIB.fonctionCond, c?.fonction || 'Ambulancier')}</select></div>
-      <div class="champ"><label class="lib">Site <span class="obl">*</span></label><select name="site_id">${options(sites.map((x) => [x.id, x.nom]), c?.site_id || (sites.length === 1 ? sites[0].id : ''), 'Choisir')}</select></div>
+      <div class="champ"><label class="lib">Site d’affectation <span class="obl">*</span></label><select name="site_id">${options(sites.map((x) => [x.id, x.nom]), c?.site_id || (sites.length === 1 ? sites[0].id : ''), 'Choisir le site')}</select><div class="aide">Lieu où le chauffeur est basé. Liste gérée dans Administration → Sites.</div></div>
       <div class="champ"><label class="lib">Compte Ambu Track lié</label><select name="profil_id">${options(comptes.map((p) => [p.id, `${p.nom} (${p.email || LIB.role[p.role]})`]), c?.profil_id, 'Aucun compte')}</select><div class="aide">Permet de proposer automatiquement cette personne comme chauffeur de ses missions.</div></div></div></div>
     <div class="carte"><h2>Permis de conduire</h2><div class="grille g2 r1">
       <div class="champ"><label class="lib">Numéro de permis</label><input name="permis_numero" maxlength="40" class="mono" value="${esc(c?.permis_numero || '')}"></div>
@@ -2628,7 +2629,7 @@ VUES.admin = (arg, q) => {
       <div class="droite">${u.actif ? '<span class="chip ok">Actif</span>' : '<span class="chip mute">Désactivé</span>'}<div class="barre-actions"><button class="btn petit" data-eu="${u.id}">Modifier</button><button class="btn petit" data-mdp="${u.id}">Mot de passe</button></div></div></div>`).join('')}</div>
       <p class="aide">Les comptes sont individuels. Mot de passe provisoire à remettre en main propre ; changement obligatoire à la première connexion. Désactiver un compte révoque immédiatement ses accès aux données.</p>`;
   } else if (onglet === 'sites') {
-    corps = `<div class="barre-actions" style="margin-bottom:12px"><button class="btn p" data-ns>${ic('plus', 18)} Nouveau site</button></div><div class="liste">${L('ambu_sites').sort((a, b) => a.nom.localeCompare(b.nom, 'fr')).map((s) => `<div class="ligne"><div class="corps"><div class="t">${esc(s.nom)}</div><div class="s">${esc(s.code || '')} · ${esc(s.province || '')} · ${ambulancesVisibles().filter((a) => a.site_id === s.id).length} ambulance(s)</div></div><div class="droite">${s.actif === false ? '<span class="chip mute">Inactif</span>' : ''}<button class="btn petit" data-es="${s.id}">Modifier</button></div></div>`).join('')}</div>
+    corps = `<div class="barre-actions" style="margin-bottom:12px"><button class="btn p" data-ns>${ic('plus', 18)} Nouveau site</button></div><div class="liste">${L('ambu_sites').sort(ordreSite).map((s) => `<div class="ligne"><div class="corps"><div class="t">${esc(s.nom)}</div><div class="s">${esc(s.code || '')} · ${esc(s.province || '')} · ${ambulancesVisibles().filter((a) => a.site_id === s.id).length} ambulance(s)</div></div><div class="droite">${s.actif === false ? '<span class="chip mute">Inactif</span>' : ''}<button class="btn petit" data-es="${s.id}">Modifier</button></div></div>`).join('')}</div>
       <div class="carte" style="margin-top:14px"><h2>Importer des ambulances (CSV)</h2><p class="aide">Colonnes séparées par « ; » : code;immatriculation;chassis;marque;modele;annee;code_site;km_initial — première ligne = en-têtes.</p><input type="file" accept=".csv,text/csv" data-csv></div>`;
   } else if (onglet === 'parametres') {
     const s = seuils(); const lst = listes();
@@ -2734,10 +2735,10 @@ function formUtilisateur(u) {
   });
 }
 function formSite(s) {
-  modale(s ? 'Modifier le site' : 'Nouveau site', `<form novalidate><div class="champ"><label class="lib">Nom <span class="obl">*</span></label><input name="nom" value="${esc(s?.nom || '')}"></div><div class="grille g2"><div class="champ"><label class="lib">Code</label><input name="code" value="${esc(s?.code || '')}"></div><div class="champ"><label class="lib">Province</label><input name="province" value="${esc(s?.province || '')}"></div></div>
+  modale(s ? 'Modifier le site' : 'Nouveau site', `<form novalidate><div class="champ"><label class="lib">Nom <span class="obl">*</span></label><input name="nom" value="${esc(s?.nom || '')}"></div><div class="grille g2"><div class="champ"><label class="lib">Code</label><input name="code" value="${esc(s?.code || '')}"></div><div class="champ"><label class="lib">Ordre dans les listes</label><input type="number" name="ordre" min="1" value="${esc(s?.ordre ?? '')}"></div><div class="champ"><label class="lib">Province</label><input name="province" value="${esc(s?.province || '')}"></div></div>
     <label class="case"><input type="checkbox" name="actif" ${s?.actif === false ? '' : 'checked'}> Site actif</label><button class="btn p large" style="margin-top:12px">Enregistrer</button></form>`, (mc, fermer) => {
     $('form', mc).onsubmit = async (e) => { e.preventDefault(); const v = lireForm(e.target); if (!v.nom) return erreurChamp(e.target, 'nom', 'Le nom est obligatoire');
-      await enregistrer('ambu_sites', s?.id || null, { nom: v.nom, code: v.code || null, province: v.province || null, actif: v.actif }); fermer(); toast('Site enregistré', 'ok'); router(); };
+      await enregistrer('ambu_sites', s?.id || null, { nom: v.nom, code: v.code || null, province: v.province || null, ordre: v.ordre, actif: v.actif }); fermer(); toast('Site enregistré', 'ok'); router(); };
   });
 }
 async function importerCsv(fichier) {
