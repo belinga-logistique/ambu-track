@@ -9,6 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icone.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icone-maskable-512.png">
+<script src="langue.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap">
 <style>
@@ -64,6 +65,9 @@ h1{font-size:1.5rem;font-weight:800;margin:0 0 .2rem}h2{font-size:1.1rem;font-we
 .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;
   border-radius:999px;padding:5px 11px;font-size:.8rem;cursor:pointer;white-space:nowrap}
 .pill i{width:9px;height:9px;border-radius:50%;background:#6fd39a;display:inline-block}
+.btn-langue{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 11px;font-weight:700;font-size:.85rem;cursor:pointer;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;min-height:34px}
+.ecran .btn-langue{position:absolute;top:14px;right:14px;border-color:var(--bord);background:var(--survol);color:var(--texte)}
+.ecran .boite{position:relative}
 .pill.hors i{background:#f0b354}.pill.err i{background:#ff6b81}.pill.enc i{background:#79b2f5;animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.3}}
 .nav{position:fixed;top:var(--haut);bottom:0;left:0;width:232px;background:var(--carte);border-right:1px solid var(--bord);padding:12px 10px;overflow:auto;z-index:20}
@@ -370,6 +374,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
     <button class="menu-btn" id="btnMenu" aria-label="Ouvrir le menu"></button>
     <a href="#/accueil" class="logo"><b></b><span>Ambu Track</span></a>
     <span class="esp"></span>
+    <span id="zoneLangue"></span>
     <button id="pillSync" class="pill" title="État de la synchronisation"><i></i><span>…</span></button>
   </header>
   <div class="voile" id="voile"></div>
@@ -383,11 +388,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.6.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.7.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.6.0',
+  VERSION: '1.7.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -478,6 +483,12 @@ const LIB = {
   table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique', ambu_rapports: 'Rapport transmis', ambu_liens_export: 'Lien Google Sheets' },
 };
 const LOGO = '<img src="icone.svg" alt="" class="logo-img" width="36" height="36">';
+/* Langue de l'interface (version 1.7) : voir langue.js */
+const LANGUE = window.AMBU_LANGUE === 'en' ? 'en' : 'fr';
+const boutonLangue = () => LANGUE === 'en'
+  ? '<button type="button" class="btn-langue" data-langue="fr" data-notr title="Afficher l’application en français" aria-label="Afficher l’application en français">🌐 FR</button>'
+  : '<button type="button" class="btn-langue" data-langue="en" data-notr title="Show the app in English" aria-label="Show the app in English">🌐 EN</button>';
+{ const z = document.getElementById('zoneLangue'); if (z) z.innerHTML = boutonLangue(); }
 const chip = (paire, extra = '') => paire ? `<span class="chip ${paire[1]}">${esc(paire[0])}${extra}</span>` : '';
 const DEFAUT_SEUILS = { vitesse_estimation: 45, rappel_permis_jours: 60, distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
 
@@ -2102,6 +2113,7 @@ VUES.rapports = (arg, q) => {
     $('[data-pdf]', el).onclick = () => window.print();
     $('[data-xlsx]', el).onclick = async () => {
       try { await chargerScript(CONFIG.XLSX); } catch (e) { return toast(e.message, 'bad'); }
+      window.ambuTraduireXLSX(window.XLSX);
       const X = window.XLSX; const wb = X.utils.book_new(); const ajout = (nom, lignes) => X.utils.book_append_sheet(wb, X.utils.json_to_sheet(lignes.length ? lignes : [{ Information: 'Aucune donnée' }]), nom);
       ajout('Synthèse', [{ Indicateur: 'Période', Valeur: `${fmtJ(p.du)} au ${fmtJ(p.au)}` }, { Indicateur: 'Missions', Valeur: R.missions.length }, { Indicateur: 'Missions clôturées', Valeur: R.clot.length }, { Indicateur: 'km compteur', Valeur: R.totKm },
         { Indicateur: 'Contrôles', Valeur: R.ctrl.length }, { Indicateur: 'Anomalies nouvelles', Valeur: R.sigNouv.filter((s) => s.type === 'anomalie').length }, { Indicateur: 'Incidents / accidents', Valeur: R.sigNouv.filter((s) => s.type !== 'anomalie').length },
@@ -2448,7 +2460,7 @@ const pdfTxt = (t) => String(t ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').repl
 const nomFichierRap = (D) => `AmbuTrack_Rapport_${TYPES_REP[D.type]}_${D.b.du}${D.b.au !== D.b.du ? '_au_' + D.b.au : ''}${D.f.amb ? '_' + (amb(D.f.amb)?.code || '') : D.f.site ? '_' + (G('ambu_sites', D.f.site)?.code || 'site') : ''}`.replace(/[^\w.-]+/g, '_');
 async function genererPdf(D, meta) {
   await chargerScript(CONFIG.JSPDF); await chargerScript(CONFIG.AUTOTABLE);
-  const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: 'mm', format: 'a4' }); const T = pdfTxt; const tb = tableauxRapport(D);
+  const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: 'mm', format: 'a4' }); const T = (x) => pdfTxt(window.t(x)); const tb = tableauxRapport(D);
   const NUIT = [15, 30, 46], PRIM = [11, 98, 164], ROUGE = [212, 43, 31], DOUX = [68, 84, 106];
   doc.setFillColor(...NUIT); doc.rect(0, 0, 210, 26, 'F');
   try { const img = await new Promise((ok, ko) => { const r = new FileReader(); fetch('icone-192.png').then((x) => x.ok ? x.blob() : Promise.reject(new Error())).then((b) => { r.onload = () => ok(r.result); r.onerror = ko; r.readAsDataURL(b); }).catch(ko); });
@@ -2486,7 +2498,7 @@ async function genererPdf(D, meta) {
   return { doc, blob: doc.output('blob'), nom: nomFichierRap(D) + '.pdf' };
 }
 async function genererExcel(D, meta, suffixe = '') {
-  await chargerScript(CONFIG.XLSX); const X = window.XLSX; const tb = tableauxRapport(D); const wb = X.utils.book_new();
+  await chargerScript(CONFIG.XLSX); window.ambuTraduireXLSX(window.XLSX); const X = window.XLSX; const tb = tableauxRapport(D); const wb = X.utils.book_new();
   const lignes = [[D.titre], [cap1(D.periode)], ['Portée', D.portee], ['Établi par', meta.signataire + (meta.fonction ? ', ' + meta.fonction : '')], ['Édité le', fmtDH(new Date().toISOString())],
     ...(meta.destinataires ? [['Destinataires', meta.destinataires]] : []), [], ['SYNTHÈSE'], ...D.syn.map((x) => [x]), [], tb.ind.head, ...tb.ind.body, [],
     ['POINTS D’ATTENTION'], ...(D.att.length ? D.att : ['Aucun point d’attention']).map((x) => [x]), [], ['COMMENTAIRE DU RESPONSABLE'], [meta.commentaire || 'Aucun commentaire']];
@@ -2800,6 +2812,7 @@ VUES.compte = () => ({ html: entete('Mon compte')
     <dt>Sites</dt><dd>${S.profil.sites?.length ? S.profil.sites.map(nomSite).map(esc).join(', ') : 'Tous les sites autorisés'}</dd><dt>Version</dt><dd>Ambu Track ${CONFIG.VERSION}</dd><dt>Heure</dt><dd>Heure du Gabon (Libreville, UTC+1)</dd></dl></div>
   <div class="carte"><h2>Changer mon mot de passe</h2><form data-mdp novalidate><div class="champ"><label class="lib">Nouveau mot de passe (8 caractères minimum)</label><input type="password" name="m1" autocomplete="new-password"></div><div class="champ"><label class="lib">Confirmer</label><input type="password" name="m2" autocomplete="new-password"></div><button class="btn p">Changer</button></form></div>
   <div class="carte"><h2>Affichage</h2><p class="aide" style="margin:0 0 10px">« Plein soleil » renforce les contrastes et grossit le texte pour la lecture en extérieur.</p><div class="seg choix" data-themes style="flex-wrap:wrap">${[['auto', 'Automatique'], ['light', 'Clair'], ['dark', 'Sombre'], ['soleil', 'Plein soleil']].map(([k, l]) => `<button type="button" data-v="${k}" class="${(localStorage.getItem('ambu.theme') || 'auto') === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+  <div class="carte"><h2>Langue / Language</h2><div class="seg choix" data-notr>${[['fr', 'Français'], ['en', 'English']].map(([k, l]) => `<button type="button" data-langue="${k}" class="${LANGUE === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
   <div class="carte"><h2>Installer l’application</h2>${estInstallee() ? '<p class="aide">Ambu Track est déjà installée sur cet appareil.</p>' : `<p class="aide">Icône sur l’écran d’accueil, ouverture en plein écran, fonctionnement sans réseau.</p><button class="btn p" data-installer>${ic('installer', 18)} Installer Ambu Track</button>`}</div>
   <div class="barre-actions"><button class="btn danger" data-deco>Se déconnecter</button></div>`,
 init(el) {
@@ -2830,7 +2843,7 @@ async function deconnexion() {
 function ecranConnexion({ email = '', verrou = false, message = '' } = {}) {
   $('#app').classList.add('cache'); const e = $('#ecran'); e.classList.remove('cache'); e.className = 'ecran';
   const dernier = email || localStorage.getItem('ambu.dernierEmail') || '';
-  e.innerHTML = `<div class="boite"><div class="marque"><b>${LOGO}</b><h1>Ambu Track</h1></div><p class="aide" style="margin-top:0">Suivi opérationnel des ambulances — Fortescue Belinga</p>
+  e.innerHTML = `<div class="boite">${boutonLangue()}<div class="marque"><b>${LOGO}</b><h1>Ambu Track</h1></div><p class="aide" style="margin-top:0">Suivi opérationnel des ambulances — Fortescue Belinga</p>
     ${verrou ? '<div class="bandeau warn">Session expirée ou verrouillée : reconnectez-vous. Vos saisies sont conservées sur l’appareil.</div>' : ''}${message ? `<div class="bandeau bad">${esc(message)}</div>` : ''}
     <form id="fl" novalidate><div class="champ"><label class="lib" for="em">E-mail</label><input id="em" type="email" name="email" autocomplete="username" value="${esc(dernier)}" required></div>
     <div class="champ"><label class="lib" for="mp">Mot de passe</label><input id="mp" type="password" name="mdp" autocomplete="current-password" required></div>

@@ -1,12 +1,12 @@
 // Ambu Track — service worker : ouverture hors ligne, cache des fonds de carte consultés.
 // Les données (Supabase) ne passent jamais par le cache : elles sont gérées par l'application.
-const VERSION = '1.6.0';
+const VERSION = '1.7.0';
 const CACHE_APP = 'ambu-app-' + VERSION;
 const CACHE_LIB = 'ambu-lib-1';
 const CACHE_TUILES = 'ambu-tuiles-1';
 const CACHE_POLICES = 'ambu-polices-1';
 const MAX_TUILES = 6000;
-const APP = ['./', './index.html', './manifest.webmanifest', './icone.svg', './icone-192.png', './icone-512.png', './icone-maskable-512.png'];
+const APP = ['./', './index.html', './langue.js', './manifest.webmanifest', './icone.svg', './icone-192.png', './icone-512.png', './icone-maskable-512.png'];
 const LIBS = [
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js',
