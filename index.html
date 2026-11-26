@@ -303,6 +303,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .photo-id .apercu{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--prim-c);display:grid;place-items:center;color:var(--prim);font:800 2rem var(--f-titre);border:3px solid var(--carte);box-shadow:0 0 0 2px var(--bord)}
 .photo-id .apercu img{width:100%;height:100%;object-fit:cover}
 
+/* ---------- 1.5.2 : boutons Modifier dans les listes */
+.ligne-modif{display:flex;gap:8px;align-items:stretch}
+.ligne-modif>.ligne,.ligne-modif>.carte-cond{flex:1;min-width:0}
+.btn-modif{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:72px;padding:8px;border:var(--epais) solid var(--bord);border-radius:var(--r);background:var(--carte);color:var(--prim);text-decoration:none;font-size:.74rem;font-weight:700}
+.btn-modif:hover{background:var(--prim-c)}
 /* ---------- 1.5 : évacuations */
 .estim-evac{background:var(--bad-f);border:1px solid var(--bad)}
 .estim-evac b:first-child{color:var(--bad);display:inline-flex;align-items:center;gap:6px}
@@ -374,11 +379,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.5.1 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.5.2 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.5.1',
+  VERSION: '1.5.2',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -428,6 +433,7 @@ const ICONES = {
   sync: '<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>',
   admin: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
   compte: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  crayon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
   plus: '<path d="M12 5v14M5 12h14"/>', menu: '<path d="M4 6h16M4 12h16M4 18h16"/>', retour: '<path d="m15 18-6-6 6-6"/>',
   photo: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
   lieu: '<path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
@@ -1217,6 +1223,10 @@ function ligneAmbulance(a) {
     <div class="s">${esc(a.modele || a.marque || '')} · ${esc(nomSite(a.site_id))} · ${nf(k.km)} km</div></div>
     <div class="droite">${m ? '<span class="chip info">En mission</span>' : chip(LIB.statutAmb[a.statut])}${nSig ? `<span class="chip warn">${nSig} ouvert${nSig > 1 ? 's' : ''}</span>` : ''}${etatSync(a)}</div></a>`;
 }
+/** Ligne d'ambulance avec bouton Modifier (point focal, superviseur, administrateur) */
+const ligneAmbulanceModif = (a) => peut.gestion()
+  ? `<div class="ligne-modif">${ligneAmbulance(a)}<a class="btn-modif" href="#/ambulance-form/${a.id}" data-modifier-amb="${a.id}" aria-label="Modifier ${esc(a.code)}" title="Modifier les informations">${ic('crayon', 18)}<span>Modifier</span></a></div>`
+  : ligneAmbulance(a);
 
 /* ================================================================= MISSIONS */
 VUES.missions = (arg, q) => {
@@ -1434,7 +1444,7 @@ VUES.ambulances = (arg, q) => {
   return { html: entete('Ambulances', `${ambs.length} véhicule(s)`, peut.sup() ? `<a class="btn p" href="#/ambulance-form">${ic('plus', 18)} Ajouter</a>` : '')
     + `<div class="filtres"><input type="search" data-f="q" placeholder="Code, immatriculation, châssis…" value="${esc(q.q || '')}"><select data-f="site">${options(sitesVisibles().map((s) => [s.id, s.nom]), fs, 'Tous les sites')}</select>
       <select data-f="statut">${options(Object.entries(LIB.statutAmb).map(([k, v]) => [k, v[0]]), fst, 'Tous les statuts')}</select></div>
-    <div class="liste">${ambs.length ? ambs.map(ligneAmbulance).join('') : videAction('Aucune ambulance ne correspond.', peut.sup() ? ['#/ambulance-form', 'Ajouter une ambulance'] : null)}</div>`,
+    <div class="liste">${ambs.length ? ambs.map(ligneAmbulanceModif).join('') : videAction('Aucune ambulance ne correspond.', peut.sup() ? ['#/ambulance-form', 'Ajouter une ambulance'] : null)}</div>`,
   init(el) {
     const go = () => { const p = new URLSearchParams(); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/ambulances?' + p; };
     $$('select[data-f]', el).forEach((s) => s.onchange = go); const qq = $('input[data-f]', el); qq.onchange = go;
@@ -1447,7 +1457,7 @@ VUES.ambulance = (id, q) => {
   const onglets = [['resume', 'Résumé'], ['historique', 'Historique'], ['documents', 'Documents'], ['entretien', 'Entretien'], ['equipements', 'Équipements']];
   let corps = '';
   if (onglet === 'resume') {
-    corps = `<div class="grille g2 r1"><div class="carte"><h2>Fiche</h2><dl class="def">
+    corps = `<div class="grille g2 r1"><div class="carte"><div class="titre-ligne"><h2>Fiche</h2>${peut.gestion() ? `<a class="btn petit" href="#/ambulance-form/${id}" data-modifier-fiche>${ic('crayon', 16)} Modifier la fiche</a>` : ''}</div><dl class="def">
       <dt>Identifiant</dt><dd>${esc(a.code)}</dd><dt>Immatriculation</dt><dd>${esc(a.immatriculation)}</dd><dt>N° de châssis</dt><dd class="mono">${esc(a.chassis || '—')}</dd>
       <dt>Marque / modèle</dt><dd>${esc([a.marque, a.modele].filter(Boolean).join(' ') || '—')}</dd><dt>Année</dt><dd>${esc(a.annee || '—')}</dd>
       <dt>Site d’affectation</dt><dd>${esc(nomSite(a.site_id))}</dd><dt>Permis exigé</dt><dd>Catégorie ${esc(a.categorie_permis || 'B')}</dd><dt>Statut</dt><dd>${m ? '<span class="chip info">En mission</span> ' : ''}${chip(LIB.statutAmb[a.statut])}</dd>
@@ -2218,8 +2228,8 @@ VUES.chauffeurs = (arg, q) => {
   return { html: entete('Chauffeurs et ambulanciers', `${cs.length} fiche(s) · photo d’identification, permis et aptitudes`, peut.gestion() ? `<a class="btn p" href="#/chauffeur-form">${ic('plus', 18)} Nouvelle fiche</a>` : '')
     + `<div class="filtres"><input type="search" data-f="q" placeholder="Nom, matricule, n° de permis…" value="${esc(q.q || '')}"><select data-f="site">${options(sitesVisibles().map((x) => [x.id, x.nom]), q.site, 'Tous les sites')}</select></div>
     ${cs.length ? `<div class="grille-cond">${cs.map((c) => { const p = etatValidite(c.permis_expiration, sl.rappel_permis_jours);
-      return `<a class="carte-cond" href="#/chauffeur/${c.id}">${avatar(c, 56)}<div class="corps"><div class="t">${esc(nomCond(c))}</div><div class="s">${esc(c.fonction || '')}${c.matricule ? ' · ' + esc(c.matricule) : ''} · ${esc(nomSite(c.site_id))}</div>
-        <div class="cats">${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join('')}${chip({ critique: ['Permis expiré', 'bad'], haute: ['Permis bientôt expiré', 'warn'], ok: ['Permis valide', 'ok'], info: ['Permis à compléter', 'mute'] }[p.niveau])}${c.actif === false ? '<span class="chip mute">Inactif</span>' : ''}${etatSync(c)}</div></div></a>`; }).join('')}</div>`
+      return (peut.gestion() ? '<div class="ligne-modif">' : '') + `<a class="carte-cond" href="#/chauffeur/${c.id}">${avatar(c, 56)}<div class="corps"><div class="t">${esc(nomCond(c))}</div><div class="s">${esc(c.fonction || '')}${c.matricule ? ' · ' + esc(c.matricule) : ''} · ${esc(nomSite(c.site_id))}</div>
+        <div class="cats">${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join('')}${chip({ critique: ['Permis expiré', 'bad'], haute: ['Permis bientôt expiré', 'warn'], ok: ['Permis valide', 'ok'], info: ['Permis à compléter', 'mute'] }[p.niveau])}${c.actif === false ? '<span class="chip mute">Inactif</span>' : ''}${etatSync(c)}</div></div></a>` + (peut.gestion() ? `<a class="btn-modif" href="#/chauffeur-form/${c.id}" data-modifier-cond="${c.id}" aria-label="Modifier ${esc(nomCond(c))}" title="Modifier les informations">${ic('crayon', 18)}<span>Modifier</span></a></div>` : ''); }).join('')}</div>`
       : videAction('Aucune fiche chauffeur pour le moment.', peut.gestion() ? ['#/chauffeur-form', 'Créer la première fiche'] : null)}`,
   init(el) { const go = () => { const p = new URLSearchParams(); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/chauffeurs?' + p; };
     $$('[data-f]', el).forEach((x) => x.onchange = go); } };
@@ -2241,7 +2251,7 @@ VUES.chauffeur = (id) => {
       <div class="carte"><h2>Permis et aptitudes</h2><div class="liste">${ligneEtat('Permis de conduire' + (c.permis_numero ? ' n° ' + esc(c.permis_numero) : ''), c.permis_expiration)}${ligneEtat('Aptitude médicale à la conduite', c.aptitude_expiration)}${ligneEtat('Formation secourisme', c.secourisme_expiration)}</div>
       <dl class="def" style="margin-top:12px"><dt>Délivré le</dt><dd>${fmtJ(c.permis_delivrance)}</dd><dt>Lieu de délivrance</dt><dd>${esc(c.permis_lieu || '—')}</dd><dt>Scan du permis</dt><dd>${vignettes(c.permis_fichiers)}</dd></dl></div></div>
       <div><div class="carte"><h2>Activité</h2><div class="grille g3"><div class="kpi"><div class="v">${ms.length}</div><div class="l">Missions</div></div><div class="kpi"><div class="v">${nf(kmM)}</div><div class="l">km ce mois</div></div><div class="kpi"><div class="v">${nf(kmT)}</div><div class="l">km au total</div></div></div></div>
-      <div class="carte"><h2>Informations</h2><dl class="def"><dt>Téléphone</dt><dd>${esc(c.telephone || '—')}</dd><dt>Compte Ambu Track</dt><dd>${c.profil_id ? esc(nomUser(c.profil_id)) : 'Aucun'}</dd><dt>Notes</dt><dd>${esc(c.notes || '—')}</dd><dt>Statut</dt><dd>${c.actif === false ? 'Inactif' : 'Actif'}</dd></dl></div>
+      <div class="carte"><div class="titre-ligne"><h2>Informations</h2>${peut.gestion() ? `<a class="btn petit" href="#/chauffeur-form/${id}" data-modifier-fiche>${ic('crayon', 16)} Modifier la fiche</a>` : ''}</div><dl class="def"><dt>Téléphone</dt><dd>${esc(c.telephone || '—')}</dd><dt>Compte Ambu Track</dt><dd>${c.profil_id ? esc(nomUser(c.profil_id)) : 'Aucun'}</dd><dt>Notes</dt><dd>${esc(c.notes || '—')}</dd><dt>Statut</dt><dd>${c.actif === false ? 'Inactif' : 'Actif'}</dd></dl></div>
       <div class="carte"><h2>Dernières missions</h2><div class="liste">${ms.length ? ms.slice(0, 10).map(ligneMission).join('') : vide('Aucune mission avec ce chauffeur.')}</div></div></div></div>`,
   init(el) { $('[data-plein]', el).onclick = () => modale('Carte d’identification', badgeIdentification(c), (m) => hydraterImages(m)); } };
 };
