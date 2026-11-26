@@ -301,6 +301,42 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .photo-id{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .photo-id .apercu{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--prim-c);display:grid;place-items:center;color:var(--prim);font:800 2rem var(--f-titre);border:3px solid var(--carte);box-shadow:0 0 0 2px var(--bord)}
 .photo-id .apercu img{width:100%;height:100%;object-fit:cover}
+
+/* ---------- 1.3 : reporting à la hiérarchie */
+.reglages-rep{display:flex;flex-direction:column;gap:12px}
+.nav-periode{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav-periode .btn{min-width:44px;font-size:1.3rem;padding:6px 12px}
+.periode-txt{flex:1;min-width:180px;display:flex;flex-direction:column}.periode-txt b{font:800 1.05rem/1.2 var(--f-titre)}.periode-txt span{font-size:.82rem;color:var(--doux)}
+.nav-periode input[type=date]{max-width:170px}
+.grille-rep{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+@media (max-width:1100px){.grille-rep{grid-template-columns:1fr}}
+.col-envoi{position:sticky;top:calc(var(--haut) + 12px)}
+@media (max-width:1100px){.col-envoi{position:static}}
+.col-envoi .btn{width:100%;justify-content:flex-start;margin-bottom:8px}
+.feuille{--p-texte:#0f1e2e;--p-doux:#44546a;--p-trait:#dbe3ec;--p-prim:#0b62a4;--p-fond:#f2f5f9;background:#fff;color:var(--p-texte);border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.08),0 18px 40px rgba(15,30,46,.12);padding:0 0 24px;font-size:.9rem;overflow:hidden;margin-bottom:14px;color-scheme:light}
+.feuille .f-tete{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#0f1e2e,#17324d);color:#fff;padding:14px 22px}
+.feuille .f-logo{width:30px;height:30px;border-radius:8px;background:#d42b1f;display:grid;place-items:center;flex:none}
+.feuille .f-tete div:nth-child(2){flex:1;display:flex;flex-direction:column}.feuille .f-tete b{font:800 1.05rem/1.1 var(--f-titre)}.feuille .f-tete span{font-size:.75rem;opacity:.85}
+.feuille .f-tete time{font-size:.74rem;opacity:.85;text-align:right}
+.feuille .f-corps{padding:6px 22px 0}
+.feuille .f-titre{font:800 1.35rem/1.2 var(--f-titre);margin:16px 0 2px;color:var(--p-texte)}
+.feuille .f-sous{color:var(--p-doux);margin:0 0 6px}
+.feuille h3{font:700 .98rem/1.2 var(--f-titre);color:var(--p-prim);border-bottom:2px solid var(--p-prim);padding-bottom:4px;margin:18px 0 8px}
+.feuille ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:4px}
+.feuille .f-tab{overflow-x:auto}
+.feuille table{width:100%;border-collapse:collapse;font-size:.8rem}
+.feuille th{background:var(--p-prim);color:#fff;text-align:left;padding:6px 8px;font-weight:700;white-space:nowrap}
+.feuille td{padding:5px 8px;border-bottom:1px solid var(--p-trait);color:var(--p-texte)}
+.feuille tr:nth-child(even) td{background:var(--p-fond)}
+.feuille td.n,.feuille th.n{text-align:right;font-variant-numeric:tabular-nums}
+.feuille .evo-plus{color:#0f7a4f;font-weight:700}.feuille .evo-moins{color:#d42b1f;font-weight:700}
+.feuille .f-comm{white-space:pre-wrap;background:var(--p-fond);border-left:3px solid var(--p-prim);padding:10px 12px;border-radius:4px;margin:0}
+.feuille .f-comm em{color:var(--p-doux)}
+.feuille .f-signe{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:22px 22px 0;font-size:.85rem;color:var(--p-doux)}
+.feuille .f-signe b{color:var(--p-texte)}
+.feuille .f-signe .visa{border-bottom:1px solid var(--p-doux);height:46px}
+.hist-rap .ligne{align-items:flex-start}
+@media print{.col-envoi,.reglages-rep{display:none!important}.grille-rep{display:block}.feuille{box-shadow:none}}
 @media print{
   .barre,.nav,.bas,.no-print,#toasts,.maj,.btn,.onglets,.filtres{display:none!important}
   main{padding:0!important;max-width:none}
@@ -331,17 +367,19 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.2.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.3.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.2.0',
+  VERSION: '1.3.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
   TUILES: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   LEAFLET: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js',
   XLSX: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+  JSPDF: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+  AUTOTABLE: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js',
 };
 const TZ = 'Africa/Libreville';   // heure du Gabon (UTC+1)
 
@@ -393,6 +431,7 @@ const ICONES = {
   installer: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
   badge: '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><path d="M14 10h5M14 14h4"/>',
   carburant: '<path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M3 22h12M15 10h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 7h6"/>',
+  envoi: '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
   croix: '<path d="M12 4v16M4 12h16" stroke-width="3"/>', plusmenu: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
 };
 const ic = (n, t = 20) => `<svg viewBox="0 0 24 24" width="${t}" height="${t}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[n] || ''}</svg>`;
@@ -416,7 +455,7 @@ const LIB = {
   fonctionCond: ['Ambulancier', 'Chauffeur', 'Infirmier', 'Secouriste', 'Médecin', 'Autre'],
   alerteReleve: { km_inferieur: 'Inférieur au dernier kilométrage connu', saut_important: 'Hausse inhabituelle depuis le dernier relevé' },
   equip: { ok: ['Présent / OK', 'ok'], a_verifier: ['À vérifier', 'warn'], defectueux: ['Défectueux', 'bad'], absent: ['Absent', 'bad'] },
-  table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique' },
+  table: { ambu_missions: 'Mission', ambu_inspections: 'Contrôle', ambu_signalements: 'Signalement', ambu_entretiens: 'Entretien', ambu_documents: 'Document', ambu_fichiers: 'Photo / pièce jointe', ambu_ambulances: 'Ambulance', ambu_localites: 'Localité', ambu_remarques_carte: 'Remarque carte', ambu_parametres: 'Paramètre', ambu_profils: 'Utilisateur', ambu_sites: 'Site', ambu_conducteurs: 'Fiche chauffeur', ambu_releves_km: 'Relevé kilométrique', ambu_rapports: 'Rapport transmis' },
 };
 const chip = (paire, extra = '') => paire ? `<span class="chip ${paire[1]}">${esc(paire[0])}${extra}</span>` : '';
 const DEFAUT_SEUILS = { rappel_permis_jours: 60, distance_max: 1500, vitesse_max: 110, ecart_pct: 25, rappel_document_jours: 30, vidange_km: 5000, vidange_jours: 180, rappel_entretien_km: 500, rappel_entretien_jours: 15, session_heures: 12 };
@@ -450,7 +489,7 @@ const kvGet = async (k) => (await IDB.lire('kv', k))?.v;
 
 /* ----------------------------------------------------------------- État */
 const TABLES = ['ambu_sites', 'ambu_profils', 'ambu_ambulances', 'ambu_localites', 'ambu_missions', 'ambu_inspections', 'ambu_signalements',
-  'ambu_entretiens', 'ambu_documents', 'ambu_fichiers', 'ambu_remarques_carte', 'ambu_parametres', 'ambu_conflits', 'ambu_conducteurs', 'ambu_releves_km'];
+  'ambu_entretiens', 'ambu_documents', 'ambu_fichiers', 'ambu_remarques_carte', 'ambu_parametres', 'ambu_conflits', 'ambu_conducteurs', 'ambu_releves_km', 'ambu_rapports'];
 const S = { session: null, profil: null, srv: {}, data: {}, out: [], rev: 0, sync: false, resync: false, dernierPull: null, derniereSync: null,
   erreurSync: null, reconnexion: false, itin: {}, vue: null, enForm: false };
 TABLES.forEach((t) => { S.srv[t] = new Map(); S.data[t] = new Map(); });
@@ -976,7 +1015,7 @@ const MENU = [
   ['accueil', 'Tableau de bord', 'accueil'], ['alertes', 'Alertes', 'cloche'], ['missions', 'Missions', 'mission'], ['kilometrage', 'Relevés kilométriques', 'jauge'],
   ['ambulances', 'Ambulances', 'ambulance'], ['chauffeurs', 'Chauffeurs', 'equipe'], ['controles', 'Contrôles quotidiens', 'controle'],
   ['signalements', 'Anomalies & incidents', 'alerte'], ['entretien', 'Entretien & documents', 'entretien'],
-  ['carte', 'Carte & localités', 'carte'], ['rapports', 'Rapports', 'rapport'], ['sync', 'Synchronisation', 'sync'],
+  ['carte', 'Carte & localités', 'carte'], ['rapports', 'Rapports et analyses', 'rapport'], ['reporting', 'Reporting hiérarchie', 'envoi'], ['sync', 'Synchronisation', 'sync'],
 ];
 const estInstallee = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch { return false; } };
 const estIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1000,7 +1039,7 @@ function dessinerNav() {
   const actif = (k) => nom === k || (nom.startsWith(k.replace(/s$/, '')) && k !== 'accueil') ? ' actif' : '';
   const nAl = alertes().filter((a) => a.niveau !== 'info').length;
   const pastille = (k) => k === 'alertes' && nAl ? `<em class="pastille">${nAl > 99 ? '99+' : nAl}</em>` : '';
-  $('#nav').innerHTML = MENU.map(([k, l, i]) => `<a href="#/${k}" class="${actif(k)}">${ic(i)}<span>${l}</span>${pastille(k)}</a>`).join('')
+  $('#nav').innerHTML = MENU.filter(([k]) => k !== 'reporting' || peut.gestion() || role() === 'direction').map(([k, l, i]) => `<a href="#/${k}" class="${actif(k)}">${ic(i)}<span>${l}</span>${pastille(k)}</a>`).join('')
     + (peut.admin() ? `<a href="#/admin" class="${actif('admin')}">${ic('admin')}<span>Administration</span></a>` : '')
     + (estInstallee() ? '' : `<a href="javascript:void 0" class="nav-installer" data-installer-nav>${ic('installer')}<span>Installer l’application</span></a>`)
     + `<div class="sep"></div><a href="#/compte" class="${actif('compte')}">${ic('compte')}<span>Mon compte</span></a>
@@ -1918,7 +1957,7 @@ VUES.rapports = (arg, q) => {
   const R = calculRapport(q); const p = R.p;
   const tabMissions = R.missions.sort((a, b) => (a.debut || '').localeCompare(b.debut || ''));
   return { html: entete('Rapports et indicateurs', `${p.nom} · du ${fmtJ(p.du)} au ${fmtJ(p.au)} · calculés à partir des données enregistrées (${lienSync().toLowerCase()})`,
-      `<button class="btn" data-xlsx>Exporter Excel</button><button class="btn" data-pdf>Imprimer / PDF</button>`)
+      `${peut.gestion() || role() === 'direction' ? `<a class="btn p" href="#/reporting">${ic('envoi', 18)} Préparer le reporting</a>` : ''}<button class="btn" data-xlsx>Exporter Excel</button><button class="btn" data-pdf>Imprimer / PDF</button>`)
     + `<div class="carte no-print"><div class="filtres" style="margin:0"><select data-f="periode">${options([['jour', 'Quotidien'], ['semaine', 'Hebdomadaire (semaine en cours)'], ['mois', 'Mensuel (mois en cours)'], ['mois_prec', 'Mois précédent'], ['perso', 'Période personnalisée']], q.periode || 'mois')}</select>
       ${q.periode === 'jour' ? `<input type="date" data-f="du" value="${esc(p.du)}">` : ''}${q.periode === 'perso' ? `<input type="date" data-f="du" value="${esc(p.du)}"><input type="date" data-f="au" value="${esc(p.au)}">` : ''}
       <select data-f="site">${options(sitesVisibles().map((s) => [s.id, s.nom]), q.site, 'Tous les sites')}</select><select data-f="amb">${options(optAmb(), q.amb, 'Toutes les ambulances')}</select>
@@ -2202,6 +2241,214 @@ VUES['chauffeur-form'] = (id) => {
   } };
 };
 
+
+/* ================================================================= REPORTING À LA HIÉRARCHIE */
+const TYPES_REP = { jour: 'journalier', semaine: 'hebdomadaire', mois: 'mensuel' };
+const cap1 = (t) => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+function bornesRapport(type, ref) {
+  if (type === 'jour') return { du: ref, au: ref };
+  if (type === 'semaine') { const d = new Date(ref + 'T12:00:00Z'); const lundi = ajoutJours(ref, -((d.getUTCDay() + 6) % 7)); return { du: lundi, au: ajoutJours(lundi, 6) }; }
+  const [y, m] = ref.split('-').map(Number);
+  return { du: `${y}-${String(m).padStart(2, '0')}-01`, au: new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10) };
+}
+function decalerRef(type, ref, sens) {
+  if (type === 'jour') return ajoutJours(ref, sens);
+  if (type === 'semaine') return ajoutJours(ref, 7 * sens);
+  const [y, m] = ref.split('-').map(Number); return new Date(Date.UTC(y, m - 1 + sens, 1)).toISOString().slice(0, 10);
+}
+const dateLongue = (j, o) => new Intl.DateTimeFormat('fr-FR', { timeZone: 'UTC', ...o }).format(new Date(j + 'T12:00:00Z'));
+function libellePeriode(type, b) {
+  if (type === 'jour') return 'journée du ' + dateLongue(b.du, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  if (type === 'semaine') return `semaine du ${fmtJ(b.du)} au ${fmtJ(b.au)}`;
+  return 'mois de ' + dateLongue(b.du, { month: 'long', year: 'numeric' });
+}
+const LIGNES_IND = [['missions', 'Missions démarrées'], ['cloturees', 'Missions clôturées'], ['km', 'Kilomètres au compteur'], ['heures', 'Heures de mission'],
+  ['controles', 'Contrôles quotidiens'], ['nc', 'Points non conformes'], ['anomalies', 'Anomalies déclarées'], ['incidents', 'Incidents / accidents'],
+  ['resolus', 'Dossiers résolus'], ['entretiens', 'Entretiens réalisés'], ['depenses', 'Dépenses enregistrées (FCFA)'], ['releves', 'Relevés kilométriques'], ['carburant', 'Carburant (litres)']];
+function indicateursRap(R, b) {
+  const rel = L('ambu_releves_km').filter((r) => R.ambs.some((a) => a.id === r.ambulance_id) && (jourDe(r.date_releve) || '') >= b.du && (jourDe(r.date_releve) || '') <= b.au);
+  return { missions: R.missions.length, cloturees: R.clot.length, km: R.totKm, heures: Math.round(R.clot.reduce((x, m) => x + (Number(m.duree_min) > 0 ? Number(m.duree_min) : 0), 0) / 6) / 10,
+    controles: R.ctrl.length, nc: R.ctrl.reduce((x, i) => x + (i.nb_nc || 0), 0), anomalies: R.sigNouv.filter((x) => x.type === 'anomalie').length, incidents: R.sigNouv.filter((x) => x.type !== 'anomalie').length,
+    resolus: R.sigResolus.length, entretiens: R.ents.length, depenses: R.totCout, releves: rel.length, carburant: Math.round(rel.reduce((x, r) => x + (Number(r.carburant_litres) || 0), 0)) };
+}
+function evolution(a, b) { if (!b) return a ? 'nouveau' : '='; const p = Math.round((a - b) / b * 100); return p === 0 ? '=' : (p > 0 ? '+' : '') + p + ' %'; }
+const fmtCell = (v) => typeof v === 'number' ? nf(v, Number.isInteger(v) ? 0 : 1) : String(v ?? '');
+function donneesReporting(q) {
+  const type = TYPES_REP[q.type] ? q.type : 'semaine'; const ref = /^\d{4}-\d{2}-\d{2}$/.test(q.ref || '') ? q.ref : aujourdhui();
+  const b = bornesRapport(type, ref); const bp = bornesRapport(type, decalerRef(type, ref, -1));
+  const f = { site: q.site || '', amb: q.amb || '' };
+  const R = calculRapport({ periode: 'perso', du: b.du, au: b.au, ...f }); const Rp = calculRapport({ periode: 'perso', du: bp.du, au: bp.au, ...f });
+  const ind = indicateursRap(R, b), indp = indicateursRap(Rp, bp);
+  const portee = f.amb ? 'Ambulance ' + (amb(f.amb)?.code || '') : f.site ? nomSite(f.site) : (S.profil.sites?.length ? S.profil.sites.map(nomSite).join(', ') : 'Tous les sites');
+  const immo = R.ambs.filter((a) => a.statut === 'immobilisee');
+  const syn = [
+    `${ind.missions} mission(s) démarrée(s), dont ${ind.cloturees} clôturée(s), pour ${nf(ind.km)} km au compteur et ${nf(ind.heures, 1)} h de mission (kilomètres : ${evolution(ind.km, indp.km)} par rapport à la période précédente).`,
+    ind.controles ? `${ind.controles} contrôle(s) quotidien(s) réalisé(s) ; ${ind.nc} point(s) non conforme(s) relevé(s).` : 'Aucun contrôle quotidien enregistré sur la période.',
+    ind.incidents ? `${ind.incidents} incident(s) ou accident(s) déclaré(s) : voir le détail ci-dessous.` : 'Aucun incident ni accident déclaré.',
+    `${ind.anomalies} anomalie(s) signalée(s) et ${ind.resolus} dossier(s) résolu(s) ; ${R.sigOuverts.length} dossier(s) encore ouvert(s)${R.retard.length ? `, dont ${R.retard.length} en retard` : ''}.`,
+    `Disponibilité à la date d’édition : ${R.dispo} ambulance(s) disponible(s) sur ${R.ambs.length}${immo.length ? ` ; immobilisée(s) : ${immo.map((a) => a.code).join(', ')}` : ''}.`,
+  ];
+  if (ind.entretiens || ind.depenses) syn.push(`${ind.entretiens} entretien(s) réalisé(s) ; dépenses enregistrées : ${nf(ind.depenses)} FCFA.`);
+  if (ind.releves) syn.push(`${ind.releves} relevé(s) kilométrique(s)${ind.carburant ? `, ${nf(ind.carburant)} litres de carburant` : ''}.`);
+  const att = [];
+  for (const x of R.sigOuverts) if (x.type === 'accident' || ['critique', 'haute'].includes(x.priorite)) att.push(`${LIB.typeSig[x.type]} ${amb(x.ambulance_id)?.code || ''} (${LIB.statutSig[x.statut][0].toLowerCase()}) : ${x.description}`);
+  for (const x of R.retard) att.push(`Action en retard (${amb(x.ambulance_id)?.code || ''}, échéance du ${fmtJ(x.echeance)}) : ${x.description}`);
+  for (const e of R.ech) att.push(`${e.amb.code} — ${e.type} : ${e.texte}`);
+  for (const a of R.ambs) for (const e of entretiensDus(a.id)) if (e.niveau === 'critique' && e.type !== 'vidange') att.push(`${a.code} — ${e.texte}`);
+  const sitesAmb = new Set(R.ambs.map((a) => a.site_id));
+  for (const c of conducteursVisibles()) if (sitesAmb.has(c.site_id)) { const p = etatValidite(c.permis_expiration, seuils().rappel_permis_jours); if (p.niveau === 'critique' || p.niveau === 'haute') att.push(`Permis de ${nomCond(c)} : ${p.texte.toLowerCase()}`); }
+  return { type, ref, b, bp, f, R, Rp, ind, indp, portee, syn, att: [...new Set(att)], titre: `Rapport ${TYPES_REP[type]} d’activité des ambulances`, periode: libellePeriode(type, b) };
+}
+function tableauxRapport(D) {
+  const R = D.R; const sigs = [...R.sigNouv].sort((a, b) => (a.date_evt || '').localeCompare(b.date_evt || ''));
+  return {
+    ind: { head: ['Indicateur', 'Période', 'Période précédente', 'Évolution'], body: LIGNES_IND.map(([k, l]) => [l, D.ind[k], D.indp[k], evolution(D.ind[k], D.indp[k])]), num: [1, 2, 3] },
+    amb: { head: ['Ambulance', 'Site', 'Statut', 'Missions', 'km', 'Contrôles', 'NC', 'Anomalies', 'Inc./acc.'], body: R.par.map((x) => [x.a.code, nomSite(x.a.site_id), x.statut, x.missions, x.km, x.ctrl, x.nc, x.anom, x.inc]), num: [3, 4, 5, 6, 7, 8] },
+    ch: { head: ['Chauffeur', 'Matricule', 'Missions', 'km', 'Heures'], body: R.parChauffeur.map((x) => [nomCond(x.c), x.c.matricule || '', x.missions, x.km, Math.round(x.heures * 10) / 10]), num: [2, 3, 4] },
+    sig: { head: ['Date', 'Type', 'Ambulance', 'Priorité', 'Statut', 'Description'], body: sigs.map((x) => [fmtDH(x.date_evt), LIB.typeSig[x.type], amb(x.ambulance_id)?.code || '', LIB.priorite[x.priorite][0], LIB.statutSig[x.statut][0], x.description]), num: [] },
+    ent: { head: ['Date', 'Ambulance', 'Type', 'km', 'Atelier', 'Coût (FCFA)'], body: R.ents.map((e) => [fmtJ(e.date_op), amb(e.ambulance_id)?.code || '', LIB.typeEnt[e.type], e.km ?? '', e.atelier || '', e.cout ?? '']), num: [3, 5] },
+    mis: { head: ['Démarrage', 'Ambulance', 'Chauffeur', 'Départ', 'Destination', 'Statut', 'km', 'Durée (min)', 'Vitesse moy. (km/h, arrêts inclus)'],
+      body: [...R.missions].sort((a, b) => (a.debut || '').localeCompare(b.debut || '')).map((m) => [fmtDH(m.debut), amb(m.ambulance_id)?.code || '', m.chauffeur_id ? nomCond(conducteur(m.chauffeur_id)) : '', nomLieu(m.depart_id), nomLieu(m.destination_id), LIB.statutMission[m.statut][0], m.distance_compteur != null ? Number(m.distance_compteur) : '', m.duree_min != null ? Number(m.duree_min) : '', m.vitesse_moy != null ? Number(m.vitesse_moy) : '']), num: [6, 7, 8] },
+  };
+}
+function tableHtml(t, vide2) {
+  if (!t.body.length) return `<p class="aide">${vide2}</p>`;
+  return `<div class="f-tab"><table><thead><tr>${t.head.map((h, i) => `<th class="${t.num.includes(i) ? 'n' : ''}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${t.body.map((r) => `<tr>${r.map((v, i) => {
+    const evo = t.head[i] === 'Évolution' ? (String(v).startsWith('+') ? ' evo-plus' : String(v).startsWith('-') ? ' evo-moins' : '') : '';
+    return `<td class="${t.num.includes(i) ? 'n' : ''}${evo}">${esc(fmtCell(v))}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function feuilleRapport(D, meta) {
+  const tb = tableauxRapport(D); let n = 0; const h = (t) => `<h3>${++n}. ${t}</h3>`;
+  return `<article class="feuille" aria-label="Aperçu du rapport"><header class="f-tete"><div class="f-logo">${ic('croix', 15)}</div><div><b>Ambu Track</b><span>Rapport d’activité des ambulances · Projet Belinga</span></div><time>Édité le ${fmtDH(new Date().toISOString())}</time></header>
+    <div class="f-corps"><h2 class="f-titre">${esc(D.titre)}</h2><p class="f-sous">${esc(cap1(D.periode))} · ${esc(D.portee)}</p>
+    ${h('Synthèse')}<ul>${D.syn.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+    ${h('Indicateurs clés')}${tableHtml(tb.ind, '')}
+    ${h('Activité par ambulance')}${tableHtml(tb.amb, 'Aucune ambulance dans la portée choisie.')}
+    ${tb.ch.body.length ? h('Activité par chauffeur') + tableHtml(tb.ch, '') : ''}
+    ${h('Incidents et anomalies de la période')}${tableHtml(tb.sig, 'Aucun incident ni anomalie déclaré sur la période.')}
+    ${tb.ent.body.length ? h('Entretiens réalisés') + tableHtml(tb.ent, '') : ''}
+    ${h('Points d’attention')}${D.att.length ? `<ul>${D.att.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="aide">Aucun point d’attention.</p>'}
+    ${h('Commentaire du responsable')}<p class="f-comm" data-f-comm>${meta.commentaire ? esc(meta.commentaire) : '<em>Ajoutez votre commentaire dans le panneau « Compléter et transmettre ».</em>'}</p></div>
+    <footer class="f-signe"><div>Établi par<br><b data-f-sign>${esc(meta.signataire)}</b><br><span data-f-fonc>${esc(meta.fonction)}</span></div><div>Visa du destinataire<div class="visa"></div></div></footer></article>`;
+}
+const pdfTxt = (t) => String(t ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/[—–]/g, '-').replace(/…/g, '...').replace(/[^\x00-\xff]/g, '');
+const nomFichierRap = (D) => `AmbuTrack_Rapport_${TYPES_REP[D.type]}_${D.b.du}${D.b.au !== D.b.du ? '_au_' + D.b.au : ''}${D.f.amb ? '_' + (amb(D.f.amb)?.code || '') : D.f.site ? '_' + (G('ambu_sites', D.f.site)?.code || 'site') : ''}`.replace(/[^\w.-]+/g, '_');
+async function genererPdf(D, meta) {
+  await chargerScript(CONFIG.JSPDF); await chargerScript(CONFIG.AUTOTABLE);
+  const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: 'mm', format: 'a4' }); const T = pdfTxt; const tb = tableauxRapport(D);
+  const NUIT = [15, 30, 46], PRIM = [11, 98, 164], ROUGE = [212, 43, 31], DOUX = [68, 84, 106];
+  doc.setFillColor(...NUIT); doc.rect(0, 0, 210, 26, 'F');
+  doc.setFillColor(...ROUGE); doc.roundedRect(12, 6, 14, 14, 3, 3, 'F'); doc.setFillColor(255, 255, 255); doc.rect(17.9, 8.6, 2.2, 8.8, 'F'); doc.rect(14.6, 11.9, 8.8, 2.2, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.text('Ambu Track', 30, 12.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.text(T('Rapport d’activité des ambulances - Projet Belinga'), 30, 18);
+  doc.text(T('Édité le ' + fmtDH(new Date().toISOString())), 198, 12.5, { align: 'right' }); doc.text(T('Par ' + meta.signataire), 198, 18, { align: 'right' });
+  let y = 38; doc.setTextColor(...NUIT); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(T(D.titre), 12, y);
+  y += 6.5; doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...DOUX); doc.text(T(cap1(D.periode) + ' - ' + D.portee), 12, y); y += 2;
+  let n = 0;
+  const saut = (h) => { if (y + h > 282) { doc.addPage(); y = 16; } };
+  const section = (titre) => { saut(22); y += 8; doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5); doc.setTextColor(...PRIM); doc.text(T(`${++n}. ${titre}`), 12, y); doc.setDrawColor(...PRIM); doc.setLineWidth(0.4); doc.line(12, y + 1.6, 198, y + 1.6); y += 4; };
+  const para = (lignes, puce = true) => { doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor(...NUIT);
+    for (const l of lignes) { const m = doc.splitTextToSize(T((puce ? '- ' : '') + l), 184); saut(m.length * 4.4 + 2); doc.text(m, 13, y + 3.6); y += m.length * 4.4 + 1.2; } };
+  const tableau = (t, opts = {}) => { const cs = {}; t.num.forEach((i) => { cs[i] = { halign: 'right' }; });
+    doc.autoTable({ startY: y + 1, head: [t.head.map(T)], body: t.body.map((r) => r.map((v) => T(fmtCell(v)))), theme: 'grid', margin: { left: 12, right: 12, top: 16 },
+      styles: { fontSize: 8.2, cellPadding: 1.6, textColor: NUIT, lineColor: [219, 227, 236], lineWidth: 0.2, overflow: 'linebreak' }, headStyles: { fillColor: PRIM, textColor: 255, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [242, 245, 249] }, columnStyles: { ...cs, ...(opts.columnStyles || {}) } });
+    y = doc.lastAutoTable.finalY + 1; };
+  section('Synthèse'); para(D.syn);
+  section('Indicateurs clés'); tableau(tb.ind);
+  section('Activité par ambulance'); if (tb.amb.body.length) tableau(tb.amb); else para(['Aucune ambulance dans la portée choisie.']);
+  if (tb.ch.body.length) { section('Activité par chauffeur'); tableau(tb.ch); }
+  section('Incidents et anomalies de la période'); if (tb.sig.body.length) tableau(tb.sig, { columnStyles: { 5: { cellWidth: 72 } } }); else para(['Aucun incident ni anomalie déclaré sur la période.']);
+  if (tb.ent.body.length) { section('Entretiens réalisés'); tableau(tb.ent); }
+  section('Points d’attention'); para(D.att.length ? D.att : ['Aucun point d’attention.']);
+  section('Commentaire du responsable'); para([meta.commentaire || 'Aucun commentaire.'], false);
+  saut(30); y += 10; doc.setFontSize(9); doc.setTextColor(...DOUX); doc.setFont('helvetica', 'normal'); doc.text(T('Établi par'), 12, y); doc.text(T('Visa du destinataire'), 120, y);
+  doc.setFont('helvetica', 'bold'); doc.setTextColor(...NUIT); doc.text(T(meta.signataire), 12, y + 5); doc.setFont('helvetica', 'normal'); doc.text(T(meta.fonction || ''), 12, y + 9.5);
+  if (meta.destinataires) doc.text(doc.splitTextToSize(T('Destinataires : ' + meta.destinataires), 78), 120, y + 5);
+  doc.setDrawColor(...DOUX); doc.setLineWidth(0.2); doc.line(120, y + 20, 190, y + 20);
+  const nb = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= nb; i++) { doc.setPage(i); doc.setFontSize(7.5); doc.setTextColor(...DOUX); doc.text(T(`Ambu Track - ${D.titre} - ${cap1(D.periode)}`), 12, 291); doc.text(`Page ${i} / ${nb}`, 198, 291, { align: 'right' }); }
+  return { doc, blob: doc.output('blob'), nom: nomFichierRap(D) + '.pdf' };
+}
+async function genererExcel(D, meta, suffixe = '') {
+  await chargerScript(CONFIG.XLSX); const X = window.XLSX; const tb = tableauxRapport(D); const wb = X.utils.book_new();
+  const lignes = [[D.titre], [cap1(D.periode)], ['Portée', D.portee], ['Établi par', meta.signataire + (meta.fonction ? ', ' + meta.fonction : '')], ['Édité le', fmtDH(new Date().toISOString())],
+    ...(meta.destinataires ? [['Destinataires', meta.destinataires]] : []), [], ['SYNTHÈSE'], ...D.syn.map((x) => [x]), [], tb.ind.head, ...tb.ind.body, [],
+    ['POINTS D’ATTENTION'], ...(D.att.length ? D.att : ['Aucun point d’attention']).map((x) => [x]), [], ['COMMENTAIRE DU RESPONSABLE'], [meta.commentaire || 'Aucun commentaire']];
+  const ws = X.utils.aoa_to_sheet(lignes); ws['!cols'] = [{ wch: 70 }, { wch: 16 }, { wch: 20 }, { wch: 12 }]; X.utils.book_append_sheet(wb, ws, 'Rapport');
+  const feuille = (nom, t, larg = []) => { const w = X.utils.aoa_to_sheet([t.head, ...t.body]); w['!cols'] = t.head.map((h, i) => ({ wch: larg[i] || Math.max(12, h.length + 2) })); X.utils.book_append_sheet(wb, w, nom); };
+  feuille('Par ambulance', tb.amb); if (tb.ch.body.length) feuille('Par chauffeur', tb.ch, [26]);
+  feuille('Missions', tb.mis, [17, 11, 22, 28, 28, 11]); feuille('Incidents-anomalies', tb.sig, [17, 11, 11, 10, 26, 70]); feuille('Entretiens', tb.ent, [12, 11, 14, 10, 24]);
+  const nom = nomFichierRap(D) + suffixe + '.xlsx'; X.writeFile(wb, nom); return nom;
+}
+const cleBrouillon = (D) => `ambu.rep.${D.type}.${D.b.du}.${D.f.site}.${D.f.amb}`;
+const lireBrouillon = (D) => { try { return JSON.parse(localStorage.getItem(cleBrouillon(D)) || '{}'); } catch { return {}; } };
+const ecrireBrouillon = (D, v) => { try { localStorage.setItem(cleBrouillon(D), JSON.stringify(v)); } catch { /* stockage indisponible */ } };
+async function noterTransmission(D, meta, format) {
+  if (!peut.gestion()) return;
+  const site = D.f.amb ? amb(D.f.amb)?.site_id : D.f.site || (role() === 'point_focal' ? S.profil.sites?.[0] : null) || null;
+  const ex = L('ambu_rapports').find((r) => (r.created_by || S.profil.id) === S.profil.id && r.type === D.type && r.du === D.b.du && (r.site_id || '') === (site || '') && (r.ambulance_id || '') === (D.f.amb || ''));
+  await enregistrer('ambu_rapports', ex?.id || null, { type: D.type, du: D.b.du, au: D.b.au, site_id: site, ambulance_id: D.f.amb || null, titre: D.titre, commentaire: meta.commentaire || null,
+    signataire: meta.signataire, fonction: meta.fonction || null, destinataires: meta.destinataires || null, formats: [...new Set([...(ex?.formats || []), format])], statut: 'transmis', transmis_le: new Date().toISOString(),
+    indicateurs: { ...D.ind, disponibles: D.R.dispo, ambulances: D.R.ambs.length, ouverts: D.R.sigOuverts.length, en_retard: D.R.retard.length } });
+}
+VUES.reporting = (arg, q) => {
+  if (!(peut.gestion() || role() === 'direction')) return { html: entete('Reporting') + '<div class="bandeau warn">Réservé au point focal, au superviseur, à l’administrateur et à la direction.</div>' };
+  const D = donneesReporting(q); const br = lireBrouillon(D);
+  const meta = { commentaire: br.commentaire || '', signataire: br.signataire || S.profil.nom, fonction: br.fonction || S.profil.fonction || LIB.role[role()], destinataires: br.destinataires || '' };
+  const lien = (x) => '#/reporting?' + new URLSearchParams({ type: D.type, ref: D.ref, ...(D.f.site ? { site: D.f.site } : {}), ...(D.f.amb ? { amb: D.f.amb } : {}), ...x });
+  const suivant = decalerRef(D.type, D.ref, 1); const futur = bornesRapport(D.type, suivant).du > aujourdhui();
+  const hist = L('ambu_rapports').sort((a, b) => (b.transmis_le || b.created_at || '').localeCompare(a.transmis_le || a.created_at || '')).slice(0, 40);
+  const fmtsLib = { pdf: 'PDF', xlsx: 'Excel', sheets: 'Google Sheets', partage: 'Partage' };
+  return { form: true, html: entete('Reporting à la hiérarchie', 'Rapport journalier, hebdomadaire ou mensuel prêt à transmettre à vos chefs : PDF, Excel ou Google Sheets', '', '#/rapports')
+    + `<div class="carte reglages-rep"><div class="onglets" style="margin:0">${Object.entries(TYPES_REP).map(([k, l]) => `<a href="${lien({ type: k, ref: aujourdhui() })}" class="${k === D.type ? 'actif' : ''}">Rapport ${l}</a>`).join('')}</div>
+      <div class="nav-periode"><a class="btn" href="${lien({ ref: decalerRef(D.type, D.ref, -1) })}" data-prec aria-label="Période précédente">‹</a><div class="periode-txt"><b>${esc(cap1(D.periode))}</b><span>Du ${fmtJ(D.b.du)} au ${fmtJ(D.b.au)} · comparé à la période précédente</span></div>
+        ${futur ? '<button class="btn" disabled aria-label="Période suivante">›</button>' : `<a class="btn" href="${lien({ ref: suivant })}" aria-label="Période suivante">›</a>`}<input type="date" data-ref value="${esc(D.ref)}" max="${aujourdhui()}" aria-label="Choisir une date"></div>
+      <div class="filtres" style="margin:0"><select data-f="site">${options(sitesVisibles().map((x) => [x.id, x.nom]), D.f.site, 'Tous mes sites')}</select><select data-f="amb">${options(optAmb(), D.f.amb, 'Toutes les ambulances')}</select></div></div>
+    <div class="grille-rep"><div>${feuilleRapport(D, meta)}</div>
+      <aside class="col-envoi"><div class="carte"><h2>Compléter et transmettre</h2>
+        <div class="champ"><label class="lib" for="rep-comm">Commentaire du responsable</label><textarea id="rep-comm" data-comm rows="5" maxlength="2000" placeholder="Faits marquants, décisions, besoins (pièces, budget, personnel)…">${esc(meta.commentaire)}</textarea></div>
+        <div class="champ"><label class="lib" for="rep-sign">Établi par</label><input id="rep-sign" data-sign value="${esc(meta.signataire)}"></div>
+        <div class="champ"><label class="lib" for="rep-fonc">Fonction</label><input id="rep-fonc" data-fonc value="${esc(meta.fonction)}"></div>
+        <div class="champ"><label class="lib" for="rep-dest">Destinataires</label><input id="rep-dest" data-dest value="${esc(meta.destinataires)}" placeholder="Ex. : Chef de projet, Responsable HSE"></div>
+        <button class="btn p" data-pdf>${ic('doc', 18)} Télécharger le PDF</button>
+        <button class="btn" data-xlsx>${ic('rapport', 18)} Télécharger Excel</button>
+        <button class="btn" data-sheets>${ic('rapport', 18)} Ouvrir dans Google Sheets</button>
+        <button class="btn cache" data-partager>${ic('envoi', 18)} Partager le PDF (WhatsApp, e-mail…)</button>
+        <p class="aide" style="margin:4px 0 0">${peut.gestion() ? 'Chaque export est enregistré dans l’historique avec les chiffres transmis.' : 'Consultation : les exports ne sont pas enregistrés dans l’historique.'}</p></div>
+      <div class="carte hist-rap"><h2>Rapports transmis (${hist.length})</h2>${hist.length ? `<div class="liste">${hist.map((r) => `<div class="ligne"><div class="corps"><div class="t">Rapport ${TYPES_REP[r.type] || ''} · ${fmtJ(r.du)}${r.au !== r.du ? ' → ' + fmtJ(r.au) : ''}</div>
+        <div class="s">${r.ambulance_id ? esc(amb(r.ambulance_id)?.code || '') : r.site_id ? esc(nomSite(r.site_id)) : 'Tous les sites'} · ${esc(r.signataire || nomUser(r.created_by))} · ${fmtDH(r.transmis_le)}</div>
+        <div class="s">${nf(r.indicateurs?.missions)} missions · ${nf(r.indicateurs?.km)} km · ${(r.formats || []).map((x) => fmtsLib[x] || x).join(', ')}</div></div>
+        <button class="btn petit" data-rouvrir="${r.id}">Rouvrir</button></div>`).join('')}</div>` : '<p class="aide">Aucun rapport transmis pour le moment.</p>'}</div></aside></div>`,
+  init(el) {
+    const go = (x) => { S.enForm = false; location.hash = lien(x); };
+    $('[data-ref]', el).onchange = (e) => { if (e.target.value) go({ ref: e.target.value }); };
+    $$('[data-f]', el).forEach((s2) => s2.onchange = () => go({ site: $('[data-f="site"]', el).value, amb: $('[data-f="amb"]', el).value }));
+    const lire = () => ({ commentaire: $('[data-comm]', el).value.trim(), signataire: $('[data-sign]', el).value.trim() || S.profil.nom, fonction: $('[data-fonc]', el).value.trim(), destinataires: $('[data-dest]', el).value.trim() });
+    const majApercu = () => { const m = lire(); ecrireBrouillon(D, m);
+      $('[data-f-comm]', el).innerHTML = m.commentaire ? esc(m.commentaire) : '<em>Ajoutez votre commentaire dans le panneau « Compléter et transmettre ».</em>';
+      $('[data-f-sign]', el).textContent = m.signataire; $('[data-f-fonc]', el).textContent = m.fonction; };
+    ['[data-comm]', '[data-sign]', '[data-fonc]', '[data-dest]'].forEach((sel) => { $(sel, el).oninput = majApercu; });
+    const occupe = async (b, f) => { const t = b.innerHTML; b.disabled = true; b.textContent = 'Préparation…'; try { await f(); } catch (e) { toast('Export impossible : ' + e.message, 'bad'); } finally { b.disabled = false; b.innerHTML = t; } };
+    $('[data-pdf]', el).onclick = (e) => occupe(e.currentTarget, async () => { const m = lire(); const r = await genererPdf(D, m); r.doc.save(r.nom); await noterTransmission(D, m, 'pdf'); toast('PDF téléchargé : ' + r.nom, 'ok'); });
+    $('[data-xlsx]', el).onclick = (e) => occupe(e.currentTarget, async () => { const m = lire(); const nom = await genererExcel(D, m); await noterTransmission(D, m, 'xlsx'); toast('Excel téléchargé : ' + nom, 'ok'); });
+    $('[data-sheets]', el).onclick = (e) => occupe(e.currentTarget, async () => { const m = lire(); const nom = await genererExcel(D, m, '_GoogleSheets'); await noterTransmission(D, m, 'sheets');
+      modale('Ouvrir dans Google Sheets', `<p>Le fichier <b>${esc(nom)}</b> vient d’être téléchargé dans un format que Google Sheets ouvre directement.</p>
+        <ol class="etapes-install"><li>Ouvrez <b>Google Drive</b> avec le bouton ci-dessous.</li><li>Touchez <b>Nouveau → Importer un fichier</b>, puis choisissez <b>${esc(nom)}</b>.</li><li>Ouvrez le fichier : il s’affiche dans <b>Google Sheets</b>. Utilisez <b>Partager</b> pour l’envoyer à vos chefs.</li></ol>
+        <p class="aide">Astuce : dans Google Drive, Paramètres → « Convertir les fichiers importés au format de l’éditeur Google Docs » transforme automatiquement le fichier en Google Sheet.</p>
+        <a class="btn p large" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener">Ouvrir Google Drive</a>`); });
+    const bp = $('[data-partager]', el);
+    try { if (navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.pdf', { type: 'application/pdf' })] })) bp.classList.remove('cache'); } catch { /* partage indisponible */ }
+    bp.onclick = (e) => occupe(e.currentTarget, async () => { const m = lire(); const r = await genererPdf(D, m); const fic = new File([r.blob], r.nom, { type: 'application/pdf' });
+      try { await navigator.share({ files: [fic], title: D.titre, text: `${D.titre} — ${cap1(D.periode)}` }); await noterTransmission(D, m, 'partage'); }
+      catch (x) { if (x.name !== 'AbortError') { r.doc.save(r.nom); toast('Partage impossible : le PDF a été téléchargé', 'bad'); } } });
+    $$('[data-rouvrir]', el).forEach((b) => b.onclick = () => { const r = G('ambu_rapports', b.dataset.rouvrir); if (!r) return;
+      const D2 = { type: r.type, b: { du: r.du }, f: { site: r.ambulance_id ? '' : (r.site_id || ''), amb: r.ambulance_id || '' } };
+      ecrireBrouillon(D2, { commentaire: r.commentaire || '', signataire: r.signataire || '', fonction: r.fonction || '', destinataires: r.destinataires || '' });
+      S.enForm = false; location.hash = '#/reporting?' + new URLSearchParams({ type: r.type, ref: r.du, ...(D2.f.site ? { site: D2.f.site } : {}), ...(D2.f.amb ? { amb: D2.f.amb } : {}) }); });
+  } };
+};
+
 /* ================================================================= SYNCHRONISATION */
 function resumeOp(o) {
   const d = o.data || {}; const r = G(o.table, o.id) || d;
@@ -2211,6 +2458,7 @@ function resumeOp(o) {
   if (o.table === 'ambu_fichiers') return `${d.nom || 'photo'} (${nf((d.taille || 0) / 1024)} ko)`;
   if (o.table === 'ambu_ambulances') return r.code || '';
   if (o.table === 'ambu_conducteurs') return nomCond(r);
+  if (o.table === 'ambu_rapports') return `${r.titre || 'Rapport'} · ${fmtJ(r.du)}`;
   if (o.table === 'ambu_releves_km') return `${amb(r.ambulance_id)?.code || ''} · ${nf(r.km)} km`;
   return r.nom || r.cle || r.texte || r.type || '';
 }
