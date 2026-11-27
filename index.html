@@ -366,6 +366,95 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
   .imprimer-seul{display:block}
   .kpi{box-shadow:none}
 }
+
+/* =============================================================================
+   DESIGN 1.8 — inspiré des grandes applications (X, Meta) : barre translucide,
+   cartes douces, boutons « pilule », retour tactile, animations de rubrique.
+   Les couleurs restent celles de la palette « Secours Belinga ».
+   ============================================================================= */
+:root{--r:18px;--ressort:cubic-bezier(.2,.9,.25,1.15);--doux-sortie:cubic-bezier(.2,.8,.2,1);
+  --ombre:0 1px 2px rgba(15,30,46,.05),0 6px 20px rgba(15,30,46,.07);--ombre-haute:0 10px 30px rgba(15,30,46,.14)}
+@media (prefers-color-scheme:light){:root:not([data-theme]){--fond:#f0f2f5}}
+:root[data-theme="light"]{--fond:#f0f2f5}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){--ombre:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--ombre:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25)}
+body{-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+/* Barre du haut translucide (flou d'arrière-plan) */
+.barre{background:linear-gradient(90deg,rgba(15,30,46,.86),rgba(23,50,77,.86));-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.08)}
+:root[data-theme="soleil"] .barre{background:#000;backdrop-filter:none}
+.logo b{transition:transform .35s var(--ressort)}.logo:hover b{transform:rotate(-6deg) scale(1.06)}
+/* Cartes */
+:root:not([data-theme="soleil"]) .carte,:root:not([data-theme="soleil"]) .kpi,:root:not([data-theme="soleil"]) .ar,:root:not([data-theme="soleil"]) .ligne{border-color:transparent}
+.carte{border-radius:var(--r);padding:18px}
+.kpi,.ar,.ligne{border-radius:16px;transition:transform .18s var(--doux-sortie),box-shadow .18s,background .18s}
+@media (hover:hover){.kpi:hover,.ar:hover,a.ligne:hover{transform:translateY(-2px);box-shadow:var(--ombre-haute)}}
+.kpi{position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--prim);opacity:.85}
+.kpi.ok::before{background:var(--ok)}.kpi.warn::before{background:var(--warn)}.kpi.bad::before{background:var(--bad)}
+.ar .ico{border-radius:14px;width:42px;height:42px;transition:transform .3s var(--ressort)}
+.ar:hover .ico{transform:scale(1.1) rotate(-4deg)}
+.liste{gap:10px}.ligne{padding:13px 15px}
+/* Boutons « pilule » et retour tactile */
+.btn{border-radius:14px;padding:10px 16px;transition:transform .12s ease,box-shadow .2s,background .2s,filter .2s;position:relative;overflow:hidden}
+.btn.p{box-shadow:0 4px 14px rgba(11,98,164,.28)}
+.btn.danger{box-shadow:0 4px 14px rgba(212,43,31,.25)}
+.btn:active,.ar:active,.kpi:active,a.ligne:active,.bas a:active{transform:scale(.97)}
+@media (hover:hover){.btn.p:hover,.btn.danger:hover{filter:brightness(1.08)}}
+.seg button{border-radius:999px}
+.chip{padding:4px 11px;letter-spacing:.1px}
+.mc-btns .btn{padding:10px 12px;font-size:.95rem;line-height:1.2}
+.btn.petit{border-radius:999px}
+input,select,textarea{border-radius:12px!important;transition:border-color .15s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px var(--prim-c)!important;border-color:var(--prim)!important;outline:none}
+.onde-tap{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.18;transform:scale(0);animation:onde-tap .5s ease-out forwards}
+@keyframes onde-tap{to{transform:scale(1);opacity:0}}
+.ar,.kpi,.nav a,.bas a,a.ligne{position:relative;overflow:hidden}
+/* Menu latéral : élément actif en pilule */
+.nav{border-right:0;box-shadow:1px 0 0 var(--bord)}
+.nav a{border-radius:999px;padding:10px 14px;transition:background .15s,color .15s}
+.nav a.actif{box-shadow:none}
+.nav a svg{transition:transform .25s var(--ressort)}.nav a:hover svg{transform:scale(1.12)}
+/* Barre du bas : icône active animée, bouton Signaler flottant */
+@media (max-width:899px){
+  .bas{background:color-mix(in srgb,var(--carte) 88%,transparent);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px)}
+  .bas a .ico-bas{display:grid;place-items:center;width:52px;height:30px;border-radius:999px;transition:background .25s}
+  .bas a.actif .ico-bas{background:var(--prim-c)}
+  .bas .ico-bas .pastille{top:-5px;right:2px}
+  .bas a.cta span.rond{border-radius:18px;padding:9px 16px;box-shadow:0 6px 16px rgba(212,43,31,.35);transform:translateY(-6px);transition:transform .2s var(--ressort)}
+  .bas a.cta:active span.rond{transform:translateY(-6px) scale(.92)}
+}
+body:not(.silencieux) .bas a.actif .ico-bas svg,body:not(.silencieux) .nav a.actif svg{animation:pop-icone .45s var(--ressort)}
+@keyframes pop-icone{0%{transform:scale(.6)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+.pastille{animation:pastille 2.6s ease-in-out infinite}
+@keyframes pastille{0%,70%,100%{transform:scale(1)}80%{transform:scale(1.22)}90%{transform:scale(.95)}}
+/* Mission en cours : dégradé vivant et route qui défile */
+.mission-cours{background:linear-gradient(120deg,var(--prim),var(--prim-f),#0d4f86,var(--prim));background-size:300% 300%;animation:degrade 9s ease infinite}
+@keyframes degrade{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.mc-route i{background-size:24px 2px;animation:route 1s linear infinite}
+@keyframes route{to{background-position:24px 0}}
+/* Animations d'entrée des rubriques (cascade) */
+#vue.anim .tete{animation:entree-titre .38s var(--doux-sortie) both}
+#vue.anim [style*="--i"]{animation:entree-bloc .46s var(--doux-sortie) both;animation-delay:calc(var(--i) * 45ms + 60ms)}
+@keyframes entree-titre{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes entree-bloc{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+.compte-anim{display:inline-block}
+/* Fenêtres : feuille qui monte avec ressort, fond flouté */
+.modal-fond{-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:fondu .2s ease-out}
+.modal{animation:monte .38s var(--ressort);border-radius:22px 22px 0 0}
+@media (min-width:700px){.modal{border-radius:22px;animation:zoom .3s var(--ressort)}}
+.modal::before{content:"";display:block;width:40px;height:4px;border-radius:4px;background:var(--bord);margin:-6px auto 10px}
+@media (min-width:700px){.modal::before{display:none}}
+@keyframes fondu{from{opacity:0}to{opacity:1}}
+@keyframes monte{from{transform:translateY(60%);opacity:.4}to{transform:none;opacity:1}}
+@keyframes zoom{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+/* Messages : pilule qui rebondit */
+.toast{border-radius:999px;padding:12px 20px;animation:toast .42s var(--ressort);text-align:center}
+@keyframes toast{from{opacity:0;transform:translateY(24px) scale(.9)}to{opacity:1;transform:none}}
+/* Écran de connexion */
+.ecran .boite{border-radius:24px;animation:zoom .5s var(--ressort)}
+.ecran .marque b{animation:pop-icone .7s var(--ressort) .15s both}
+@media (prefers-reduced-motion:reduce){.mission-cours,.mc-route i,.pastille{animation:none!important}}
 </style>
 </head>
 <body>
@@ -389,11 +478,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.7.1 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.8.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.7.1',
+  VERSION: '1.8.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -1190,6 +1279,7 @@ async function router(silencieux = false) {
   const q = Object.fromEntries(new URLSearchParams(qs || ''));
   const vue = VUES[nom] || VUES.accueil;
   if (!silencieux) { S.enForm = false; basculerMenu(false); }
+  document.body.classList.toggle('silencieux', !!silencieux);
   const defil = silencieux ? window.scrollY : 0;
   dessinerNav(); majIndicateur();
   const el = $('#vue');
@@ -1200,12 +1290,37 @@ async function router(silencieux = false) {
     S.enForm = !!r.form;
     if (r.init) await r.init(el);
     hydraterImages(el);
+    if (!silencieux) animerVue(el);
   } catch (e) {
     console.error(e);
     el.innerHTML = `<div class="carte"><h2>Affichage impossible</h2><p>${esc(e.message)}</p><a class="btn" href="#/accueil">Retour à l’accueil</a></div>`;
   }
   if (!silencieux) { window.scrollTo(0, 0); } else window.scrollTo(0, defil);
 }
+/* Version 1.8 : animations des rubriques (entrée en cascade, compteurs qui défilent) */
+const sansAnim = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+function animerVue(el) {
+  if (sansAnim()) return;
+  el.classList.remove('anim'); void el.offsetWidth; el.classList.add('anim');
+  const blocs = [...el.querySelectorAll(':scope > *:not(.tete):not(.grille):not(.bande-kpi):not(.actions-rapides), :scope > .grille > *, :scope > .bande-kpi > *, :scope > .actions-rapides > *, .liste > .ligne, .liste > .ligne-modif')];
+  blocs.slice(0, 30).forEach((b, k) => b.style.setProperty('--i', k));
+  el.querySelectorAll('.kpi .v').forEach((v) => {
+    const n = v.firstChild; if (!n || n.nodeType !== 3) return;
+    const m = /^(\d{1,6})$/.exec(n.nodeValue.trim()); if (!m) return;
+    const fin = Number(m[1]); if (fin < 2) return;
+    const t0 = performance.now(), d = 700;
+    const pas = (t) => { const p = Math.min(1, (t - t0) / d); n.nodeValue = String(Math.round(fin * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(pas); };
+    n.nodeValue = '0'; requestAnimationFrame(pas);
+  });
+}
+document.addEventListener('pointerdown', (e) => {
+  if (sansAnim()) return;
+  const c = e.target.closest('.btn, .ar, .kpi, .nav a, .bas a, a.ligne'); if (!c || c.disabled) return;
+  const r = c.getBoundingClientRect(), t = Math.max(r.width, r.height) * 2.2;
+  const o = document.createElement('span'); o.className = 'onde-tap';
+  o.style.cssText = `width:${t}px;height:${t}px;left:${e.clientX - r.left - t / 2}px;top:${e.clientY - r.top - t / 2}px`;
+  c.appendChild(o); setTimeout(() => o.remove(), 520);
+}, { passive: true });
 const entete = (titre, sous = '', actions = '', retour = '') => `<div class="tete"><div class="titre">${retour ? `<a class="retour" href="${retour}">${ic('retour', 16)} Retour</a>` : ''}<h1>${titre}</h1>${sous ? `<p>${sous}</p>` : ''}</div>${actions ? `<div class="barre-actions">${actions}</div>` : ''}</div>`;
 const vide = (t) => `<div class="vide">${t}</div>`;
 const videAction = (t, act) => `<div class="vide"><div>${t}</div>${act ? `<a class="btn p" href="${act[0]}">${ic('plus', 18)} ${act[1]}</a>` : ''}</div>`;
