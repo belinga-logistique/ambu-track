@@ -328,7 +328,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 .periode-txt{flex:1;min-width:180px;display:flex;flex-direction:column}.periode-txt b{font:800 1.05rem/1.2 var(--f-titre)}.periode-txt span{font-size:.82rem;color:var(--doux)}
 .nav-periode input[type=date]{max-width:170px}
 .grille-rep{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
-@media (max-width:1100px){.grille-rep{grid-template-columns:1fr}}
+@media (max-width:1100px){.grille-rep{grid-template-columns:minmax(0,1fr)}}
+.grille-rep>*{min-width:0}
 .col-envoi{position:sticky;top:calc(var(--haut) + 12px)}
 @media (max-width:1100px){.col-envoi{position:static}}
 .col-envoi .btn{width:100%;justify-content:flex-start;margin-bottom:8px}
@@ -388,11 +389,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--info);outline-of
 <script>
 'use strict';
 /* =============================================================================
-   AMBU TRACK v1.7.0 — Suivi opérationnel des ambulances (Fortescue Belinga)
+   AMBU TRACK v1.7.1 — Suivi opérationnel des ambulances (Fortescue Belinga)
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.7.0',
+  VERSION: '1.7.1',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',

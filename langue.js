@@ -2022,6 +2022,14 @@
 "Accident {0} ({1}): {2}"
 ],
 [
+"arrivée estimée vers {0}",
+"estimated arrival around {0}"
+],
+[
+"arrivée vers {0}",
+"arrival around {0}"
+],
+[
 "journée du {0}",
 "day of {0}"
 ],
