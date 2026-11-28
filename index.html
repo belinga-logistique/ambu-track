@@ -476,7 +476,7 @@ body:not(.silencieux) .bas a.actif .ico-bas svg,body:not(.silencieux) .nav a.act
 .titre-zone .nb{margin-left:auto;font-size:.8rem;font-weight:700;color:var(--doux);background:var(--mute-f);border-radius:999px;padding:2px 10px}
 .pastille-zone{width:12px;height:12px;border-radius:4px;background:var(--mute);flex:none}
 .pastille-zone[data-zone=BEL]{background:#0b62a4}.pastille-zone[data-zone=BAT]{background:#0f7a4f}.pastille-zone[data-zone=IKB]{background:#7c3aed}
-.pastille-zone[data-zone=FLY]{background:#c2410c}.pastille-zone[data-zone=MIN]{background:#475569}
+.pastille-zone[data-zone=FLY]{background:#c2410c}.pastille-zone[data-zone=MIN]{background:#475569}.pastille-zone[data-zone=STU]{background:#0e7490}
 .zone-vide{color:var(--doux);font-size:.88rem;padding:10px 12px;border:1px dashed var(--bord);border-radius:12px;margin-bottom:6px}
 /* Version 1.9 : formations de secourisme (panneau déroulant) */
 .panneau-secourisme{border:1px solid var(--bord);border-radius:12px;background:var(--survol);margin-top:4px}
@@ -525,7 +525,7 @@ body:not(.silencieux) .bas a.actif .ico-bas svg,body:not(.silencieux) .nav a.act
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.9.0',
+  VERSION: '1.9.1',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -752,7 +752,7 @@ function etatDocument(d) {
   return { niveau: 'ok', texte: `Valide jusqu’au ${fmtJ(d.expiration)}`, jours: j };
 }
 /* Version 1.9 : zones d'activité — les sites sont regroupés par zone (codes des sites) */
-const ZONES = [['BEL', 'Belinga'], ['BAT', 'Batouala'], ['IKB', 'Ikei Boka Boka'], ['FLY', 'Fly Camp'], ['MIN', 'Mine']];
+const ZONES = [['BEL', 'Belinga'], ['BAT', 'Batouala'], ['IKB', 'Ikei Boka Boka'], ['FLY', 'Fly Camp'], ['MIN', 'Mine'], ['STU', 'Studies']];
 const zoneDe = (siteId) => { const c = G('ambu_sites', siteId)?.code; return ZONES.some(([z]) => z === c) ? c : 'AUTRES'; };
 /** Regroupe une liste par zone : [{ code, nom, items }] (les 5 zones dans l'ordre, puis « Autres sites ») */
 function parZone(liste, siteDe, garderVides = false) {
