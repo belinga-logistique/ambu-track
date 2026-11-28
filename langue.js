@@ -1326,6 +1326,56 @@
 "résolu": "resolved",
 "clôturé": "closed",
 "en attente pièce / approbation": "waiting for part / approval",
+"Chauffeur / ambulancier": "Driver / paramedic",
+"Coordinateur ERT / superviseur": "ERT coordinator / supervisor",
+"Administrateur (coordinateur ERT)": "Administrator (ERT coordinator)",
+"Direction (consultation)": "Management (read only)",
+"Espace chauffeur": "Driver area",
+"Espace coordinateur ERT": "ERT coordinator area",
+"Passer à l’espace chauffeur": "Switch to the driver area",
+"Revenir à l’espace coordinateur ERT": "Back to the ERT coordinator area",
+"Mon espace": "My area",
+"Mes aptitudes": "My qualifications",
+"Km": "Km",
+"Missions, km, contrôles, signalements": "Missions, mileage, checks, reports",
+"Parc, chauffeurs, alertes, rapports": "Fleet, drivers, alerts, reports",
+"Mes ambulances": "My ambulances",
+"Voir ma fiche": "See my record",
+"Aucune ambulance pour votre site.": "No ambulance for your site.",
+"Votre fiche chauffeur n’est pas encore liée à votre compte : demandez au coordinateur ERT.": "Your driver record is not linked to your account yet: ask the ERT coordinator.",
+"Votre fiche chauffeur n’est pas encore liée à votre compte Ambu Track. Demandez au coordinateur ERT de la lier (fiche chauffeur → « Compte Ambu Track lié »).": "Your driver record is not linked to your Ambu Track account yet. Ask the ERT coordinator to link it (driver record → “Linked Ambu Track account”).",
+"Autres sites": "Other sites",
+"Aucune ambulance dans cette zone.": "No ambulance in this zone.",
+"Aucun chauffeur dans cette zone.": "No driver in this zone.",
+"Prochaine vidange": "Next oil change",
+"Prochaine vidange à": "Next oil change at",
+"Progression vers la prochaine vidange": "Progress to the next oil change",
+"Prochaine vidange non renseignée : indiquez son kilométrage dans la fiche du véhicule.": "Next oil change not set: enter its mileage in the vehicle record.",
+"Kilométrage et prochaine vidange": "Mileage and next oil change",
+"Kilométrage actuel du véhicule": "Current vehicle mileage",
+"Kilométrage initial (mise en service dans l’application)": "Initial mileage (when added to the app)",
+"Lu au compteur aujourd’hui.": "Read on the odometer today.",
+"Kilométrage de la prochaine vidange": "Next oil change mileage",
+"Indiqué sur l’étiquette de la dernière vidange.": "Shown on the last oil change sticker.",
+"Saisissez le kilométrage actuel et celui de la prochaine vidange pour voir la progression.": "Enter the current mileage and the next oil change mileage to see the progress.",
+"Indiquez le kilométrage actuel du véhicule": "Enter the current vehicle mileage",
+"Indiquez le kilométrage de la prochaine vidange": "Enter the next oil change mileage",
+"Indiquez d’abord le kilométrage actuel": "Enter the current mileage first",
+"Ce kilométrage est déjà largement dépassé : vérifiez la valeur": "This mileage is already well exceeded: check the value",
+"Formation secourisme — 4 formations et leurs dates de validité": "First-aid training — 4 courses and their expiry dates",
+"Premiers secours (First Aid)": "First Aid",
+"RCP et défibrillateur (BLS)": "CPR and defibrillator (BLS)",
+"Secourisme avancé (Advanced First Aid)": "Advanced First Aid",
+"Secours aux traumatisés (PHTLS / trauma)": "Trauma care (PHTLS)",
+"Gestes de base, mise en sécurité, alerte": "Basic actions, making safe, raising the alarm",
+"Réanimation cardio-pulmonaire, DAE": "Cardiopulmonary resuscitation, AED",
+"Oxygène, immobilisation, bilan approfondi": "Oxygen, immobilisation, full assessment",
+"Prise en charge préhospitalière des blessés": "Pre-hospital care of the injured",
+"Laissez vide une formation non suivie. La date la plus proche sert aux alertes « Formation secourisme ».": "Leave a course empty if it was not taken. The nearest date is used for the “First-aid training” alerts.",
+"Premiers secours (First Aid) : valable jusqu’au": "First Aid: valid until",
+"RCP et défibrillateur (BLS) : valable jusqu’au": "CPR and defibrillator (BLS): valid until",
+"Secourisme avancé (Advanced First Aid) : valable jusqu’au": "Advanced First Aid: valid until",
+"Secours aux traumatisés (PHTLS / trauma) : valable jusqu’au": "Trauma care (PHTLS): valid until",
 "journalier": "daily",
 "hebdomadaire": "weekly",
 "mensuel": "monthly",
@@ -1454,7 +1504,19 @@
 "Afficher l'application en anglais": "Show the app in English",
 "Afficher l'application en français": "Show the app in French",
 "km au compteur aujourd'hui": "odometer km today",
-"Cocher C = conforme, NC = non conforme, NA = non applicable. Aucun résultat n'est présumé conforme.": "Tick C = compliant, NC = non-compliant, NA = not applicable. No result is assumed compliant."
+"Cocher C = conforme, NC = non conforme, NA = non applicable. Aucun résultat n'est présumé conforme.": "Tick C = compliant, NC = non-compliant, NA = not applicable. No result is assumed compliant.",
+"Passer à l'espace chauffeur": "Switch to the driver area",
+"Revenir à l'espace coordinateur ERT": "Back to the ERT coordinator area",
+"Votre fiche chauffeur n'est pas encore liée à votre compte : demandez au coordinateur ERT.": "Your driver record is not linked to your account yet: ask the ERT coordinator.",
+"Votre fiche chauffeur n'est pas encore liée à votre compte Ambu Track. Demandez au coordinateur ERT de la lier (fiche chauffeur → « Compte Ambu Track lié »).": "Your driver record is not linked to your Ambu Track account yet. Ask the ERT coordinator to link it (driver record → “Linked Ambu Track account”).",
+"Kilométrage initial (mise en service dans l'application)": "Initial mileage (when added to the app)",
+"Lu au compteur aujourd'hui.": "Read on the odometer today.",
+"Indiqué sur l'étiquette de la dernière vidange.": "Shown on the last oil change sticker.",
+"Indiquez d'abord le kilométrage actuel": "Enter the current mileage first",
+"Premiers secours (First Aid) : valable jusqu'au": "First Aid: valid until",
+"RCP et défibrillateur (BLS) : valable jusqu'au": "CPR and defibrillator (BLS): valid until",
+"Secourisme avancé (Advanced First Aid) : valable jusqu'au": "Advanced First Aid: valid until",
+"Secours aux traumatisés (PHTLS / trauma) : valable jusqu'au": "Trauma care (PHTLS): valid until"
 };
   var M = [
 [
@@ -2028,6 +2090,54 @@
 [
 "arrivée vers {0}",
 "arrival around {0}"
+],
+[
+"Zone {0}",
+"Zone {0}"
+],
+[
+"Départ {0} km",
+"Start {0} km"
+],
+[
+"Actuel {0} km",
+"Current {0} km"
+],
+[
+"Reste {0} km",
+"{0} km left"
+],
+[
+"Dépassée de {0} km",
+"Overdue by {0} km"
+],
+[
+"Progression vers la prochaine vidange : {0} %",
+"Progress to the next oil change: {0} %"
+],
+[
+"Kilométrage actuel connu : {0} km.",
+"Known current mileage: {0} km."
+],
+[
+"Formation secourisme · {0} / 4 renseignée(s)",
+"First-aid training · {0} / 4 filled in"
+],
+[
+"Premiers secours (First Aid) — {0}",
+"First Aid — {0}"
+],
+[
+"RCP et défibrillateur (BLS) — {0}",
+"CPR and defibrillator (BLS) — {0}"
+],
+[
+"Secourisme avancé (Advanced First Aid) — {0}",
+"Advanced First Aid — {0}"
+],
+[
+"Secours aux traumatisés (PHTLS / trauma) — {0}",
+"Trauma care (PHTLS) — {0}"
 ],
 [
 "journée du {0}",

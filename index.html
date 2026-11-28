@@ -455,6 +455,49 @@ body:not(.silencieux) .bas a.actif .ico-bas svg,body:not(.silencieux) .nav a.act
 .ecran .boite{border-radius:24px;animation:zoom .5s var(--ressort)}
 .ecran .marque b{animation:pop-icone .7s var(--ressort) .15s both}
 @media (prefers-reduced-motion:reduce){.mission-cours,.mc-route i,.pastille{animation:none!important}}
+/* Version 1.9 : barre de progression vers la prochaine vidange */
+.vidange{border:1px solid var(--bord);border-radius:12px;padding:10px 12px;background:var(--carte)}
+.vidange .vid-haut,.vidange .vid-bas{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.86rem;color:var(--doux)}
+.vidange .vid-haut b{color:var(--texte)}
+.vidange .vid-bas{font-size:.78rem;margin-top:4px}.vidange .vid-bas b{color:var(--texte);font-size:.95rem}
+.vid-barre{height:14px;border-radius:999px;background:var(--mute-f);overflow:hidden;margin-top:6px}
+.vid-barre span{display:block;height:100%;border-radius:999px;background:var(--ok);background-image:linear-gradient(45deg,rgba(255,255,255,.22) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.22) 75%,transparent 75%);background-size:22px 22px;animation:vid-charge 1.2s cubic-bezier(.2,.8,.2,1) both}
+.vidange.haute .vid-barre span{background-color:var(--warn)}.vidange.critique .vid-barre span{background-color:var(--bad)}
+.vidange.haute .vid-reste{color:var(--warn);font-weight:700}.vidange.critique .vid-reste{color:var(--bad);font-weight:700}
+.vidange.vide{color:var(--doux);font-size:.88rem;background:var(--survol)}
+.vid-mini{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:.76rem;color:var(--doux)}
+.vid-mini i{flex:0 0 90px;height:6px;border-radius:999px;background:var(--mute-f);overflow:hidden;display:block}
+.vid-mini i span{display:block;height:100%;background:var(--ok);animation:vid-charge 1s cubic-bezier(.2,.8,.2,1) both}
+.vid-mini.haute i span{background:var(--warn)}.vid-mini.critique i span{background:var(--bad)}
+@keyframes vid-charge{from{width:0}}
+/* Version 1.9 : classement par zone d'activité */
+.titre-zone{display:flex;align-items:center;gap:8px;margin:18px 2px 8px;font-size:1.02rem}
+.titre-zone:first-child{margin-top:4px}
+.titre-zone .nb{margin-left:auto;font-size:.8rem;font-weight:700;color:var(--doux);background:var(--mute-f);border-radius:999px;padding:2px 10px}
+.pastille-zone{width:12px;height:12px;border-radius:4px;background:var(--mute);flex:none}
+.pastille-zone[data-zone=BEL]{background:#0b62a4}.pastille-zone[data-zone=BAT]{background:#0f7a4f}.pastille-zone[data-zone=IKB]{background:#7c3aed}
+.pastille-zone[data-zone=FLY]{background:#c2410c}.pastille-zone[data-zone=MIN]{background:#475569}
+.zone-vide{color:var(--doux);font-size:.88rem;padding:10px 12px;border:1px dashed var(--bord);border-radius:12px;margin-bottom:6px}
+/* Version 1.9 : formations de secourisme (panneau déroulant) */
+.panneau-secourisme{border:1px solid var(--bord);border-radius:12px;background:var(--survol);margin-top:4px}
+.panneau-secourisme>summary{cursor:pointer;padding:12px 14px;font-weight:700;list-style:none;display:flex;align-items:center;gap:8px}
+.panneau-secourisme>summary::-webkit-details-marker{display:none}
+.panneau-secourisme>summary::after{content:"▾";margin-left:auto;transition:transform .2s}
+.panneau-secourisme[open]>summary::after{transform:rotate(180deg)}
+.panneau-secourisme .formations{padding:0 14px 12px;display:grid;gap:10px}
+.formation{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:8px;align-items:center;background:var(--carte);border:1px solid var(--bord);border-radius:10px;padding:8px 10px}
+.formation .nomf{font-weight:600}.formation .nomf small{display:block;font-weight:400;color:var(--doux)}
+@media (max-width:520px){.formation{grid-template-columns:1fr}}
+/* Version 1.9 : deux espaces (chauffeur / coordinateur ERT) */
+.espace-nom{margin:4px 8px 10px;padding:8px 12px;border-radius:10px;font-weight:800;font-size:.86rem;letter-spacing:.02em;background:var(--prim-c);color:var(--prim-f)}
+.espace-nom.chauffeur{background:var(--ok-f);color:var(--ok)}
+.espace-nom small{display:block;font-weight:600;opacity:.85}
+.badge-espace{display:inline-block;font-size:.78rem;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--prim-c);color:var(--prim-f);vertical-align:middle}
+.badge-espace.chauffeur{background:var(--ok-f);color:var(--ok)}
+.espaces-connexion{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 14px}
+.espaces-connexion div{border:1px solid var(--bord);border-radius:12px;padding:8px 10px;font-size:.82rem;color:var(--doux)}
+.espaces-connexion b{display:block;color:var(--texte);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){.vid-barre span,.vid-mini i span{animation:none}}
 </style>
 </head>
 <body>
@@ -482,7 +525,7 @@ body:not(.silencieux) .bas a.actif .ico-bas svg,body:not(.silencieux) .nav a.act
    Application web hors ligne : données sur l'appareil (IndexedDB) + Supabase.
    ============================================================================= */
 const CONFIG = {
-  VERSION: '1.8.0',
+  VERSION: '1.9.0',
   SUPABASE_URL: 'https://pgoesbhdbmnjscmvsflv.supabase.co',
   ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb2VzYmhkYm1uanNjbXZzZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNTgzOTMsImV4cCI6MjEwNDgzNDM5M30.5vZ_99CsSE5r-1j2bZhGvrO76tfmfNac-HbbOxNb1ig',
   OSRM: 'https://router.project-osrm.org',
@@ -553,7 +596,7 @@ const ic = (n, t = 20) => `<svg viewBox="0 0 24 24" width="${t}" height="${t}" f
 
 /* ----------------------------------------------------------------- Libellés */
 const LIB = {
-  role: { terrain: 'Ambulancier / terrain', point_focal: 'Point focal site', superviseur: 'Superviseur / responsable flotte', admin: 'Administrateur fonctionnel', direction: 'Direction / coordinateur' },
+  role: { terrain: 'Chauffeur / ambulancier', point_focal: 'Point focal site', superviseur: 'Coordinateur ERT / superviseur', admin: 'Administrateur (coordinateur ERT)', direction: 'Direction (consultation)' },
   statutAmb: { disponible: ['Disponible', 'ok'], reserve: ['Disponible avec réserve', 'warn'], maintenance: ['En maintenance', 'warn'], immobilisee: ['Immobilisée', 'bad'], hors_service: ['Hors service', 'mute'] },
   statutMission: { en_cours: ['En cours', 'info'], cloturee: ['Clôturée', 'ok'], annulee: ['Annulée', 'mute'] },
   statutSig: { nouveau: ['Nouveau', 'bad'], en_cours: ['En cours', 'info'], attente: ['En attente pièce / approbation', 'warn'], resolu: ['Résolu', 'ok'], cloture: ['Clôturé', 'mute'] },
@@ -634,6 +677,17 @@ const P = (cle, defaut) => { const p = L('ambu_parametres').find((x) => x.cle ==
 const seuils = () => ({ ...DEFAUT_SEUILS, ...(P('seuils', {}) || {}) });
 const listes = () => P('listes', {}) || {};
 const role = () => S.profil?.role;
+/* Version 1.9 : deux espaces. « terrain » = Espace chauffeur ; les autres rôles = Espace coordinateur ERT
+   (un coordinateur qui conduit peut passer à l'espace chauffeur). Les droits restent ceux du compte. */
+const CLE_ESPACE = 'ambu.espace';
+function espace() {
+  if (role() === 'terrain') return 'chauffeur';
+  if (!['point_focal', 'superviseur', 'admin'].includes(role())) return 'coordinateur';
+  try { return localStorage.getItem(CLE_ESPACE) === 'chauffeur' ? 'chauffeur' : 'coordinateur'; } catch { return 'coordinateur'; }
+}
+const NOM_ESPACE = { chauffeur: 'Espace chauffeur', coordinateur: 'Espace coordinateur ERT' };
+const ROUTES_CHAUFFEUR = ['accueil', 'missions', 'mission', 'mission-nouvelle', 'mission-cloture', 'kilometrage', 'controles', 'controle', 'controle-voir',
+  'signalements', 'signaler', 'signalement', 'ambulances', 'ambulance', 'alertes', 'moi', 'sync', 'compte'];
 const peut = {
   terrain: () => ['terrain', 'point_focal', 'superviseur', 'admin'].includes(role()),
   gestion: () => ['point_focal', 'superviseur', 'admin'].includes(role()),
@@ -697,10 +751,49 @@ function etatDocument(d) {
   if (j <= seuils().rappel_document_jours) return { niveau: 'haute', texte: `Expire dans ${j} j (${fmtJ(d.expiration)})`, jours: j };
   return { niveau: 'ok', texte: `Valide jusqu’au ${fmtJ(d.expiration)}`, jours: j };
 }
+/* Version 1.9 : zones d'activité — les sites sont regroupés par zone (codes des sites) */
+const ZONES = [['BEL', 'Belinga'], ['BAT', 'Batouala'], ['IKB', 'Ikei Boka Boka'], ['FLY', 'Fly Camp'], ['MIN', 'Mine']];
+const zoneDe = (siteId) => { const c = G('ambu_sites', siteId)?.code; return ZONES.some(([z]) => z === c) ? c : 'AUTRES'; };
+/** Regroupe une liste par zone : [{ code, nom, items }] (les 5 zones dans l'ordre, puis « Autres sites ») */
+function parZone(liste, siteDe, garderVides = false) {
+  const g = new Map([...ZONES.map(([c, n]) => [c, { code: c, nom: n, items: [] }]), ['AUTRES', { code: 'AUTRES', nom: 'Autres sites', items: [] }]]);
+  for (const x of liste) g.get(zoneDe(siteDe(x))).items.push(x);
+  return [...g.values()].filter((z) => z.items.length || (garderVides && z.code !== 'AUTRES'));
+}
+const titreZone = (z) => `<h2 class="titre-zone" data-zone-titre="${z.code}"><span class="pastille-zone" data-zone="${z.code}"></span>${z.code === 'AUTRES' ? 'Autres sites' : 'Zone ' + esc(z.nom)}<span class="nb">${z.items.length}</span></h2>`;
+/* Version 1.9 : dernière vidange réalisée, et progression jusqu'à la prochaine (barre « téléchargement ») */
+const derniereVidange = (aid) => parAmb('ambu_entretiens', aid).filter((e) => e.type === 'vidange' && e.statut === 'realise').sort((a, b) => (b.date_op || '').localeCompare(a.date_op || '') || (b.km || 0) - (a.km || 0))[0];
+function progressionVidange(aid, kmForce = null, cibleForce = null) {
+  const a = amb(aid); const s = seuils(); const k = kmForce ?? kmCourant(aid).km; const vid = aid ? derniereVidange(aid) : null;
+  let cible = cibleForce, depart = null;
+  if (cible == null && vid) { cible = vid.prochain_km || (vid.km != null ? vid.km + s.vidange_km : null); depart = vid.km; }
+  if (cible == null && a?.vidange_prochaine_km) cible = a.vidange_prochaine_km;
+  if (cible == null) return null;
+  if (depart == null || depart >= cible) depart = Math.max(0, cible - s.vidange_km);
+  const pct = Math.max(0, Math.min(100, Math.round((k - depart) * 100 / Math.max(1, cible - depart))));
+  const reste = cible - k;
+  return { cible, depart, km: k, pct, reste, niveau: reste <= 0 ? 'critique' : reste <= s.rappel_entretien_km ? 'haute' : 'ok' };
+}
+function barreVidange(p, vide = 'Prochaine vidange non renseignée : indiquez son kilométrage dans la fiche du véhicule.') {
+  if (!p) return `<div class="vidange vide">${ic('jauge', 16)} ${vide}</div>`;
+  return `<div class="vidange ${p.niveau}" data-vidange role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p.pct}" aria-label="Progression vers la prochaine vidange : ${p.pct} %">
+    <div class="vid-haut"><span>Prochaine vidange à <b>${nf(p.cible)} km</b></span><span class="vid-reste">${p.reste > 0 ? `Reste ${nf(p.reste)} km` : `Dépassée de ${nf(-p.reste)} km`}</span></div>
+    <div class="vid-barre"><span style="width:${p.pct}%"></span></div>
+    <div class="vid-bas"><span>Départ ${nf(p.depart)} km</span><b>${p.pct} %</b><span>Actuel ${nf(p.km)} km</span></div></div>`;
+}
+const miniVidange = (aid) => { const p = progressionVidange(aid); return p ? `<span class="vid-mini ${p.niveau}" title="Progression vers la prochaine vidange">Vidange <i><span style="width:${p.pct}%"></span></i> ${p.pct} %</span>` : ''; };
+/* Version 1.9 : 4 formations de secourisme (normes ERT / minier), chacune avec sa date de validité */
+const SECOURISME = [['first_aid', 'Premiers secours (First Aid)', 'Gestes de base, mise en sécurité, alerte'], ['bls', 'RCP et défibrillateur (BLS)', 'Réanimation cardio-pulmonaire, DAE'],
+  ['advanced', 'Secourisme avancé (Advanced First Aid)', 'Oxygène, immobilisation, bilan approfondi'], ['phtls', 'Secours aux traumatisés (PHTLS / trauma)', 'Prise en charge préhospitalière des blessés']];
+const formationsSecourisme = (c) => SECOURISME.map(([code, nom, detail]) => ({ code, nom, detail, expiration: (c?.secourisme_formations || []).find((f) => f.code === code)?.expiration || null }));
 function prochainEntretien(aid) {
   const s = seuils(); const k = kmCourant(aid).km;
-  const vid = parAmb('ambu_entretiens', aid).filter((e) => e.type === 'vidange' && e.statut === 'realise').sort((a, b) => (b.date_op || '').localeCompare(a.date_op || '') || (b.km || 0) - (a.km || 0))[0];
-  if (!vid) return { niveau: 'info', texte: 'Aucune vidange enregistrée', km: null, date: null };
+  const vid = derniereVidange(aid);
+  if (!vid) {
+    const p = progressionVidange(aid);   // v1.9 : kilométrage de vidange saisi dans la fiche de l'ambulance
+    if (!p) return { niveau: 'info', texte: 'Aucune vidange enregistrée', km: null, date: null };
+    return { niveau: p.niveau, texte: 'Vidange ' + (p.reste <= 0 ? `dépassée de ${nf(-p.reste)} km` : `dans ${nf(p.reste)} km (à ${nf(p.cible)} km)`), km: p.cible, date: null, resteKm: p.reste, resteJ: null };
+  }
   const pkm = vid.prochain_km || (vid.km != null ? vid.km + s.vidange_km : null);
   const pdate = vid.prochain_date || ajoutJours(vid.date_op, s.vidange_jours);
   const resteKm = pkm != null ? pkm - k : null; const resteJ = ecartJours(aujourdhui(), pdate);
@@ -729,7 +822,11 @@ function entretiensDus(aid) {
     if (pdate) morceaux.push(resteJ < 0 ? `date dépassée de ${-resteJ} j` : `avant le ${fmtJ(pdate)}`);
     res.push({ type, libelle: LIB.typeEnt[type], niveau, km: pkm, date: pdate, resteKm, resteJ, depuisKm: e.km, depuisDate: e.date_op, texte: `${LIB.typeEnt[type]} ${morceaux.join(' · ')}` });
   }
-  if (!parType.vidange) res.push({ type: 'vidange', libelle: 'Vidange', niveau: 'info', texte: 'Aucune vidange enregistrée : saisissez la dernière vidange pour activer le rappel' });
+  if (!parType.vidange) {
+    const p = progressionVidange(aid);   // v1.9 : kilométrage de vidange saisi dans la fiche de l'ambulance
+    if (p) res.push({ type: 'vidange', libelle: 'Vidange', niveau: p.niveau, km: p.cible, date: null, resteKm: p.reste, resteJ: null, texte: 'Vidange ' + (p.reste <= 0 ? `dépassée de ${nf(-p.reste)} km` : `dans ${nf(p.reste)} km (à ${nf(p.cible)} km)`) });
+    else res.push({ type: 'vidange', libelle: 'Vidange', niveau: 'info', texte: 'Aucune vidange enregistrée : saisissez la dernière vidange pour activer le rappel' });
+  }
   const rang = { critique: 0, haute: 1, info: 2, ok: 3 };
   return res.sort((x, y) => rang[x.niveau] - rang[y.niveau] || (x.resteKm ?? 1e9) - (y.resteKm ?? 1e9));
 }
@@ -791,8 +888,11 @@ function alertes(filtreAmb) {
     const p = etatValidite(c.permis_expiration, s.rappel_permis_jours);
     if (p.niveau === 'critique' || p.niveau === 'haute') ajout('permis', p.niveau, `Permis de conduire — ${nomCond(c)}`, p.texte, '#/chauffeur/' + c.id);
     else if (!c.permis_numero || !c.permis_expiration) ajout('permis', 'info', `Permis non renseigné — ${nomCond(c)}`, 'Complétez le numéro, les catégories et la date de validité', '#/chauffeur/' + c.id);
-    for (const [champ, lib] of [['aptitude_expiration', 'Aptitude médicale'], ['secourisme_expiration', 'Formation secourisme']]) {
-      if (!c[champ]) continue; const e = etatValidite(c[champ], s.rappel_permis_jours);
+    const dates = [['Aptitude médicale', c.aptitude_expiration]];
+    const fs = formationsSecourisme(c).filter((f) => f.expiration);   // v1.9 : une alerte par formation
+    if (fs.length) for (const f of fs) dates.push([f.nom, f.expiration]); else dates.push(['Formation secourisme', c.secourisme_expiration]);
+    for (const [lib, date] of dates) {
+      if (!date) continue; const e = etatValidite(date, s.rappel_permis_jours);
       if (e.niveau === 'critique' || e.niveau === 'haute') ajout('permis', e.niveau, `${lib} — ${nomCond(c)}`, e.texte, '#/chauffeur/' + c.id);
     }
   }
@@ -1213,6 +1313,10 @@ function formNouveauLieu(nomInitial = '', cb = null) {
 }
 
 /* ----------------------------------------------------------------- Navigation */
+const MENU_CHAUFFEUR = [
+  ['accueil', 'Mon espace', 'accueil'], ['missions', 'Missions', 'mission'], ['kilometrage', 'Relevés kilométriques', 'jauge'], ['controles', 'Contrôles quotidiens', 'controle'],
+  ['signalements', 'Anomalies & incidents', 'alerte'], ['ambulances', 'Ambulances', 'ambulance'], ['moi', 'Mes aptitudes', 'badge'], ['alertes', 'Alertes', 'cloche'], ['sync', 'Synchronisation', 'sync'],
+];
 const MENU = [
   ['accueil', 'Tableau de bord', 'accueil'], ['alertes', 'Alertes', 'cloche'], ['missions', 'Missions', 'mission'], ['kilometrage', 'Relevés kilométriques', 'jauge'],
   ['ambulances', 'Ambulances', 'ambulance'], ['chauffeurs', 'Chauffeurs', 'equipe'], ['controles', 'Contrôles quotidiens', 'controle'],
@@ -1241,16 +1345,23 @@ function dessinerNav() {
   const actif = (k) => nom === k || (nom.startsWith(k.replace(/s$/, '')) && k !== 'accueil') ? ' actif' : '';
   const nAl = alertes().filter((a) => a.niveau !== 'info').length;
   const pastille = (k) => k === 'alertes' && nAl ? `<em class="pastille">${nAl > 99 ? '99+' : nAl}</em>` : '';
-  $('#nav').innerHTML = MENU.filter(([k]) => k !== 'reporting' || peut.gestion() || role() === 'direction').map(([k, l, i]) => `<a href="#/${k}" class="${actif(k)}">${ic(i)}<span>${l}</span>${pastille(k)}</a>`).join('')
-    + (peut.admin() ? `<a href="#/admin" class="${actif('admin')}">${ic('admin')}<span>Administration</span></a>` : '')
+  const esp = espace(); const ch = esp === 'chauffeur';
+  const peutBasculer = ['point_focal', 'superviseur', 'admin'].includes(role());
+  $('#nav').innerHTML = `<div class="espace-nom ${esp}" data-espace="${esp}">${NOM_ESPACE[esp]}<small>${esc(LIB.role[role()] || '')}</small></div>`
+    + (ch ? MENU_CHAUFFEUR : MENU.filter(([k]) => k !== 'reporting' || peut.gestion() || role() === 'direction')).map(([k, l, i]) => `<a href="#/${k}" class="${actif(k)}">${ic(i)}<span>${l}</span>${pastille(k)}</a>`).join('')
+    + (!ch && peut.admin() ? `<a href="#/admin" class="${actif('admin')}">${ic('admin')}<span>Administration</span></a>` : '')
+    + (peutBasculer ? `<a href="javascript:void 0" data-basculer-espace>${ic('equipe')}<span>${ch ? 'Revenir à l’espace coordinateur ERT' : 'Passer à l’espace chauffeur'}</span></a>` : '')
     + (estInstallee() ? '' : `<a href="javascript:void 0" class="nav-installer" data-installer-nav>${ic('installer')}<span>Installer l’application</span></a>`)
     + `<div class="sep"></div><a href="#/compte" class="${actif('compte')}">${ic('compte')}<span>Mon compte</span></a>
        <div class="qui">${esc(S.profil?.nom || '')}<br>${esc(LIB.role[role()] || '')}<br>Version ${CONFIG.VERSION}</div>`;
-  const bas = [['accueil', 'Accueil', 'accueil'], ['missions', 'Missions', 'mission'], ['signaler', 'Signaler', 'alerte', true], ['alertes', 'Alertes', 'cloche'], ['menu', 'Plus', 'plusmenu']];
+  const bas = ch ? [['accueil', 'Accueil', 'accueil'], ['missions', 'Missions', 'mission'], ['signaler', 'Signaler', 'alerte', true], ['kilometrage', 'Km', 'jauge'], ['menu', 'Plus', 'plusmenu']]
+    : [['accueil', 'Accueil', 'accueil'], ['missions', 'Missions', 'mission'], ['signaler', 'Signaler', 'alerte', true], ['alertes', 'Alertes', 'cloche'], ['menu', 'Plus', 'plusmenu']];
   $('#bas').innerHTML = bas.map(([k, l, i, cta]) => k === 'menu' ? `<a href="javascript:void 0" data-menu>${ic(i, 22)}<span>${l}</span></a>`
     : `<a href="#/${k}" class="${actif(k)}${cta ? ' cta' : ''}">${cta ? `<span class="rond">${ic(i, 20)}</span>` : `<span class="ico-bas">${ic(i, 22)}${pastille(k)}</span>`}<span>${l}</span></a>`).join('');
   $('[data-menu]', $('#bas')).onclick = () => basculerMenu(true);
   const bi = $('[data-installer-nav]', $('#nav')); if (bi) bi.onclick = () => { basculerMenu(false); installerApp(); };
+  const be = $('[data-basculer-espace]', $('#nav'));
+  if (be) be.onclick = () => { try { localStorage.setItem(CLE_ESPACE, ch ? 'coordinateur' : 'chauffeur'); } catch { /* rien */ } basculerMenu(false); location.hash = '#/accueil'; router(); };
 }
 function basculerMenu(o) { $('#nav').classList.toggle('ouvert', o); $('#voile').classList.toggle('ouvert', o); }
 function majIndicateur() {
@@ -1277,7 +1388,8 @@ async function router(silencieux = false) {
   const [chemin, qs] = brut.split('?');
   const [nom, arg] = chemin.split('/');
   const q = Object.fromEntries(new URLSearchParams(qs || ''));
-  const vue = VUES[nom] || VUES.accueil;
+  // v1.9 : l'espace chauffeur n'ouvre que ses rubriques
+  const vue = espace() === 'chauffeur' && !ROUTES_CHAUFFEUR.includes(nom) ? VUES.accueil : (VUES[nom] || VUES.accueil);
   if (!silencieux) { S.enForm = false; basculerMenu(false); }
   document.body.classList.toggle('silencieux', !!silencieux);
   const defil = silencieux ? window.scrollY : 0;
@@ -1328,6 +1440,7 @@ const lienSync = () => S.derniereSync ? `Données synchronisées ${ilYa(S.dernie
 
 /* ================================================================= TABLEAU DE BORD */
 VUES.accueil = () => {
+  if (espace() === 'chauffeur') return accueilChauffeur();
   const ambs = ambulancesVisibles(); const auj = aujourdhui();
   const enCours = L('ambu_missions').filter((m) => m.statut === 'en_cours');
   const mienne = enCours.filter((m) => m.conducteur_id === S.profil.id || m.created_by === S.profil.id);
@@ -1344,7 +1457,7 @@ VUES.accueil = () => {
   const tuile = (cls, href, v, l) => `<a class="kpi ${cls}" href="${href}"><div class="v">${v}</div><div class="l">${l}</div></a>`;
   let masque = false; try { masque = localStorage.getItem('ambu.install.masque') === '1'; } catch { /* rien */ }
   const bandeauInstall = !estInstallee() && !masque ? `<div class="bandeau-install"><span class="ico">${ic('installer', 22)}</span><div><b>Installez Ambu Track sur ce téléphone</b><br><span>Icône sur l’écran d’accueil, plein écran, fonctionne sans réseau.</span></div><button class="btn p petit" data-installer>Installer</button><button class="fermer" data-masquer aria-label="Masquer">✕</button></div>` : '';
-  const html = bandeauInstall + entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])}`, `${esc(LIB.role[role()])}${S.profil.sites?.length ? ' · ' + S.profil.sites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
+  const html = bandeauInstall + entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])} <span class="badge-espace">Espace coordinateur ERT</span>`, `${esc(LIB.role[role()])}${S.profil.sites?.length ? ' · ' + S.profil.sites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
     + mienne.map((m) => `<div class="carte mission-cours"><div class="mc-haut"><b>Mission en cours · ${esc(amb(m.ambulance_id)?.code || '')}</b><span>${ilYa(m.debut).replace('il y a', 'depuis')}${m.duree_carte_min != null ? ' · arrivée estimée vers ' + fmtH(new Date(new Date(m.debut).getTime() + m.duree_carte_min * 60000).toISOString()) : ''}</span></div>
       <div class="mc-route"><span>${esc(nomLieu(m.depart_id))}</span><i></i><span>${esc(nomLieu(m.destination_id))}</span></div>
       <div class="mc-btns"><a class="btn" href="#/mission/${m.id}">${ic('plus', 16)} Événement</a><a class="btn p" href="#/mission-cloture/${m.id}">Clôturer la mission</a></div></div>`).join('')
@@ -1374,11 +1487,46 @@ VUES.accueil = () => {
     const bm = $('[data-masquer]', el); if (bm) bm.onclick = () => { try { localStorage.setItem('ambu.install.masque', '1'); } catch { /* rien */ } bm.closest('.bandeau-install').remove(); };
   } };
 };
+/* Version 1.9 : accueil de l'espace chauffeur (actions du terrain, ses ambulances, ses aptitudes) */
+function accueilChauffeur() {
+  const enCours = L('ambu_missions').filter((m) => m.statut === 'en_cours');
+  const mienne = enCours.filter((m) => m.conducteur_id === S.profil.id || m.created_by === S.profil.id);
+  const mesSites = S.profil.sites || []; const moi = monConducteur();
+  const ambs = ambulancesVisibles().filter((a) => !mesSites.length || mesSites.includes(a.site_id) || (moi && a.site_id === moi.site_id));
+  const sl = seuils();
+  const etat = (lib, date) => { const e = etatValidite(date, sl.rappel_permis_jours); return `<div class="ligne"><div class="corps"><div class="t">${lib}</div><div class="s">${esc(e.texte)}</div></div>${chip({ critique: ['Expiré', 'bad'], haute: ['Bientôt', 'warn'], ok: ['Valide', 'ok'], info: ['Non renseigné', 'mute'] }[e.niveau])}</div>`; };
+  let masque = false; try { masque = localStorage.getItem('ambu.install.masque') === '1'; } catch { /* rien */ }
+  const bandeauInstall = !estInstallee() && !masque ? `<div class="bandeau-install"><span class="ico">${ic('installer', 22)}</span><div><b>Installez Ambu Track sur ce téléphone</b><br><span>Icône sur l’écran d’accueil, plein écran, fonctionne sans réseau.</span></div><button class="btn p petit" data-installer>Installer</button><button class="fermer" data-masquer aria-label="Masquer">✕</button></div>` : '';
+  const html = bandeauInstall + entete(`Bonjour ${esc(S.profil.nom.split(' ')[0])} <span class="badge-espace chauffeur">Espace chauffeur</span>`, `${esc(LIB.role[role()])}${mesSites.length ? ' · ' + mesSites.map(nomSite).map(esc).join(', ') : ''} · ${lienSync()}`)
+    + mienne.map((m) => `<div class="carte mission-cours"><div class="mc-haut"><b>Mission en cours · ${esc(amb(m.ambulance_id)?.code || '')}</b><span>${ilYa(m.debut).replace('il y a', 'depuis')}</span></div>
+      <div class="mc-route"><span>${esc(nomLieu(m.depart_id))}</span><i></i><span>${esc(nomLieu(m.destination_id))}</span></div>
+      <div class="mc-btns"><a class="btn" href="#/mission/${m.id}">${ic('plus', 16)} Événement</a><a class="btn p" href="#/mission-cloture/${m.id}">Clôturer la mission</a></div></div>`).join('')
+    + `<h2 class="titre-section">Actions rapides</h2><div class="actions-rapides">
+      <a class="ar prim" href="#/mission-nouvelle"><span class="ico">${ic('mission')}</span>Démarrer une mission</a>
+      <a class="ar vert" href="#/controle"><span class="ico">${ic('controle')}</span>Contrôle de prise de service</a>
+      <a class="ar" href="#/kilometrage"><span class="ico">${ic('jauge')}</span>Relevé kilométrique</a>
+      <a class="ar orange" href="#/signaler?type=anomalie"><span class="ico">${ic('alerte')}</span>Signaler une anomalie</a>
+      <a class="ar rouge" href="#/signaler?type=incident"><span class="ico">${ic('alerte')}</span>Déclarer un incident / accident</a>
+      <a class="ar" href="#/moi"><span class="ico">${ic('badge')}</span>Mes aptitudes</a></div>
+    <div class="carte"><div class="titre-ligne"><h2>Mes ambulances</h2></div>${ambs.length ? ambs.map((a) => `<a class="ligne" href="#/ambulance/${a.id}"><span style="color:var(--prim)">${ic('ambulance', 26)}</span><div class="corps"><div class="t">${esc(a.code)} · ${esc(a.immatriculation)}</div><div class="s">${esc(nomSite(a.site_id))} · ${nf(kmCourant(a.id).km)} km</div>${miniVidange(a.id)}</div><div class="droite">${missionEnCours(a.id) ? '<span class="chip info">En mission</span>' : chip(LIB.statutAmb[a.statut])}</div></a>`).join('') : vide('Aucune ambulance pour votre site.')}</div>
+    <div class="carte"><div class="titre-ligne"><h2>Mes aptitudes</h2><a class="btn petit" href="#/moi">Voir ma fiche</a></div>${moi ? `<div class="liste">${etat('Permis de conduire', moi.permis_expiration)}${etat('Aptitude médicale à la conduite', moi.aptitude_expiration)}${formationsSecourisme(moi).map((f) => etat(f.nom, f.expiration)).join('')}</div>`
+      : vide('Votre fiche chauffeur n’est pas encore liée à votre compte : demandez au coordinateur ERT.')}</div>`;
+  return { html, init(el) {
+    const bi = $('[data-installer]', el); if (bi) bi.onclick = installerApp;
+    const bm = $('[data-masquer]', el); if (bm) bm.onclick = () => { try { localStorage.setItem('ambu.install.masque', '1'); } catch { /* rien */ } bm.closest('.bandeau-install').remove(); };
+  } };
+}
+/* Version 1.9 : « Mes aptitudes » — la fiche du chauffeur connecté */
+VUES.moi = () => {
+  const c = monConducteur();
+  if (c) return VUES.chauffeur(c.id);
+  return { html: entete('Mes aptitudes', NOM_ESPACE[espace()]) + '<div class="bandeau warn">Votre fiche chauffeur n’est pas encore liée à votre compte Ambu Track. Demandez au coordinateur ERT de la lier (fiche chauffeur → « Compte Ambu Track lié »).</div>' };
+};
 function ligneAmbulance(a) {
   const m = missionEnCours(a.id); const k = kmCourant(a.id);
   const nSig = parAmb('ambu_signalements', a.id).filter(ouvert).length;
   return `<a class="ligne" href="#/ambulance/${a.id}"><span style="color:var(--prim)">${ic('ambulance', 26)}</span><div class="corps"><div class="t">${esc(a.code)} · ${esc(a.immatriculation)}</div>
-    <div class="s">${esc(a.modele || a.marque || '')} · ${esc(nomSite(a.site_id))} · ${nf(k.km)} km</div></div>
+    <div class="s">${esc(a.modele || a.marque || '')} · ${esc(nomSite(a.site_id))} · ${nf(k.km)} km</div>${miniVidange(a.id)}</div>
     <div class="droite">${m ? '<span class="chip info">En mission</span>' : chip(LIB.statutAmb[a.statut])}${nSig ? `<span class="chip warn">${nSig} ouvert${nSig > 1 ? 's' : ''}</span>` : ''}${etatSync(a)}</div></a>`;
 }
 /** Ligne d'ambulance avec bouton Modifier (point focal, superviseur, administrateur) */
@@ -1602,7 +1750,8 @@ VUES.ambulances = (arg, q) => {
   return { html: entete('Ambulances', `${ambs.length} véhicule(s)`, peut.sup() ? `<a class="btn p" href="#/ambulance-form">${ic('plus', 18)} Ajouter</a>` : '')
     + `<div class="filtres"><input type="search" data-f="q" placeholder="Code, immatriculation, châssis…" value="${esc(q.q || '')}"><select data-f="site">${options(sitesVisibles().map((s) => [s.id, s.nom]), fs, 'Tous les sites')}</select>
       <select data-f="statut">${options(Object.entries(LIB.statutAmb).map(([k, v]) => [k, v[0]]), fst, 'Tous les statuts')}</select></div>
-    <div class="liste">${ambs.length ? ambs.map(ligneAmbulanceModif).join('') : videAction('Aucune ambulance ne correspond.', peut.sup() ? ['#/ambulance-form', 'Ajouter une ambulance'] : null)}</div>`,
+    ${ambs.length ? parZone(ambs, (a) => a.site_id, !fs && !fst && !fq).map((z) => titreZone(z) + (z.items.length ? `<div class="liste" data-zone-liste="${z.code}">${z.items.map(ligneAmbulanceModif).join('')}</div>` : '<div class="zone-vide">Aucune ambulance dans cette zone.</div>')).join('')
+      : videAction('Aucune ambulance ne correspond.', peut.sup() ? ['#/ambulance-form', 'Ajouter une ambulance'] : null)}`,
   init(el) {
     const go = () => { const p = new URLSearchParams(); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/ambulances?' + p; };
     $$('select[data-f]', el).forEach((s) => s.onchange = go); const qq = $('input[data-f]', el); qq.onchange = go;
@@ -1621,6 +1770,7 @@ VUES.ambulance = (id, q) => {
       <dt>Site d’affectation</dt><dd>${esc(nomSite(a.site_id))}</dd><dt>Permis exigé</dt><dd>Catégorie ${esc(a.categorie_permis || 'B')}</dd><dt>Statut</dt><dd>${m ? '<span class="chip info">En mission</span> ' : ''}${chip(LIB.statutAmb[a.statut])}</dd>
       <dt>Responsable / équipe</dt><dd>${esc(a.responsable || '—')}</dd><dt>Kilométrage courant</dt><dd>${nf(k.km)} km <span class="aide">(${k.quand ? 'mis à jour le ' + fmtDH(k.quand) : 'valeur initiale'})</span></dd>
       <dt>Caractéristiques</dt><dd>${esc(a.caracteristiques || '—')}</dd><dt>Notes</dt><dd>${esc(a.notes || '—')}</dd></dl></div>
+      <div class="carte" data-carte-vidange><div class="titre-ligne"><h2>Prochaine vidange</h2>${peut.gestion() ? `<a class="btn petit" href="#/ambulance-form/${id}">${ic('crayon', 16)} Modifier</a>` : ''}</div>${barreVidange(progressionVidange(id))}</div>
       <div class="carte"><h2>Alertes</h2>${al.length ? al.map((x) => `<a class="alerte ${x.niveau}" href="${x.href}"><span>${ic('alerte', 18)}</span><span><b>${esc(x.titre)}</b><small>${esc(x.detail || '')}</small></span></a>`).join('') : vide('Aucune alerte pour ce véhicule.')}
       ${m ? `<a class="alerte" href="#/mission/${m.id}"><span>${ic('mission', 18)}</span><span><b>Mission en cours</b><small>${esc(nomLieu(m.depart_id))} → ${esc(nomLieu(m.destination_id))} depuis ${fmtH(m.debut)}</small></span></a>` : ''}</div></div>`;
   } else if (onglet === 'historique') {
@@ -1646,6 +1796,7 @@ VUES.ambulance = (id, q) => {
     const pe = prochainEntretien(id);
     const ents = parAmb('ambu_entretiens', id).sort((x, y) => (y.date_op || '').localeCompare(x.date_op || ''));
     corps = `<div class="bandeau ${pe.niveau === 'critique' ? 'bad' : pe.niveau === 'haute' ? 'warn' : pe.niveau === 'ok' ? 'ok' : ''}"><b>Prochaine vidange :</b> ${esc(pe.texte)}. <span class="aide">Kilométrage courant : ${nf(k.km)} km.</span></div>
+      <div style="margin-bottom:12px">${barreVidange(progressionVidange(id))}</div>
       ${peut.gestion() ? `<a class="btn p" style="margin-bottom:12px" href="#/entretien-form?amb=${id}">${ic('plus', 18)} Enregistrer un entretien</a>` : ''}
       <div class="liste">${ents.length ? ents.map(ligneEntretien).join('') : videAction('Aucun entretien enregistré.', peut.gestion() ? ['#/entretien-form', 'Enregistrer un entretien'] : null)}</div>`;
   } else if (onglet === 'equipements') {
@@ -1692,12 +1843,17 @@ VUES['ambulance-form'] = (id) => {
       <div class="champ"><label class="lib">Marque</label><input name="marque" value="${esc(a?.marque || 'Toyota')}"></div>
       <div class="champ"><label class="lib">Modèle</label><input name="modele" list="modeles" value="${esc(a?.modele || '')}"><datalist id="modeles">${modeles.map((x) => `<option value="${x}">`).join('')}</datalist></div>
       <div class="champ"><label class="lib">Année</label><input type="number" name="annee" min="1980" max="2100" value="${esc(a?.annee || '')}"></div>
-      <div class="champ"><label class="lib">Kilométrage initial (à la mise en service dans l’application)</label><input type="number" name="km_initial" min="0" value="${esc(a?.km_initial ?? '')}"></div>
       <div class="champ"><label class="lib">Catégorie de permis exigée</label><select name="categorie_permis">${options(listes().categories_permis || ['B'], a?.categorie_permis || 'B')}</select><div class="aide">Vérifiée au démarrage de chaque mission.</div></div>
       <div class="champ"><label class="lib">Responsable / équipe de référence</label><input name="responsable" value="${esc(a?.responsable || '')}"></div>
       ${a ? '' : `<div class="champ"><label class="lib">Statut</label><select name="statut">${options(Object.entries(LIB.statutAmb).map(([k, v]) => [k, v[0]]), 'disponible')}</select></div>`}</div>
       <div class="champ"><label class="lib">Caractéristiques</label><textarea name="caracteristiques" placeholder="Diesel, 4x4, cellule sanitaire…">${esc(a?.caracteristiques || '')}</textarea></div>
       <div class="champ"><label class="lib">Notes</label><textarea name="notes">${esc(a?.notes || '')}</textarea></div>
+      <div class="carte" data-rubrique-vidange style="margin:14px 0;background:var(--survol)"><h2>${ic('jauge', 18)} Kilométrage et prochaine vidange</h2>
+        <div class="grille g2 r1">
+        <div class="champ"><label class="lib">${a ? 'Kilométrage initial (mise en service dans l’application)' : 'Kilométrage actuel du véhicule <span class="obl">*</span>'}</label><input type="number" name="km_initial" min="0" inputmode="numeric" value="${esc(a?.km_initial ?? '')}">${a ? `<div class="aide">Kilométrage actuel connu : ${nf(kmCourant(a.id).km)} km.</div>` : '<div class="aide">Lu au compteur aujourd’hui.</div>'}</div>
+        <div class="champ"><label class="lib">Kilométrage de la prochaine vidange${a ? '' : ' <span class="obl">*</span>'}</label><input type="number" name="vidange_prochaine_km" min="0" inputmode="numeric" value="${esc(a?.vidange_prochaine_km ?? '')}">
+          <div class="aide">Indiqué sur l’étiquette de la dernière vidange. <button type="button" class="btn petit" data-suggerer-vidange>+ ${nf(seuils().vidange_km)} km</button></div></div></div>
+        <div data-apercu-vidange></div></div>
       <h3>Équipements embarqués</h3><div data-eqs></div><button type="button" class="btn petit" data-ajeq>${ic('plus', 16)} Ajouter un équipement</button>
       <div style="margin-top:16px"><button class="btn p large">${a ? 'Enregistrer les modifications' : 'Créer l’ambulance'}</button></div></form>`,
   init(el) {
@@ -1706,13 +1862,21 @@ VUES['ambulance-form'] = (id) => {
       $$('[data-n]', el).forEach((i) => i.oninput = () => { liste[i.dataset.n].nom = i.value; }); $$('[data-s]', el).forEach((i) => i.onchange = () => { liste[i.dataset.s].statut = i.value; });
       $$('[data-x]', el).forEach((b) => b.onclick = () => { liste.splice(Number(b.dataset.x), 1); dess(); }); };
     dess(); $('[data-ajeq]', el).onclick = () => { liste.push({ nom: '', statut: 'ok' }); dess(); };
+    // v1.9 : aperçu en direct de la barre de progression jusqu'à la prochaine vidange
+    const apercu = () => { const kmA = a ? kmCourant(a.id).km : nombre(f.km_initial.value); const cible = nombre(f.vidange_prochaine_km.value);
+      $('[data-apercu-vidange]', el).innerHTML = kmA != null && cible != null && cible > 0 ? barreVidange(progressionVidange(a?.id || null, kmA, cible)) : barreVidange(null, 'Saisissez le kilométrage actuel et celui de la prochaine vidange pour voir la progression.'); };
+    f.km_initial.oninput = apercu; f.vidange_prochaine_km.oninput = apercu; apercu();
+    $('[data-suggerer-vidange]', el).onclick = () => { const kmA = a ? kmCourant(a.id).km : nombre(f.km_initial.value); if (kmA == null) return erreurChamp(f, 'km_initial', 'Indiquez d’abord le kilométrage actuel'); f.vidange_prochaine_km.value = kmA + seuils().vidange_km; apercu(); };
     f.onsubmit = async (e) => {
       e.preventDefault(); const v = lireForm(f);
       if (!v.code) return erreurChamp(f, 'code', 'L’identifiant est obligatoire');
       if (!v.immatriculation) return erreurChamp(f, 'immatriculation', 'L’immatriculation est obligatoire');
       if (!a && !v.site_id) return erreurChamp(f, 'site_id', 'Choisissez le site');
       if (L('ambu_ambulances').some((x) => x.id !== id && x.code.toLowerCase() === v.code.toLowerCase())) return erreurChamp(f, 'code', 'Cet identifiant existe déjà');
-      const data = { code: v.code, immatriculation: v.immatriculation.toUpperCase(), chassis: v.chassis || null, marque: v.marque || 'Toyota', modele: v.modele || null, annee: v.annee, km_initial: v.km_initial || 0,
+      if (!a && v.km_initial == null) return erreurChamp(f, 'km_initial', 'Indiquez le kilométrage actuel du véhicule');
+      if (!a && v.vidange_prochaine_km == null) return erreurChamp(f, 'vidange_prochaine_km', 'Indiquez le kilométrage de la prochaine vidange');
+      if (v.vidange_prochaine_km != null && v.vidange_prochaine_km <= (a ? kmCourant(a.id).km : v.km_initial || 0) - seuils().vidange_km) return erreurChamp(f, 'vidange_prochaine_km', 'Ce kilométrage est déjà largement dépassé : vérifiez la valeur');
+      const data = { code: v.code, immatriculation: v.immatriculation.toUpperCase(), chassis: v.chassis || null, marque: v.marque || 'Toyota', modele: v.modele || null, annee: v.annee, km_initial: v.km_initial || 0, vidange_prochaine_km: v.vidange_prochaine_km ?? null,
         responsable: v.responsable || null, categorie_permis: v.categorie_permis || 'B', caracteristiques: v.caracteristiques || null, notes: v.notes || null, equipements: liste.filter((x) => x.nom.trim()) };
       if (v.site_id && (!a || peut.sup())) data.site_id = v.site_id;
       if (!a) data.statut = v.statut || 'disponible';
@@ -2391,9 +2555,9 @@ VUES.chauffeurs = (arg, q) => {
   const sl = seuils();
   return { html: entete('Chauffeurs et ambulanciers', `${cs.length} fiche(s) · photo d’identification, permis et aptitudes`, peut.gestion() ? `<a class="btn p" href="#/chauffeur-form">${ic('plus', 18)} Nouvelle fiche</a>` : '')
     + `<div class="filtres"><input type="search" data-f="q" placeholder="Nom, matricule, n° de permis…" value="${esc(q.q || '')}"><select data-f="site">${options(sitesVisibles().map((x) => [x.id, x.nom]), q.site, 'Tous les sites')}</select></div>
-    ${cs.length ? `<div class="grille-cond">${cs.map((c) => { const p = etatValidite(c.permis_expiration, sl.rappel_permis_jours);
+    ${cs.length ? parZone(cs, (c) => c.site_id, !q.site && !q.q).map((z) => titreZone(z) + (z.items.length ? `<div class="grille-cond" data-zone-liste="${z.code}">${z.items.map((c) => { const p = etatValidite(c.permis_expiration, sl.rappel_permis_jours);
       return (peut.gestion() ? '<div class="ligne-modif">' : '') + `<a class="carte-cond" href="#/chauffeur/${c.id}">${avatar(c, 56)}<div class="corps"><div class="t">${esc(nomCond(c))}</div><div class="s">${esc(c.fonction || '')}${c.matricule ? ' · ' + esc(c.matricule) : ''} · ${esc(nomSite(c.site_id))}</div>
-        <div class="cats">${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join('')}${chip({ critique: ['Permis expiré', 'bad'], haute: ['Permis bientôt expiré', 'warn'], ok: ['Permis valide', 'ok'], info: ['Permis à compléter', 'mute'] }[p.niveau])}${c.actif === false ? '<span class="chip mute">Inactif</span>' : ''}${etatSync(c)}</div></div></a>` + (peut.gestion() ? `<a class="btn-modif" href="#/chauffeur-form/${c.id}" data-modifier-cond="${c.id}" aria-label="Modifier ${esc(nomCond(c))}" title="Modifier les informations">${ic('crayon', 18)}<span>Modifier</span></a></div>` : ''); }).join('')}</div>`
+        <div class="cats">${(c.permis_categories || []).map((x) => `<span class="cat">${esc(x)}</span>`).join('')}${chip({ critique: ['Permis expiré', 'bad'], haute: ['Permis bientôt expiré', 'warn'], ok: ['Permis valide', 'ok'], info: ['Permis à compléter', 'mute'] }[p.niveau])}${c.actif === false ? '<span class="chip mute">Inactif</span>' : ''}${etatSync(c)}</div></div></a>` + (peut.gestion() ? `<a class="btn-modif" href="#/chauffeur-form/${c.id}" data-modifier-cond="${c.id}" aria-label="Modifier ${esc(nomCond(c))}" title="Modifier les informations">${ic('crayon', 18)}<span>Modifier</span></a></div>` : ''); }).join('')}</div>` : '<div class="zone-vide">Aucun chauffeur dans cette zone.</div>')).join('')
       : videAction('Aucune fiche chauffeur pour le moment.', peut.gestion() ? ['#/chauffeur-form', 'Créer la première fiche'] : null)}`,
   init(el) { const go = () => { const p = new URLSearchParams(); $$('[data-f]', el).forEach((x) => x.value && p.set(x.dataset.f, x.value)); location.hash = '#/chauffeurs?' + p; };
     $$('[data-f]', el).forEach((x) => x.onchange = go); } };
@@ -2412,7 +2576,8 @@ VUES.chauffeur = (id) => {
   const ligneEtat = (lib, date) => { const e = etatValidite(date, sl.rappel_permis_jours); return `<div class="ligne"><div class="corps"><div class="t">${lib}</div><div class="s">${esc(e.texte)}</div></div>${chip({ critique: ['Expiré', 'bad'], haute: ['Bientôt', 'warn'], ok: ['Valide', 'ok'], info: ['Non renseigné', 'mute'] }[e.niveau])}</div>`; };
   return { html: entete(esc(nomCond(c)), `${esc(c.fonction || '')} · ${esc(nomSite(c.site_id))}`, `<button class="btn" data-plein>${ic('badge', 18)} Carte d’identification</button>` + (peut.gestion() ? `<a class="btn p" href="#/chauffeur-form/${id}">Modifier</a>` : ''), '#/chauffeurs')
     + `<div class="grille g2 r1" style="align-items:start"><div>${badgeIdentification(c)}
-      <div class="carte"><h2>Permis et aptitudes</h2><div class="liste">${ligneEtat('Permis de conduire' + (c.permis_numero ? ' n° ' + esc(c.permis_numero) : ''), c.permis_expiration)}${ligneEtat('Aptitude médicale à la conduite', c.aptitude_expiration)}${ligneEtat('Formation secourisme', c.secourisme_expiration)}</div>
+      <div class="carte"><h2>Permis et aptitudes</h2><div class="liste">${ligneEtat('Permis de conduire' + (c.permis_numero ? ' n° ' + esc(c.permis_numero) : ''), c.permis_expiration)}${ligneEtat('Aptitude médicale à la conduite', c.aptitude_expiration)}</div>
+      <details class="panneau-secourisme" open style="margin-top:10px"><summary>${ic('badge', 18)} Formation secourisme · ${formationsSecourisme(c).filter((x) => x.expiration).length} / 4 renseignée(s)</summary><div class="liste" style="padding:0 12px 8px">${formationsSecourisme(c).map((x) => ligneEtat(x.nom, x.expiration)).join('')}</div></details>
       <dl class="def" style="margin-top:12px"><dt>Délivré le</dt><dd>${fmtJ(c.permis_delivrance)}</dd><dt>Lieu de délivrance</dt><dd>${esc(c.permis_lieu || '—')}</dd><dt>Scan du permis</dt><dd>${vignettes(c.permis_fichiers)}</dd></dl></div></div>
       <div><div class="carte"><h2>Activité</h2><div class="grille g3"><div class="kpi"><div class="v">${ms.length}</div><div class="l">Missions</div></div><div class="kpi"><div class="v">${nf(kmM)}</div><div class="l">km ce mois</div></div><div class="kpi"><div class="v">${nf(kmT)}</div><div class="l">km au total</div></div></div></div>
       <div class="carte"><div class="titre-ligne"><h2>Informations</h2>${peut.gestion() ? `<a class="btn petit" href="#/chauffeur-form/${id}" data-modifier-fiche>${ic('crayon', 16)} Modifier la fiche</a>` : ''}</div><dl class="def"><dt>Téléphone</dt><dd>${esc(c.telephone || '—')}</dd><dt>Compte Ambu Track</dt><dd>${c.profil_id ? esc(nomUser(c.profil_id)) : 'Aucun'}</dd><dt>Notes</dt><dd>${esc(c.notes || '—')}</dd><dt>Statut</dt><dd>${c.actif === false ? 'Inactif' : 'Actif'}</dd></dl></div>
@@ -2456,7 +2621,10 @@ VUES['chauffeur-form'] = (id) => {
       <div class="champ"><label class="lib">Scan ou photo du permis</label>${champPhotos('permis', c?.permis_fichiers || [], { pdf: true })}</div></div>
     <div class="carte"><h2>Aptitudes</h2><div class="grille g2 r1">
       <div class="champ"><label class="lib">Aptitude médicale à la conduite : valable jusqu’au</label><input type="date" name="aptitude_expiration" value="${esc(c?.aptitude_expiration || '')}"><div class="aide">Date seulement, aucune information médicale.</div></div>
-      <div class="champ"><label class="lib">Formation secourisme : valable jusqu’au</label><input type="date" name="secourisme_expiration" value="${esc(c?.secourisme_expiration || '')}"></div></div>
+      </div>
+      <details class="panneau-secourisme" data-panneau-secourisme ${formationsSecourisme(c).some((x) => x.expiration) ? '' : 'open'}><summary>${ic('badge', 18)} Formation secourisme — 4 formations et leurs dates de validité</summary>
+        <div class="formations">${formationsSecourisme(c).map((x) => `<label class="formation"><span class="nomf">${esc(x.nom)}<small>${esc(x.detail)}</small></span><input type="date" name="sec_${x.code}" aria-label="${esc(x.nom)} : valable jusqu’au" value="${esc(x.expiration || (x.code === 'first_aid' && !(c?.secourisme_formations || []).length ? c?.secourisme_expiration || '' : ''))}"></label>`).join('')}
+        <div class="aide">Laissez vide une formation non suivie. La date la plus proche sert aux alertes « Formation secourisme ».</div></div></details>
       <div class="champ"><label class="lib">Notes</label><textarea name="notes" maxlength="1000">${esc(c?.notes || '')}</textarea></div>
       <label class="case"><input type="checkbox" name="actif" ${c?.actif === false ? '' : 'checked'}> Fiche active (proposée pour les missions)</label></div>
     <button class="btn p large">${c ? 'Enregistrer les modifications' : 'Créer la fiche'}</button></form>`,
@@ -2470,13 +2638,15 @@ VUES['chauffeur-form'] = (id) => {
       if (!v.site_id) return erreurChamp(f, 'site_id', 'Choisissez le site');
       if (v.permis_delivrance && v.permis_expiration && v.permis_expiration < v.permis_delivrance) return erreurChamp(f, 'permis_expiration', 'La fin de validité est antérieure à la délivrance');
       if (v.matricule && L('ambu_conducteurs').some((x) => x.id !== id && (x.matricule || '').toLowerCase() === v.matricule.toLowerCase())) return erreurChamp(f, 'matricule', 'Ce matricule est déjà utilisé');
+      const secourisme_formations = SECOURISME.map(([code]) => ({ code, expiration: v['sec_' + code] || null })).filter((x) => x.expiration);   // v1.9
+      const secourisme_expiration = secourisme_formations.map((x) => x.expiration).sort()[0] || null;
       const nid = id || uuid(); let photo_id = c?.photo_id || null;
       if (photo) { photo_id = uuid(); await IDB.ecrire('fichiers', { k: photo_id, donnees: photo });
         await enregistrer('ambu_fichiers', photo_id, { site_id: v.site_id, objet: 'conducteur:' + nid, nom: 'photo-identite.jpg', mime: 'image/jpeg', taille: photo.length, donnees: photo }, { sansSync: true }); }
       const permis_fichiers = await sauverPhotos('permis', null, 'conducteur:' + nid, v.site_id);
       await enregistrer('ambu_conducteurs', nid, { nom: v.nom.toUpperCase(), prenom: v.prenom || null, matricule: v.matricule || null, telephone: v.telephone || null, fonction: v.fonction, site_id: v.site_id,
         profil_id: v.profil_id || null, photo_id, permis_numero: v.permis_numero || null, permis_lieu: v.permis_lieu || null, permis_delivrance: v.permis_delivrance || null, permis_expiration: v.permis_expiration || null,
-        permis_categories: cats.filter((x) => v['cat_' + x]), permis_fichiers, aptitude_expiration: v.aptitude_expiration || null, secourisme_expiration: v.secourisme_expiration || null, notes: v.notes || null, actif: v.actif });
+        permis_categories: cats.filter((x) => v['cat_' + x]), permis_fichiers, aptitude_expiration: v.aptitude_expiration || null, secourisme_expiration, secourisme_formations, notes: v.notes || null, actif: v.actif });
       S.enForm = false; toast(c ? 'Fiche mise à jour' : 'Fiche chauffeur créée', 'ok'); location.hash = '#/chauffeur/' + nid;
     };
   } };
@@ -2960,6 +3130,7 @@ function ecranConnexion({ email = '', verrou = false, message = '' } = {}) {
   $('#app').classList.add('cache'); const e = $('#ecran'); e.classList.remove('cache'); e.className = 'ecran';
   const dernier = email || localStorage.getItem('ambu.dernierEmail') || '';
   e.innerHTML = `<div class="boite">${boutonLangue()}<div class="marque"><b>${LOGO}</b><h1>Ambu Track</h1></div><p class="aide" style="margin-top:0">Suivi opérationnel des ambulances — Fortescue Belinga</p>
+    <div class="espaces-connexion"><div><b>Espace chauffeur</b>Missions, km, contrôles, signalements</div><div><b>Espace coordinateur ERT</b>Parc, chauffeurs, alertes, rapports</div></div>
     ${verrou ? '<div class="bandeau warn">Session expirée ou verrouillée : reconnectez-vous. Vos saisies sont conservées sur l’appareil.</div>' : ''}${message ? `<div class="bandeau bad">${esc(message)}</div>` : ''}
     <form id="fl" novalidate><div class="champ"><label class="lib" for="em">E-mail</label><input id="em" type="email" name="email" autocomplete="username" value="${esc(dernier)}" required></div>
     <div class="champ"><label class="lib" for="mp">Mot de passe</label><input id="mp" type="password" name="mdp" autocomplete="current-password" required></div>
